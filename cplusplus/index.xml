@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Cplusplus on Hello world!</title>
+    <link>https://shiweiHou.github.io/cplusplus/</link>
+    <description>Recent content in Cplusplus on Hello world!</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <lastBuildDate>Mon, 03 Oct 2016 20:08:13 +0800</lastBuildDate>
+    <atom:link href="https://shiweiHou.github.io/cplusplus/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>first</title>
+      <link>https://shiweihou.github.io/cplusplus/first/</link>
+      <pubDate>Mon, 03 Oct 2016 20:08:13 +0800</pubDate>
+      
+      <guid>https://shiweihou.github.io/cplusplus/first/</guid>
+      <description>&lt;p&gt;c++&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>
