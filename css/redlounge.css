@@ -417,8 +417,12 @@ nav#TableOfContents ul:first-child {
     color: #aeaeae;
     font-size: 0.7rem;
 }
+.footer p{
+	font-size: 1rem;
+	font-weight:bold;
+}
 .footer a, .footer p {
-	color: #aeaeae;
+	color: black;
 }
 .footer a {
 	text-decoration: none;
@@ -429,7 +433,7 @@ nav#TableOfContents ul:first-child {
 }
 .footer .pure-menu a:hover,
 .footer .pure-menu a:focus {
-    background: none;
+    background: blue;
 }
 ul.footer-menu {
 	list-style: none;

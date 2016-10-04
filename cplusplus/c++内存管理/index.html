@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+  <title>
+    c&#43;&#43;内存管理 // Hello world!
+  </title>
+
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+<meta name="description" content="">
+<meta name="keywords" content="">
+<meta name="author" content="">
+<meta name="generator" content="Hugo 0.16" />
+
+  <meta property="og:title" content="c&#43;&#43;内存管理" />
+<meta property="og:description" content="" />
+<meta property="og:type" content="website" />
+<meta property="og:locale" content="en_US" />
+<meta property="og:url" content="https://shiweihou.github.io/cplusplus/c&#43;&#43;%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/" />
+
+
+  
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.5.0/base-min.css">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.5.0/pure-min.css">
+  
+  
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.5.0/grids-responsive-min.css">
+  
+  
+
+  <link rel="stylesheet" href="https://shiweihou.github.io//css/redlounge.css">
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet">
+  <link href='//fonts.googleapis.com/css?family=Raleway:400,200,100,700,300,500,600,800' rel='stylesheet' type='text/css'>
+  <link href='//fonts.googleapis.com/css?family=Libre+Baskerville:400,700,400italic' rel='stylesheet' type='text/css'>
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.png">
+
+  
+  <link href="" rel="alternate" type="application/rss+xml" title="Hello world!" />
+
+    
+  
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.7/styles/tomorrow-night-bright.min.css">
+  
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.7/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+
+
+  
+
+  
+
+  
+
+  
+</head>
+
+<body>
+	
+
+	<div id="layout" class="pure-g">
+    <div class="sidebar pure-u-1 pure-u-md-1-4">
+  <div class="header">
+    
+
+	
+	  <img src="/img/close.png" class="sidebarphoto">
+	
+
+    <h1 class="brand-title">Matthew</h1>
+    <h2 class="brand-tagline">Is super awesome</h2>
+
+    <nav class="nav">
+      <ul class="nav-list">
+        <li class="nav-item"><span class="nav-item-separator">//</span><a href="https://shiweihou.github.io/">Home</a></li>
+        
+          <li class="nav-item"><span class="nav-item-separator">//</span><a href="/cplusplus/">C&#43;&#43;</a></li>
+        
+          <li class="nav-item"><span class="nav-item-separator">//</span><a href="/lintcode/">lintcode</a></li>
+        
+      </ul>
+    </nav>
+
+    
+    <div class="social-buttons">
+      
+        
+        <a href="http://www.twitter.com/shift8creative" target="_blank"><i class='fa fa-twitter'></i></a>
+        
+      
+      
+    </div>
+    
+
+  </div>
+</div>
+
+	
+	
+
+    <div class="content pure-u-1 pure-u-md-3-4">
+		<a name="top"></a>
+		
+
+		
+			
+	    
+  		<section class="post">
+            <h1 class="post-title">
+              <a href="/cplusplus/c&#43;&#43;%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/">c&#43;&#43;内存管理</a>
+            </h1>
+            <h3 class="post-subtitle">
+            	
+            </h3>
+            
+            	<span class="post-date">
+                	<span class="post-date-day"><sup>30</sup></span><span class="post-date-separator">/</span><span class="post-date-month">May</span> <span class="post-date-year">2016</span>
+            	</span>
+            	
+            
+            	
+            
+
+			
+			
+
+			
+
+			
+
+            <p><strong>C++中内存分配方式</strong>
+在c++中，内存分成5个区，分别是堆、栈、自由存储区、全局/静态存储区和常量存储区。</p>
+
+<ul>
+<li>栈：在执行函数时，函数内局部变量的存储单元都可以在栈上创建，函数执行结束后这些存储单元被自动释放。栈内存分配运算内置于处理器的指令集中，效率很高，但是分配的内存容量有限。</li>
+<li>堆：堆就是由malloc分配的内存块，他们的释放编译器不去管，由我们的应用程序去控制，一般一个malloc就要对应一个free。如果程序员没有释放掉，有可能在程序运行过程中会造成内存不足。程序结束后，操作系统会自动回收。</li>
+<li>自由存储区：就是由new分配的内存块，他们的释放编译器不去管，由我们的应用程序去控制，一般一个new就要对应一个delete。如果程序员没有释放掉，有可能在程序运行过程中会造成内存不足。程序结束后，操作系统会自动回收。</li>
+<li>全局/静态存储区：全局变量和静态变量被分配到同一块内存中，在C语言中，全局变量又分为初始化和未初始化的，C++里就没有这个区分了</li>
+<li>常量存储区：存放常量，不允许修改</li>
+</ul>
+
+<p>PS：关于堆和自由存储区的区别，网上大部分人认为堆可以是自由存储区，但自由存储区有可能会变成静态存储区。其实在《c++ Primer 5th》中文版中，第400页说明计算机中堆和自由存储区可以视为同一个东西。我们需要搞清楚的是堆和栈的区别，至于堆和自由存储区的区别，可以不用过多考虑。</p>
+
+<p><strong>堆与栈的区别</strong>
+网上有关堆和栈的区别讨论有很多，其实我们可以简单的认为，栈是程序在为代码中的对象生成需要时分配的空间，而堆是我们人为的想要申请一个动态内存，显示的提出申请，程序为我们提供的内存空间。例如
+int *p = new int[5];
+p是一个指向5个整型大小的数组的指针，看到new，我们就知道程序在堆内存上分配了一块内存，但是p确是分配的一个栈内存。所以其实是“在栈内存中存放了一个指向堆内存的指针p”。栈内存上的变量符合作用域规则，即“对于栈对象，仅在其定义的程序块运行时才存在，离开作用域，其隐式自动的被销毁；对于堆对象，当我们不需要时，必须显示的销毁它”。</p>
+
+<p><strong>控制C++的内存分配</strong><br />
+若想安全的使用c++内存，必须要保证程序的堆内存是安全的。意思是说，如果生成了一块堆内存，那么我们就必须要显示的销毁它。最简单的来讲，就是malloc和free要成对出现，new和delete要成对出现，如果有一个没有满足要求，就有可能发生内存泄漏或者造成其它方面的错误等原因。记住，一个new，后面一个delete；一个malloc，后面一个free。</p>
+
+<p><strong>常见的内存错误及对策</strong></p>
+
+<ul>
+<li>内存分配未成功，确使用了它。 解决方法：使用内存前判断指针是否为NULL。</li>
+<li>内存分配成功，但尚未初始化就使用。出现这种问题，很多时候都是因为误以为内存的默认初始值都是0.解决方法：显示的进行初始化，不执行默认初始化，宁愿麻烦点，也保证不要出错。</li>
+<li>内存分配成功并正确初始化，但使用时越界。这个问题更常见，很多时候你分配了只有10个内存大小，但你使用第11个内存、第12个内存，就很容易发生这种错误。解决方法:仔细检查！</li>
+<li>忘记释放内存，造成内存泄漏。解决方法：一个new-&gt;delete, 一个malloc-&gt;free。不要想着拆散他们</li>
+<li>内存已释放，却还要继续使用他们。一个内存已经delete或者free掉了，好比一个人已经从北京离开到上海了，你还要人家在北京帮你买东西，这不扯淡吗</li>
+</ul>
+
+<p>不要怕指针，指针其实很简单。写程序时多细心点，出错时逐步检查，一般而言都是可以解决问题的。</p>
+
+	
+			
+
+			
+
+			
+				<div class="paging">
+					<span class="paging-label">More Reading</span>
+					
+					<div class="paging-newer">
+						<span class="dark-red">Newer</span><span class="decorative-marker">//</span>
+						<a class="paging-link" href="/cplusplus/C&#43;&#43;%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2/">c&#43;&#43;里一些类型之间的简单转换</a>
+		            </div>
+		            
+
+					
+					<div class="paging-older">
+						<span class="dark-red">Older</span><span class="decorative-marker">//</span>
+			            <a class="paging-link" href="/cplusplus/C&#43;&#43;%20%E7%9A%84%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0/">基类派生类的一些问题</a>
+		            </div>
+		            
+	            </div>
+            
+          </section>
+          
+          	
+          
+        
+      <div class="footer">
+	<hr class="thin" />
+	<div class="pure-menu pure-menu-horizontal pure-menu-open">
+		<ul class="footer-menu">
+		
+		</ul>
+	</div>
+
+	<p>&copy; 2016. Matthew Hou All rights reserved.</p>
+</div>
+    </div>
+  </div>
+	
+
+	
+
+  
+</body>
+</html>

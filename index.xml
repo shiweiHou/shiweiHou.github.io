@@ -19,12 +19,418 @@
     </item>
     
     <item>
-      <title>first</title>
-      <link>https://shiweihou.github.io/cplusplus/first/</link>
-      <pubDate>Mon, 03 Oct 2016 20:08:13 +0800</pubDate>
+      <title>C&#43;&#43; explicit关键字</title>
+      <link>https://shiweihou.github.io/cplusplus/C&#43;&#43;%20explicit%E5%85%B3%E9%94%AE%E5%AD%97/</link>
+      <pubDate>Sat, 17 Sep 2016 15:08:13 +0800</pubDate>
       
-      <guid>https://shiweihou.github.io/cplusplus/first/</guid>
-      <description>&lt;p&gt;c++&lt;/p&gt;
+      <guid>https://shiweihou.github.io/cplusplus/C&#43;&#43;%20explicit%E5%85%B3%E9%94%AE%E5%AD%97/</guid>
+      <description>&lt;p&gt;&lt;strong&gt;被声明为explicit的构造函数通常比其non-explicit兄弟更受欢迎，因为它们禁止编译器执行非预期（往往也不被期望）的类型转换。&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;C++ explicit关键字用于修饰类的构造函数，用于显示的表明类的构造函数是显示的，禁止编译器执行非预期的（大部分都是隐式的，不受期待的）类型转换。
+例如对于一个类：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;class A{
+public:
+     A(int num);//默认构造函数
+     int _num;
+};
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;如果我们执行：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;A a1(3);
+A a1 = 3;//编译器会将整型的 3 转换为 类A 的形式，类似于 A temp(3); A a1 = temp;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;这个操作
+这两种方式都是正确的，都是定义了一个类对象并默认初始化num为3.但是有个问题，对于第二种定义方式，我们原意可能并不是想将3作为类的初始值，而是
+对类内的某个属性进行初始化（更一般来讲，我们看到 A a1 = 3 这种形式的代码的时候，会下意识的认为A是一个类型而不是一个类）这样，就会产生一个显示的错误：对一个类进行赋值而不是对一个类型进行赋值。&lt;/p&gt;
+
+&lt;p&gt;要避免这种情况就需要在类的构造函数前键入explicit关键字，用于告诉编译器，禁止&lt;strong&gt;隐性的类型转换。&lt;/strong&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;class A{
+public:
+     explicit A(int num);//默认构造函数
+     int _num;
+};
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;再执行&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;A a1 = 3;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;就会提示错误了。&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>基类派生类的一些问题</title>
+      <link>https://shiweihou.github.io/cplusplus/%E5%9F%BA%E7%B1%BB%E6%B4%BE%E7%94%9F%E7%B1%BB%E9%97%AE%E9%A2%98/</link>
+      <pubDate>Sat, 17 Sep 2016 15:08:13 +0800</pubDate>
+      
+      <guid>https://shiweihou.github.io/cplusplus/%E5%9F%BA%E7%B1%BB%E6%B4%BE%E7%94%9F%E7%B1%BB%E9%97%AE%E9%A2%98/</guid>
+      <description>
+
+&lt;h2 id=&#34;基类成员在派生类的访问属性&#34;&gt;基类成员在派生类的访问属性：&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code&gt;* 基类的私有成员无论是什么继承方式，在派生类中均不可以直接访问
+* 在公有继承下，基类的保护成员和公有成员均保持原访问属性
+* 在保护继承方式下，基类的保护和公有成员在派生类的访问属性中均为保护属性
+* 在私有继承方式下，基类的保护和公有成员在派生类的方位属性中均未私有属性
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;虚函数-多态&#34;&gt;虚函数，多态：&lt;/h2&gt;
+
+&lt;p&gt;基类指针可以用派生类对象赋值，但如果基类和派生类的成员函数都是普通函数，那么虽然基类指针指向派生类的对象，但&lt;strong&gt;基类指针仍然使用基类的成员函数，而不是使用派生类对象的成员函数。&lt;/strong&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;#include&amp;lt;iostream&amp;gt;
+using namespace std;
+
+class People{
+protected:
+   char *name;
+public:
+   People(char *name) :name(name){};
+   // virtual void display() {cout &amp;lt;&amp;lt; &amp;quot;people: &amp;quot; &amp;lt;&amp;lt; name &amp;lt;&amp;lt; endl; } , 构成多态
+   void display(){ cout &amp;lt;&amp;lt; &amp;quot;people: &amp;quot; &amp;lt;&amp;lt; name &amp;lt;&amp;lt; endl; }
+};
+
+class Student :public People{
+public:
+   Student(char *name) :People(name){};
+   void display(){ cout &amp;lt;&amp;lt; &amp;quot;Student: &amp;quot; &amp;lt;&amp;lt; name &amp;lt;&amp;lt; endl; }
+};
+
+int main(){
+   People *p = new People(&amp;quot;teacher&amp;quot;);
+   p-&amp;gt;display();
+
+   p = new Student(&amp;quot;student&amp;quot;);
+   p-&amp;gt;display();
+
+   return 0；
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;程序的输出为，&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;people:teacher
+people:student
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;也就是说，基类指针虽然指向了派生类对象，但其使用的仍是基类的成员函数。&lt;/p&gt;
+
+&lt;p&gt;解决这个问题的方法，就是在成员函数声明为&lt;strong&gt;虚函数&lt;/strong&gt;。只需在基类成员函数前加上 virtual 关键字，程序的输出就可以变为：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;people:teacher
+student:student
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;借助虚函数，基类指针既可以使用基类的成员函数，也可以使用派生类的成员函数，它有多种形态，或多种表现方式，这就是多态&lt;strong&gt;（polymorphism）&lt;/strong&gt;。&lt;/p&gt;
+
+&lt;p&gt;在上面的代码中，当p指向不同的对象时，它所执行的操作是不一样的。同一条语句可以执行不同的操作，看起来有不同表现方式，这就是多态。
+C++提供多态的目的是：&lt;strong&gt;可以通过基类指针对所有派生类（包括直接派生和间接派生）的成员变量和成员函数进行“全方位”的访问，尤其是成员函数。&lt;/strong&gt;&lt;/p&gt;
+
+&lt;h2 id=&#34;构成多态的条件&#34;&gt;构成多态的条件：&lt;/h2&gt;
+
+&lt;ul&gt;
+&lt;li&gt;必须存在继承关系&lt;/li&gt;
+&lt;li&gt;继承关系中必须有同名的虚函数，并且它们是覆盖关系，不能是隐藏&lt;/li&gt;
+&lt;li&gt;存在基类的指针，通过该指针调用虚函数&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;hr /&gt;
+
+&lt;pre&gt;&lt;code&gt;#include &amp;lt;iostream&amp;gt;
+using namespace std;
+class Base{
+public:
+    void a(){ cout&amp;lt;&amp;lt;&amp;quot;Base::a()&amp;quot;&amp;lt;&amp;lt;endl; }
+    virtual void b(){ cout&amp;lt;&amp;lt;&amp;quot;Base::b()&amp;quot;&amp;lt;&amp;lt;endl; }
+    virtual void c(){ cout&amp;lt;&amp;lt;&amp;quot;Base::c()&amp;quot;&amp;lt;&amp;lt;endl; }
+};
+class Derived: public Base{
+public:
+    //覆盖基类普通成员函数，不构成多态
+    void a(){ cout&amp;lt;&amp;lt;&amp;quot;Derived::a()&amp;quot;&amp;lt;&amp;lt;endl; }
+    //覆盖基类虚函数，构成多态
+    virtual void b(){ cout&amp;lt;&amp;lt;&amp;quot;Derived::b()&amp;quot;&amp;lt;&amp;lt;endl; }
+    //隐藏基类虚函数，不构成多态
+    virtual void c(int n){ cout&amp;lt;&amp;lt;&amp;quot;Derived::c()&amp;quot;&amp;lt;&amp;lt;endl; }
+    //派生类新增函数
+    int d(){ cout&amp;lt;&amp;lt;&amp;quot;Derived::d()&amp;quot;&amp;lt;&amp;lt;endl; }
+};
+int main(){
+    Base *p = new Derived;
+    p -&amp;gt; a();
+    p -&amp;gt; b();
+    p -&amp;gt; c(0);  //Compile Error
+    p -&amp;gt; d();  //Compile Error
+    return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>C&#43;&#43;文件的I/O</title>
+      <link>https://shiweihou.github.io/cplusplus/C&#43;&#43;%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C/</link>
+      <pubDate>Fri, 03 Jun 2016 10:08:13 +0800</pubDate>
+      
+      <guid>https://shiweihou.github.io/cplusplus/C&#43;&#43;%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C/</guid>
+      <description>
+
+&lt;p&gt;C++关于文件的读写，通常来讲，我们最常用的就是对txt文件的读写操作，有时候我们需要打开一个已存在的txt文件进行读取，或者需要将一些数据写入到txt文件中。&lt;/p&gt;
+
+&lt;h2 id=&#34;读取文件操作所需的头文件&#34;&gt;读取文件操作所需的头文件&lt;/h2&gt;
+
+&lt;p&gt;C++中有一个头文件 &lt;fstream&gt;,包含3个基本的类成员：ifstream, ofstream, fstream。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;* ifstream：定义读取的文件，进行读操作，而无法进行写操作
+* ofstream：定义要写的文件，进行写操作，而无法进行读操作
+* fstream：定义读写文件，既可以进行读操作，也可以进行写操作
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;ifsteam&#34;&gt;ifsteam&lt;/h2&gt;
+
+&lt;p&gt;假如a.txt的格式类似于这样
+&amp;ldquo;
+1:2:3:4
+9:2:4:5
+&amp;hellip;
+45:23:545:121
+&amp;ldquo;
+这样，我们就可以对数据进行如下操作&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;#include&amp;lt;fstream&amp;gt;
+std::ifstream input_file(&amp;quot;a.txt&amp;quot;);
+int num;
+char c;
+input_file &amp;gt;&amp;gt; num &amp;gt;&amp;gt; c;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;此时num=1，c=&amp;rsquo;:&amp;lsquo;,这样我们就可以一直读下去，一直到文件末尾：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;while (!input_file.eof())
+     do something
+input_file.close();
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;如果我们要对已经读进来的文件内容进行一行一行的读取：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;while (getline(input_file, line)) {
+     cout &amp;lt;&amp;lt; line &amp;lt;&amp;lt; endl; // 文件每一行的数据都保存在line中
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;ofstream&#34;&gt;ofstream&lt;/h2&gt;
+
+&lt;p&gt;ofstream 与 ifstream类似，只不过一个是对文件进行读操作，一个对文件进行写操作：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;#include&amp;lt;fstream&amp;gt;
+std::ofstream out_file(&amp;quot;a.txt&amp;quot;);
+int num = 4;
+char c  =&#39;:&#39;;
+out_file &amp;gt;&amp;gt; num &amp;gt;&amp;gt; c &amp;gt;&amp;gt; std::endl;
+out_file.close();
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;如果a.txt不存在，那么程序将会新建一个，如果存在，程序将会在每一次重新定义的时候，清空文件，意思就是说，当我们对文件写入完数据后，关闭然后重新打开再进行写入数据的话，会覆盖掉原来的数据。&lt;/p&gt;
+
+&lt;h2 id=&#34;open函数&#34;&gt;open函数&lt;/h2&gt;
+
+&lt;p&gt;我们前面都是直接在定义文件流对象时默认的给出了文件的名字，如果我们定义了一个空的文件流对象，随后可以用open函数将它与文件关联起来&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;std::ifstream input_file;
+input_file.open(&amp;quot;a.txt&amp;quot;);
+if (input_file)//检查open是否成功
+     do something //成功可以对文件进行操作了
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;对于ofstream同样适用。&lt;/p&gt;
+
+&lt;h2 id=&#34;文件模式&#34;&gt;文件模式&lt;/h2&gt;
+
+&lt;p&gt;每个流都有自己的文件模式，用来指定如何使用文件&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;in&lt;/strong&gt;   &lt;em&gt;已读方式打开&lt;/em&gt;  只可以对ifstream或fstream对象设定in模式，ifstream的默认属性&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;out&lt;/strong&gt;  &lt;em&gt;已写方式打开&lt;/em&gt;  只可以对outfstream或fstream对象设定out模式，ofstream的默认属性&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;app&lt;/strong&gt;  每次写操作前均定位到文件末尾为了保留已out模式打开的文件内容，必须指定app模式&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;ate&lt;/strong&gt;  打开文件后立即定位到文件末尾&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;trunc&lt;/strong&gt;  截断文件默认属性，若没有指明文件模式，已out模式打开的文件也会被截断&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;&lt;strong&gt;binary&lt;/strong&gt; 已二进制文件进行IO&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;前面说过，若是重复对一个文件进行写操作，会造成已有数据的丢失，若不想丢失数据，需指定app模式&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;std::ofstream out;
+out.open(&amp;quot;a.txt&amp;quot;,ofstream::app);
+if (out)
+     do something
+out.close();
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;这样文件中已有的数据被保存，所有写操作都是在文件末尾进行。&lt;/p&gt;
+
+&lt;p&gt;注意&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;fstream是可以执行ofstream和ifstream的所有操作的，但我们更希望术业有专攻，在只需要读时，使用ifstream，只需要写时，使用ofstream，只有同时需要读写时，使用fstream&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;另外每一个文件在open操作完成后，都要进行close操作&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>c&#43;&#43;里一些类型之间的简单转换</title>
+      <link>https://shiweihou.github.io/cplusplus/C&#43;&#43;%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2/</link>
+      <pubDate>Mon, 30 May 2016 20:08:13 +0800</pubDate>
+      
+      <guid>https://shiweihou.github.io/cplusplus/C&#43;&#43;%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2/</guid>
+      <description>
+
+&lt;h2 id=&#34;char-string&#34;&gt;char -&amp;gt; string：&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code&gt;//stringstream 在头文件 sstream里面
+char c;
+string str;
+stringstream stream;
+stream &amp;lt;&amp;lt; c;
+str = stream.str();
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;char-string-1&#34;&gt;char * -&amp;gt; string:&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code&gt;char *ch = &amp;quot;hello world&amp;quot;;
+string s(ch);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;int-char&#34;&gt;int &amp;lt;-&amp;gt; char:&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code&gt;int a;
+char ac;
+a = ac -&#39;0&#39;;
+ac = a + &#39;0&#39;;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;int-string&#34;&gt;int -&amp;gt; string:&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code&gt;//第一种方法
+int i;
+string str;
+stringstream stream;
+stream &amp;lt;&amp;lt; i;
+str = stream.str();
+//C++ 11推荐的方法
+int i;
+string str;
+str = to_string(i);
+//利用sprintf,buf先为一个字符数组，然后再直接转换为string
+sprintf(buf, &amp;quot;%d&amp;quot;, value);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;string-int&#34;&gt;string -&amp;gt; int:&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code&gt;string s = &amp;quot;345&amp;quot;;
+int i = stoi(s);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;char-int&#34;&gt;char * -&amp;gt; int&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code&gt;char *c = &amp;quot;hello&amp;quot;;
+int i = atoi(c);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;大小写字符相互转换&#34;&gt;大小写字符相互转换：&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code&gt;char c = &#39;A&#39;;
+c = tolower(c);//c = &#39;a&#39;
+c = toupper(c);//c = &#39;A&#39;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;c-中string类型的大小写转换&#34;&gt;C++中string类型的大小写转换：&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code&gt;string s = &amp;quot;ABCD&amp;quot;;
+transform(s.begin(),s.end(),s.begin(),::tolower);// s = &amp;quot;abcd&amp;quot;
+transform(s.begin(),s.end(),s.begin(),::toupper);// s = &amp;quot;ABCD&amp;quot;
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>c&#43;&#43;内存管理</title>
+      <link>https://shiweihou.github.io/cplusplus/c&#43;&#43;%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/</link>
+      <pubDate>Mon, 30 May 2016 13:01:02 +0800</pubDate>
+      
+      <guid>https://shiweihou.github.io/cplusplus/c&#43;&#43;%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/</guid>
+      <description>&lt;p&gt;&lt;strong&gt;C++中内存分配方式&lt;/strong&gt;
+在c++中，内存分成5个区，分别是堆、栈、自由存储区、全局/静态存储区和常量存储区。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;栈：在执行函数时，函数内局部变量的存储单元都可以在栈上创建，函数执行结束后这些存储单元被自动释放。栈内存分配运算内置于处理器的指令集中，效率很高，但是分配的内存容量有限。&lt;/li&gt;
+&lt;li&gt;堆：堆就是由malloc分配的内存块，他们的释放编译器不去管，由我们的应用程序去控制，一般一个malloc就要对应一个free。如果程序员没有释放掉，有可能在程序运行过程中会造成内存不足。程序结束后，操作系统会自动回收。&lt;/li&gt;
+&lt;li&gt;自由存储区：就是由new分配的内存块，他们的释放编译器不去管，由我们的应用程序去控制，一般一个new就要对应一个delete。如果程序员没有释放掉，有可能在程序运行过程中会造成内存不足。程序结束后，操作系统会自动回收。&lt;/li&gt;
+&lt;li&gt;全局/静态存储区：全局变量和静态变量被分配到同一块内存中，在C语言中，全局变量又分为初始化和未初始化的，C++里就没有这个区分了&lt;/li&gt;
+&lt;li&gt;常量存储区：存放常量，不允许修改&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;PS：关于堆和自由存储区的区别，网上大部分人认为堆可以是自由存储区，但自由存储区有可能会变成静态存储区。其实在《c++ Primer 5th》中文版中，第400页说明计算机中堆和自由存储区可以视为同一个东西。我们需要搞清楚的是堆和栈的区别，至于堆和自由存储区的区别，可以不用过多考虑。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;堆与栈的区别&lt;/strong&gt;
+网上有关堆和栈的区别讨论有很多，其实我们可以简单的认为，栈是程序在为代码中的对象生成需要时分配的空间，而堆是我们人为的想要申请一个动态内存，显示的提出申请，程序为我们提供的内存空间。例如
+int *p = new int[5];
+p是一个指向5个整型大小的数组的指针，看到new，我们就知道程序在堆内存上分配了一块内存，但是p确是分配的一个栈内存。所以其实是“在栈内存中存放了一个指向堆内存的指针p”。栈内存上的变量符合作用域规则，即“对于栈对象，仅在其定义的程序块运行时才存在，离开作用域，其隐式自动的被销毁；对于堆对象，当我们不需要时，必须显示的销毁它”。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;控制C++的内存分配&lt;/strong&gt;&lt;br /&gt;
+若想安全的使用c++内存，必须要保证程序的堆内存是安全的。意思是说，如果生成了一块堆内存，那么我们就必须要显示的销毁它。最简单的来讲，就是malloc和free要成对出现，new和delete要成对出现，如果有一个没有满足要求，就有可能发生内存泄漏或者造成其它方面的错误等原因。记住，一个new，后面一个delete；一个malloc，后面一个free。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;常见的内存错误及对策&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;内存分配未成功，确使用了它。 解决方法：使用内存前判断指针是否为NULL。&lt;/li&gt;
+&lt;li&gt;内存分配成功，但尚未初始化就使用。出现这种问题，很多时候都是因为误以为内存的默认初始值都是0.解决方法：显示的进行初始化，不执行默认初始化，宁愿麻烦点，也保证不要出错。&lt;/li&gt;
+&lt;li&gt;内存分配成功并正确初始化，但使用时越界。这个问题更常见，很多时候你分配了只有10个内存大小，但你使用第11个内存、第12个内存，就很容易发生这种错误。解决方法:仔细检查！&lt;/li&gt;
+&lt;li&gt;忘记释放内存，造成内存泄漏。解决方法：一个new-&amp;gt;delete, 一个malloc-&amp;gt;free。不要想着拆散他们&lt;/li&gt;
+&lt;li&gt;内存已释放，却还要继续使用他们。一个内存已经delete或者free掉了，好比一个人已经从北京离开到上海了，你还要人家在北京帮你买东西，这不扯淡吗&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;不要怕指针，指针其实很简单。写程序时多细心点，出错时逐步检查，一般而言都是可以解决问题的。&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>基类派生类的一些问题</title>
+      <link>https://shiweihou.github.io/cplusplus/C&#43;&#43;%20%E7%9A%84%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0/</link>
+      <pubDate>Tue, 17 May 2016 19:08:13 +0800</pubDate>
+      
+      <guid>https://shiweihou.github.io/cplusplus/C&#43;&#43;%20%E7%9A%84%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0/</guid>
+      <description>&lt;p&gt;&lt;strong&gt;C++中构造函数初始化时必须采用初始化列表的一共有三种情况：&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;需要初始化的数据成员是对象（继承时调用基类构造函数）&lt;/li&gt;
+&lt;li&gt;需要初始化const修饰的类成员&lt;/li&gt;
+&lt;li&gt;需要初始化引用成员数据&lt;/li&gt;
+&lt;li&gt;因为static属于类并不属于具体的对象，所以static成员是不允许在类内初始化的，static const成员也一样，不允许在类内初始化&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;C++ 的构造函数没有办法被派生类所继承，但可以被派生类调用。构造原则如下&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;如果子类没有定义构造方法，则调用父类的无参数的构造方法。&lt;/li&gt;
+&lt;li&gt;如果子类定义了构造方法，无论是有参数还是无参数，在创建子类对象的时候，首先执行父类的无参构造方法，然后执行自己的构造方法。&lt;/li&gt;
+&lt;li&gt;在创建子类对象时候，如果子类的构造函数没有显式调用父类的构造函数，则会调用父类的无参构造函数。&lt;/li&gt;
+&lt;li&gt;在创建子类对象时候，如果子类的构造函数没有显式调用父类的构造函数且父类只定义了自己的有参构造函数，则会出错，子类必须显式调用此带参构造方法。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;在C++中，构造函数无法被声明为虚函数，但析构函数可以。并且如果某个类作为基类，其析构函数最好还是声明为虚析构函数。&lt;/p&gt;
 </description>
     </item>
     

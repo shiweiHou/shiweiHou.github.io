@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
 <head>
   <title>
-    first // Hello world!
+    c&#43;&#43;里一些类型之间的简单转换 // Hello world!
   </title>
 
   <link href="http://gmpg.org/xfn/11" rel="profile">
@@ -16,11 +16,11 @@
 <meta name="author" content="">
 <meta name="generator" content="Hugo 0.16" />
 
-  <meta property="og:title" content="first" />
+  <meta property="og:title" content="c&#43;&#43;里一些类型之间的简单转换" />
 <meta property="og:description" content="" />
 <meta property="og:type" content="website" />
 <meta property="og:locale" content="en_US" />
-<meta property="og:url" content="https://shiweihou.github.io/lintcode/first/" />
+<meta property="og:url" content="https://shiweihou.github.io/cplusplus/C&#43;&#43;%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2/" />
 
 
   
@@ -110,17 +110,36 @@
 
 		
 			
+		    <div id="toc" class="pure-u-1 pure-u-md-1-4">
+				<small class="toc-label">Contents</small>
+		   	 	<nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#char-string">char -&gt; string：</a></li>
+<li><a href="#char-string-1">char * -&gt; string:</a></li>
+<li><a href="#int-char">int &lt;-&gt; char:</a></li>
+<li><a href="#int-string">int -&gt; string:</a></li>
+<li><a href="#string-int">string -&gt; int:</a></li>
+<li><a href="#char-int">char * -&gt; int</a></li>
+<li><a href="#大小写字符相互转换">大小写字符相互转换：</a></li>
+<li><a href="#c-中string类型的大小写转换">C++中string类型的大小写转换：</a></li>
+</ul></li>
+</ul>
+</nav>
+		    </div>
+		    
 	    
   		<section class="post">
             <h1 class="post-title">
-              <a href="/lintcode/first/">first</a>
+              <a href="/cplusplus/C&#43;&#43;%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2/">c&#43;&#43;里一些类型之间的简单转换</a>
             </h1>
             <h3 class="post-subtitle">
             	
             </h3>
             
             	<span class="post-date">
-                	<span class="post-date-day"><sup>3</sup></span><span class="post-date-separator">/</span><span class="post-date-month">Oct</span> <span class="post-date-year">2016</span>
+                	<span class="post-date-day"><sup>30</sup></span><span class="post-date-separator">/</span><span class="post-date-month">May</span> <span class="post-date-year">2016</span>
             	</span>
             	
             
@@ -134,7 +153,73 @@
 
 			
 
-            <p>lintcode</p>
+            
+
+<h2 id="char-string">char -&gt; string：</h2>
+
+<pre><code>//stringstream 在头文件 sstream里面
+char c;
+string str;
+stringstream stream;
+stream &lt;&lt; c;
+str = stream.str();
+</code></pre>
+
+<h2 id="char-string-1">char * -&gt; string:</h2>
+
+<pre><code>char *ch = &quot;hello world&quot;;
+string s(ch);
+</code></pre>
+
+<h2 id="int-char">int &lt;-&gt; char:</h2>
+
+<pre><code>int a;
+char ac;
+a = ac -'0';
+ac = a + '0';
+</code></pre>
+
+<h2 id="int-string">int -&gt; string:</h2>
+
+<pre><code>//第一种方法
+int i;
+string str;
+stringstream stream;
+stream &lt;&lt; i;
+str = stream.str();
+//C++ 11推荐的方法
+int i;
+string str;
+str = to_string(i);
+//利用sprintf,buf先为一个字符数组，然后再直接转换为string
+sprintf(buf, &quot;%d&quot;, value);
+</code></pre>
+
+<h2 id="string-int">string -&gt; int:</h2>
+
+<pre><code>string s = &quot;345&quot;;
+int i = stoi(s);
+</code></pre>
+
+<h2 id="char-int">char * -&gt; int</h2>
+
+<pre><code>char *c = &quot;hello&quot;;
+int i = atoi(c);
+</code></pre>
+
+<h2 id="大小写字符相互转换">大小写字符相互转换：</h2>
+
+<pre><code>char c = 'A';
+c = tolower(c);//c = 'a'
+c = toupper(c);//c = 'A'
+</code></pre>
+
+<h2 id="c-中string类型的大小写转换">C++中string类型的大小写转换：</h2>
+
+<pre><code>string s = &quot;ABCD&quot;;
+transform(s.begin(),s.end(),s.begin(),::tolower);// s = &quot;abcd&quot;
+transform(s.begin(),s.end(),s.begin(),::toupper);// s = &quot;ABCD&quot;
+</code></pre>
 
 	
 			
@@ -145,11 +230,16 @@
 				<div class="paging">
 					<span class="paging-label">More Reading</span>
 					
+					<div class="paging-newer">
+						<span class="dark-red">Newer</span><span class="decorative-marker">//</span>
+						<a class="paging-link" href="/cplusplus/C&#43;&#43;%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C/">C&#43;&#43;文件的I/O</a>
+		            </div>
+		            
 
 					
 					<div class="paging-older">
 						<span class="dark-red">Older</span><span class="decorative-marker">//</span>
-			            <a class="paging-link" href="/cplusplus/C&#43;&#43;%20explicit%E5%85%B3%E9%94%AE%E5%AD%97/">C&#43;&#43; explicit关键字</a>
+			            <a class="paging-link" href="/cplusplus/c&#43;&#43;%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/">c&#43;&#43;内存管理</a>
 		            </div>
 		            
 	            </div>

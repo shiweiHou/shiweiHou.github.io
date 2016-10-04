@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+  <title>
+    C&#43;&#43;文件的I/O // Hello world!
+  </title>
+
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+<meta name="description" content="">
+<meta name="keywords" content="">
+<meta name="author" content="">
+<meta name="generator" content="Hugo 0.16" />
+
+  <meta property="og:title" content="C&#43;&#43;文件的I/O" />
+<meta property="og:description" content="" />
+<meta property="og:type" content="website" />
+<meta property="og:locale" content="en_US" />
+<meta property="og:url" content="https://shiweihou.github.io/cplusplus/C&#43;&#43;%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C/" />
+
+
+  
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.5.0/base-min.css">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.5.0/pure-min.css">
+  
+  
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.5.0/grids-responsive-min.css">
+  
+  
+
+  <link rel="stylesheet" href="https://shiweihou.github.io//css/redlounge.css">
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet">
+  <link href='//fonts.googleapis.com/css?family=Raleway:400,200,100,700,300,500,600,800' rel='stylesheet' type='text/css'>
+  <link href='//fonts.googleapis.com/css?family=Libre+Baskerville:400,700,400italic' rel='stylesheet' type='text/css'>
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.png">
+
+  
+  <link href="" rel="alternate" type="application/rss+xml" title="Hello world!" />
+
+    
+  
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.7/styles/tomorrow-night-bright.min.css">
+  
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.7/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+
+
+  
+
+  
+
+  
+
+  
+</head>
+
+<body>
+	
+
+	<div id="layout" class="pure-g">
+    <div class="sidebar pure-u-1 pure-u-md-1-4">
+  <div class="header">
+    
+
+	
+	  <img src="/img/close.png" class="sidebarphoto">
+	
+
+    <h1 class="brand-title">Matthew</h1>
+    <h2 class="brand-tagline">Is super awesome</h2>
+
+    <nav class="nav">
+      <ul class="nav-list">
+        <li class="nav-item"><span class="nav-item-separator">//</span><a href="https://shiweihou.github.io/">Home</a></li>
+        
+          <li class="nav-item"><span class="nav-item-separator">//</span><a href="/cplusplus/">C&#43;&#43;</a></li>
+        
+          <li class="nav-item"><span class="nav-item-separator">//</span><a href="/lintcode/">lintcode</a></li>
+        
+      </ul>
+    </nav>
+
+    
+    <div class="social-buttons">
+      
+        
+        <a href="http://www.twitter.com/shift8creative" target="_blank"><i class='fa fa-twitter'></i></a>
+        
+      
+      
+    </div>
+    
+
+  </div>
+</div>
+
+	
+	
+
+    <div class="content pure-u-1 pure-u-md-3-4">
+		<a name="top"></a>
+		
+
+		
+			
+		    <div id="toc" class="pure-u-1 pure-u-md-1-4">
+				<small class="toc-label">Contents</small>
+		   	 	<nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#读取文件操作所需的头文件">读取文件操作所需的头文件</a></li>
+<li><a href="#ifsteam">ifsteam</a></li>
+<li><a href="#ofstream">ofstream</a></li>
+<li><a href="#open函数">open函数</a></li>
+<li><a href="#文件模式">文件模式</a></li>
+</ul></li>
+</ul>
+</nav>
+		    </div>
+		    
+	    
+  		<section class="post">
+            <h1 class="post-title">
+              <a href="/cplusplus/C&#43;&#43;%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C/">C&#43;&#43;文件的I/O</a>
+            </h1>
+            <h3 class="post-subtitle">
+            	
+            </h3>
+            
+            	<span class="post-date">
+                	<span class="post-date-day"><sup>3</sup></span><span class="post-date-separator">/</span><span class="post-date-month">Jun</span> <span class="post-date-year">2016</span>
+            	</span>
+            	
+            
+            	
+            
+
+			
+			
+
+			
+
+			
+
+            
+
+<p>C++关于文件的读写，通常来讲，我们最常用的就是对txt文件的读写操作，有时候我们需要打开一个已存在的txt文件进行读取，或者需要将一些数据写入到txt文件中。</p>
+
+<h2 id="读取文件操作所需的头文件">读取文件操作所需的头文件</h2>
+
+<p>C++中有一个头文件 <fstream>,包含3个基本的类成员：ifstream, ofstream, fstream。</p>
+
+<pre><code>* ifstream：定义读取的文件，进行读操作，而无法进行写操作
+* ofstream：定义要写的文件，进行写操作，而无法进行读操作
+* fstream：定义读写文件，既可以进行读操作，也可以进行写操作
+</code></pre>
+
+<h2 id="ifsteam">ifsteam</h2>
+
+<p>假如a.txt的格式类似于这样
+&ldquo;
+1:2:3:4
+9:2:4:5
+&hellip;
+45:23:545:121
+&ldquo;
+这样，我们就可以对数据进行如下操作</p>
+
+<pre><code>#include&lt;fstream&gt;
+std::ifstream input_file(&quot;a.txt&quot;);
+int num;
+char c;
+input_file &gt;&gt; num &gt;&gt; c;
+</code></pre>
+
+<p>此时num=1，c=&rsquo;:&lsquo;,这样我们就可以一直读下去，一直到文件末尾：</p>
+
+<pre><code>while (!input_file.eof())
+     do something
+input_file.close();
+</code></pre>
+
+<p>如果我们要对已经读进来的文件内容进行一行一行的读取：</p>
+
+<pre><code>while (getline(input_file, line)) {
+     cout &lt;&lt; line &lt;&lt; endl; // 文件每一行的数据都保存在line中
+}
+</code></pre>
+
+<h2 id="ofstream">ofstream</h2>
+
+<p>ofstream 与 ifstream类似，只不过一个是对文件进行读操作，一个对文件进行写操作：</p>
+
+<pre><code>#include&lt;fstream&gt;
+std::ofstream out_file(&quot;a.txt&quot;);
+int num = 4;
+char c  =':';
+out_file &gt;&gt; num &gt;&gt; c &gt;&gt; std::endl;
+out_file.close();
+</code></pre>
+
+<p>如果a.txt不存在，那么程序将会新建一个，如果存在，程序将会在每一次重新定义的时候，清空文件，意思就是说，当我们对文件写入完数据后，关闭然后重新打开再进行写入数据的话，会覆盖掉原来的数据。</p>
+
+<h2 id="open函数">open函数</h2>
+
+<p>我们前面都是直接在定义文件流对象时默认的给出了文件的名字，如果我们定义了一个空的文件流对象，随后可以用open函数将它与文件关联起来</p>
+
+<pre><code>std::ifstream input_file;
+input_file.open(&quot;a.txt&quot;);
+if (input_file)//检查open是否成功
+     do something //成功可以对文件进行操作了
+</code></pre>
+
+<p>对于ofstream同样适用。</p>
+
+<h2 id="文件模式">文件模式</h2>
+
+<p>每个流都有自己的文件模式，用来指定如何使用文件</p>
+
+<ul>
+<li><p><strong>in</strong>   <em>已读方式打开</em>  只可以对ifstream或fstream对象设定in模式，ifstream的默认属性</p></li>
+
+<li><p><strong>out</strong>  <em>已写方式打开</em>  只可以对outfstream或fstream对象设定out模式，ofstream的默认属性</p></li>
+
+<li><p><strong>app</strong>  每次写操作前均定位到文件末尾为了保留已out模式打开的文件内容，必须指定app模式</p></li>
+
+<li><p><strong>ate</strong>  打开文件后立即定位到文件末尾</p></li>
+
+<li><p><strong>trunc</strong>  截断文件默认属性，若没有指明文件模式，已out模式打开的文件也会被截断</p></li>
+
+<li><p><strong>binary</strong> 已二进制文件进行IO</p></li>
+</ul>
+
+<p>前面说过，若是重复对一个文件进行写操作，会造成已有数据的丢失，若不想丢失数据，需指定app模式</p>
+
+<pre><code>std::ofstream out;
+out.open(&quot;a.txt&quot;,ofstream::app);
+if (out)
+     do something
+out.close();
+</code></pre>
+
+<p>这样文件中已有的数据被保存，所有写操作都是在文件末尾进行。</p>
+
+<p>注意</p>
+
+<ul>
+<li><p>fstream是可以执行ofstream和ifstream的所有操作的，但我们更希望术业有专攻，在只需要读时，使用ifstream，只需要写时，使用ofstream，只有同时需要读写时，使用fstream</p></li>
+
+<li><p>另外每一个文件在open操作完成后，都要进行close操作</p></li>
+</ul>
+
+	
+			
+
+			
+
+			
+				<div class="paging">
+					<span class="paging-label">More Reading</span>
+					
+					<div class="paging-newer">
+						<span class="dark-red">Newer</span><span class="decorative-marker">//</span>
+						<a class="paging-link" href="/cplusplus/%E5%9F%BA%E7%B1%BB%E6%B4%BE%E7%94%9F%E7%B1%BB%E9%97%AE%E9%A2%98/">基类派生类的一些问题</a>
+		            </div>
+		            
+
+					
+					<div class="paging-older">
+						<span class="dark-red">Older</span><span class="decorative-marker">//</span>
+			            <a class="paging-link" href="/cplusplus/C&#43;&#43;%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2/">c&#43;&#43;里一些类型之间的简单转换</a>
+		            </div>
+		            
+	            </div>
+            
+          </section>
+          
+          	
+          
+        
+      <div class="footer">
+	<hr class="thin" />
+	<div class="pure-menu pure-menu-horizontal pure-menu-open">
+		<ul class="footer-menu">
+		
+		</ul>
+	</div>
+
+	<p>&copy; 2016. Matthew Hou All rights reserved.</p>
+</div>
+    </div>
+  </div>
+	
+
+	
+
+  
+</body>
+</html>

@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
 <head>
   <title>
-    first // Hello world!
+    基类派生类的一些问题 // Hello world!
   </title>
 
   <link href="http://gmpg.org/xfn/11" rel="profile">
@@ -16,11 +16,11 @@
 <meta name="author" content="">
 <meta name="generator" content="Hugo 0.16" />
 
-  <meta property="og:title" content="first" />
+  <meta property="og:title" content="基类派生类的一些问题" />
 <meta property="og:description" content="" />
 <meta property="og:type" content="website" />
 <meta property="og:locale" content="en_US" />
-<meta property="og:url" content="https://shiweihou.github.io/lintcode/first/" />
+<meta property="og:url" content="https://shiweihou.github.io/cplusplus/C&#43;&#43;%20%E7%9A%84%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0/" />
 
 
   
@@ -113,14 +113,14 @@
 	    
   		<section class="post">
             <h1 class="post-title">
-              <a href="/lintcode/first/">first</a>
+              <a href="/cplusplus/C&#43;&#43;%20%E7%9A%84%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0/">基类派生类的一些问题</a>
             </h1>
             <h3 class="post-subtitle">
             	
             </h3>
             
             	<span class="post-date">
-                	<span class="post-date-day"><sup>3</sup></span><span class="post-date-separator">/</span><span class="post-date-month">Oct</span> <span class="post-date-year">2016</span>
+                	<span class="post-date-day"><sup>17</sup></span><span class="post-date-separator">/</span><span class="post-date-month">May</span> <span class="post-date-year">2016</span>
             	</span>
             	
             
@@ -134,7 +134,25 @@
 
 			
 
-            <p>lintcode</p>
+            <p><strong>C++中构造函数初始化时必须采用初始化列表的一共有三种情况：</strong></p>
+
+<ul>
+<li>需要初始化的数据成员是对象（继承时调用基类构造函数）</li>
+<li>需要初始化const修饰的类成员</li>
+<li>需要初始化引用成员数据</li>
+<li>因为static属于类并不属于具体的对象，所以static成员是不允许在类内初始化的，static const成员也一样，不允许在类内初始化</li>
+</ul>
+
+<p><strong>C++ 的构造函数没有办法被派生类所继承，但可以被派生类调用。构造原则如下</strong></p>
+
+<ul>
+<li>如果子类没有定义构造方法，则调用父类的无参数的构造方法。</li>
+<li>如果子类定义了构造方法，无论是有参数还是无参数，在创建子类对象的时候，首先执行父类的无参构造方法，然后执行自己的构造方法。</li>
+<li>在创建子类对象时候，如果子类的构造函数没有显式调用父类的构造函数，则会调用父类的无参构造函数。</li>
+<li>在创建子类对象时候，如果子类的构造函数没有显式调用父类的构造函数且父类只定义了自己的有参构造函数，则会出错，子类必须显式调用此带参构造方法。</li>
+</ul>
+
+<p>在C++中，构造函数无法被声明为虚函数，但析构函数可以。并且如果某个类作为基类，其析构函数最好还是声明为虚析构函数。</p>
 
 	
 			
@@ -145,11 +163,16 @@
 				<div class="paging">
 					<span class="paging-label">More Reading</span>
 					
+					<div class="paging-newer">
+						<span class="dark-red">Newer</span><span class="decorative-marker">//</span>
+						<a class="paging-link" href="/cplusplus/c&#43;&#43;%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/">c&#43;&#43;内存管理</a>
+		            </div>
+		            
 
 					
 					<div class="paging-older">
 						<span class="dark-red">Older</span><span class="decorative-marker">//</span>
-			            <a class="paging-link" href="/cplusplus/C&#43;&#43;%20explicit%E5%85%B3%E9%94%AE%E5%AD%97/">C&#43;&#43; explicit关键字</a>
+			            <a class="paging-link" href="/about/">利用Hugo在GitHub上建立个人博客</a>
 		            </div>
 		            
 	            </div>
