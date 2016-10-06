@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+  <title>
+    最长回文子串 // Hello world!
+  </title>
+
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+<meta name="description" content="">
+<meta name="keywords" content="">
+<meta name="author" content="">
+<meta name="generator" content="Hugo 0.16" />
+
+  <meta property="og:title" content="最长回文子串" />
+<meta property="og:description" content="" />
+<meta property="og:type" content="website" />
+<meta property="og:locale" content="en_US" />
+<meta property="og:url" content="https://shiweihou.github.io/algorithm/%E6%9C%80%E9%95%BF%E5%9B%9E%E6%96%87%E5%AD%90%E4%B8%B2/" />
+
+
+  
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.5.0/base-min.css">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.5.0/pure-min.css">
+  
+  
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.5.0/grids-responsive-min.css">
+  
+  
+
+  <link rel="stylesheet" href="https://shiweihou.github.io//css/redlounge.css">
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet">
+  <link href='//fonts.googleapis.com/css?family=Raleway:400,200,100,700,300,500,600,800' rel='stylesheet' type='text/css'>
+  <link href='//fonts.googleapis.com/css?family=Libre+Baskerville:400,700,400italic' rel='stylesheet' type='text/css'>
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.png">
+
+  
+  <link href="" rel="alternate" type="application/rss+xml" title="Hello world!" />
+
+    
+  
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.7/styles/tomorrow-night-bright.min.css">
+  
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.7/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+
+
+  
+
+  
+
+  
+
+  
+</head>
+
+<body>
+	
+
+	<div id="layout" class="pure-g">
+    <div class="sidebar pure-u-1 pure-u-md-1-4">
+  <div class="header">
+    
+
+	
+	  <img src="/img/close.png" class="sidebarphoto">
+	
+
+    <h1 class="brand-title">Matthew</h1>
+    <h2 class="brand-tagline">Is super awesome</h2>
+
+    <nav class="nav">
+      <ul class="nav-list">
+        <li class="nav-item"><span class="nav-item-separator">//</span><a href="https://shiweihou.github.io/">Home</a></li>
+        
+          <li class="nav-item"><span class="nav-item-separator">//</span><a href="/cplusplus/">C&#43;&#43;</a></li>
+        
+          <li class="nav-item"><span class="nav-item-separator">//</span><a href="/lintcode/">lintcode</a></li>
+        
+      </ul>
+    </nav>
+
+    
+    <div class="social-buttons">
+      
+        
+        <a href="http://www.twitter.com/shift8creative" target="_blank"><i class='fa fa-twitter'></i></a>
+        
+      
+      
+    </div>
+    
+
+  </div>
+</div>
+
+	
+	
+
+    <div class="content pure-u-1 pure-u-md-3-4">
+		<a name="top"></a>
+		
+
+		
+			
+	    
+  		<section class="post">
+            <h1 class="post-title">
+              <a href="/algorithm/%E6%9C%80%E9%95%BF%E5%9B%9E%E6%96%87%E5%AD%90%E4%B8%B2/">最长回文子串</a>
+            </h1>
+            <h3 class="post-subtitle">
+            	
+            </h3>
+            
+            	<span class="post-date">
+                	<span class="post-date-day"><sup>4</sup></span><span class="post-date-separator">/</span><span class="post-date-month">Oct</span> <span class="post-date-year">2016</span>
+            	</span>
+            	
+            
+            	
+            
+
+			
+			
+
+			
+
+			
+
+            <p>回文的意思大家应该都知道，就是一个子串，从前往后读与从后往前读是一模一样的。
+最长回文子串的意思就是：在一个给定的字符串中，找到一个最长的回文子串。</p>
+
+<p>一开始的思路很复杂：例如对于串：<strong>abdcdedcab</strong>，最长回文子串为 <strong>cdedc</strong>，我一开始的想法是：对于母串，首先遍历一遍，建立一个<strong>map</strong>，保存每个字符所在的位置。map类型为<code>map&lt;char,stack&lt;int&gt;&gt;</code>,例如对于字符a，它在母串中的位置是 0,8，那么map[a] = [0,8].保留下所有的字符后，因为子串要求是连续的，所以对于母串的每一个不同的字符都遍历一遍，然后在 stack 中找到它出现的另一个位置，例如还是a，它的位置有两个，0和8，那么就判断 0 - 8 之间是否为回文串。这样所有的遍历一遍，找到最长的那个。在Lintcode上，通过了73%的数据，因为我一开始的代码是 <strong>以母串的前面第一个为基准</strong>，然后以该字符在其它位置出现作为比较，这样其实没法通过类似于 aaaabaaa的数据。我得到的结果为aaaa，而其实答案为aaabaaa。后来我就想了下，其实我只是对该字符在母串中的位置，两两组合，只判断了一部分情况，例如前面的aaaabaaa,对于a，我只判断了位置（0,7）（0，6）（0,5）（0,3）（0,2）（0,1）这几种情况，而没有判断（1,7）（1,6）（1，5）等等这些情况，所以是没办法通过所有测试数据的。后来就用上面的两两组合思想，后来发现和暴搜是一样的，时间复杂度是 O(n^3), TLE。</p>
+
+<p>后来想到，暴搜的思想是从外往里搜，找到每一个可能的子串，判断是不是回文。这个过程中其实有很多次重复的动作，那么能不能换个思路，从里往外搜。我们知道对于每一个字符，以它为基准，往外扩展，由于是回文，i-1和i+1位置的字符必然相等。通过以上的思想可以得到如下代码：（考虑　aba 和 abba 两种奇偶不同的情况）：时间复杂度为 O(n^2)</p>
+
+<pre><code>class Solution {
+public:
+/**
+ * @param s input string
+ * @return the longest palindromic substring
+ */
+string longestPalindrome(string&amp; s) {
+    // Write your code here
+    if (s.empty()) return NULL;
+    int len = s.size();
+    int pos = 0;
+    string ans = &quot;&quot;;
+
+    while (pos &lt; len) {
+        string s1 = huiwen(s, pos, pos); // aba 的情况
+        string s2 = huiwen(s, pos, pos + 1); // abba 的情况
+        if (s1.size() &gt; s2.size()) {
+            ans = ans.size() &gt; s1.size() ? ans : s1;
+        }
+        else {
+            ans = ans.size() &gt; s2.size() ? ans : s2;
+        }
+        ++pos;
+    }
+
+    return ans;
+}
+
+string huiwen(string &amp;s, int ss, int ee) {
+
+    if (ee &gt;= s.size()) return s.substr(ss,1);
+
+    while (ss &gt;= 0  &amp;&amp; ee &lt; s.size()) {
+        if (s[ss] != s[ee]) {
+            break;
+        }
+        --ss;
+        ++ee;
+    }
+
+    if (ss == ee || ss + 1 == ee) return s.substr(ss, 1);
+    else return s.substr(ss+1, ee - ss - 1);
+}
+};
+</code></pre>
+
+<p>根据上面的算法思想，可以衍生出很多 O(N^2)的算法，例如动态规划。思想就是设置标志flag[N][N]，如果 s[i] == s[j] &amp;&amp; flag[i+1][j-1] == true，那么 flag[i][j] == true;</p>
+
+<pre><code>class Solution {
+public:
+/**
+ * @param s input string
+ * @return the longest palindromic substring
+ */
+string longestPalindrome(string&amp; s) {
+    // Write your code here
+
+    if (s.empty()) return &quot;&quot;;
+    int len = s.size();
+    vector&lt;vector&lt;bool&gt; &gt; flag (len, vector&lt;bool&gt;(len, false));
+
+    for (int i = 0; i &lt; len; ++i) {
+        for (int j = 0; j &lt; len; ++j) {
+            // 当i==j的时候，单个字符明显为回文
+            // 当i &gt; j 的时候，设置为true是为了防止出现 s[i] == s[i+1]这种情况，反正如果不相等在下面又会变成false
+            if (i &gt;= j) flag[i][j] = true;
+        }
+    }
+
+    int ss = 0;
+    int maxLen = 1;
+
+    for (int j = 1; j &lt; len; ++j) {
+        for (int i = 0; i &lt; j; ++i) {
+            if (s[i] == s[j]) {
+                if (flag[i+1][j-1]) flag[i][j] = true;
+                else flag[i][j] = false;
+
+                if (flag[i][j]) {
+                    if (maxLen &lt; j - i + 1) {
+                        ss = i;
+                        maxLen = j - i + 1;
+                    }
+                }
+            } else flag[i][j] = false;
+        }
+    }
+
+    return s.substr(ss, maxLen);
+    }
+    };
+</code></pre>
+
+<p>网上还有一种算法，Manacher算法，时间复杂度是 O(N)，有兴趣的同学可以去找下。</p>
+
+<p>另外，有的同学会说，如果把字符串 s 翻转过来，变成 s&rsquo; ,那么求s和s&rsquo;的最长公共连续子序列是不是就是就是答案？其实不是，例如对于串 <strong>abcdefgdcba</strong>，如果翻转，就变成 <strong>abcdgfedcba</strong>, 那么最长子序列为 <strong>abcd</strong> ，但这个明显不是回文的，所以求两个串的最长公共连续子序列并不一定是回文的。当然，如果要求都是不连续的，那么当然可以这样求。</p>
+
+	
+			
+
+			
+
+			
+				<div class="paging">
+					<span class="paging-label">More Reading</span>
+					
+					<div class="paging-newer">
+						<span class="dark-red">Newer</span><span class="decorative-marker">//</span>
+						<a class="paging-link" href="/algorithm/%E5%85%A8%E6%8E%92%E5%88%97/">全排列问题</a>
+		            </div>
+		            
+
+					
+					<div class="paging-older">
+						<span class="dark-red">Older</span><span class="decorative-marker">//</span>
+			            <a class="paging-link" href="/lintcode/first/">first</a>
+		            </div>
+		            
+	            </div>
+            
+          </section>
+          
+          	
+          
+        
+      <div class="footer">
+	<hr class="thin" />
+	<div class="pure-menu pure-menu-horizontal pure-menu-open">
+		<ul class="footer-menu">
+		
+		</ul>
+	</div>
+
+	<p>&copy; 2016. Matthew Hou All rights reserved.</p>
+</div>
+    </div>
+  </div>
+	
+
+	
+
+  
+</body>
+</html>

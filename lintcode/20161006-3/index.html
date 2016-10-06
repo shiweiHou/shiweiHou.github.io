@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
 <head>
   <title>
-    first // Hello world!
+    LintCode 排序矩阵中的从小到大第k个数 // Hello world!
   </title>
 
   <link href="http://gmpg.org/xfn/11" rel="profile">
@@ -16,11 +16,11 @@
 <meta name="author" content="">
 <meta name="generator" content="Hugo 0.16" />
 
-  <meta property="og:title" content="first" />
+  <meta property="og:title" content="LintCode 排序矩阵中的从小到大第k个数" />
 <meta property="og:description" content="" />
 <meta property="og:type" content="website" />
 <meta property="og:locale" content="en_US" />
-<meta property="og:url" content="https://shiweihou.github.io/lintcode/first/" />
+<meta property="og:url" content="https://shiweihou.github.io/lintcode/20161006-3/" />
 
 
   
@@ -113,14 +113,14 @@
 	    
   		<section class="post">
             <h1 class="post-title">
-              <a href="/lintcode/first/">first</a>
+              <a href="/lintcode/20161006-3/">LintCode 排序矩阵中的从小到大第k个数</a>
             </h1>
             <h3 class="post-subtitle">
             	
             </h3>
             
             	<span class="post-date">
-                	<span class="post-date-day"><sup>3</sup></span><span class="post-date-separator">/</span><span class="post-date-month">Oct</span> <span class="post-date-year">2016</span>
+                	<span class="post-date-day"><sup>6</sup></span><span class="post-date-separator">/</span><span class="post-date-month">Oct</span> <span class="post-date-year">2016</span>
             	</span>
             	
             
@@ -134,7 +134,57 @@
 
 			
 
-            <p>lintcode</p>
+            <p>题目要求：
+在一个排序矩阵中找从小到大的第 k 个整数。排序矩阵的定义为：每一行递增，每一列也递增。
+样例：
+给定 K = 4 和一个排序矩阵：</p>
+
+<pre><code>[
+ [1,5,7],
+ [3,7,8],
+ [4,8,9],
+]
+</code></pre>
+
+<p>返回答案 5
+思路：
+一开始想错了，以为第i行的数字一定比第i+1行的数字要小，其实题目只要求每一行是递增，每一列数字是递增的，但并没有要求第i行的最后一个数字一定比第i+1行的倒数第二个数字小。我一开始是这样认为的，然后写好提交，发现居然过了73%的test，好神奇~~
+后来发现需要利用堆来做，利用STL里的堆模板，很容易写出来，代码如下：</p>
+
+<pre><code>int kthSmallest(vector&lt;vector&lt;int&gt; &gt; &amp;matrix, int k) {
+    // write your code here
+    int row = matrix.size();
+    if (row == 0 || k == 0) return 0;
+    int col = matrix[0].size();
+
+    priority_queue&lt;pair&lt;int, pair&lt;int, int&gt;&gt;, vector&lt;pair&lt;int, pair&lt;int, int&gt; &gt;&gt;, greater&lt;pair&lt;int, pair&lt;int, int&gt;&gt; &gt;&gt; dui; //构建最小堆
+    map&lt;pair&lt;int, int&gt;, bool&gt; visited;
+
+    dui.push(make_pair(matrix[0][0], make_pair(0,0)));
+    visited[make_pair(0,0)] = true;
+
+    while (k--) {
+        pair&lt;int, pair&lt;int, int&gt; &gt; cur = dui.top();
+        dui.pop();
+
+        if (k == 0) return cur.first;
+
+        int x = cur.second.first + 1; // down
+        int y = cur.second.second;
+        if (x &lt; row &amp;&amp; visited[make_pair(x,y)] == false) {
+            dui.push(make_pair(matrix[x][y], make_pair(x,y)));
+            visited[make_pair(x,y)] = true;
+        }
+        --x;
+        ++y;//right-&gt;
+
+        if (y &lt; col &amp;&amp; visited[make_pair(x,y)] == false) {
+            dui.push(make_pair(matrix[x][y], make_pair(x,y)));
+            visited[make_pair(x,y)] = true;
+        }
+    }
+}
+</code></pre>
 
 	
 			
@@ -147,14 +197,14 @@
 					
 					<div class="paging-newer">
 						<span class="dark-red">Newer</span><span class="decorative-marker">//</span>
-						<a class="paging-link" href="/algorithm/%E6%9C%80%E9%95%BF%E5%9B%9E%E6%96%87%E5%AD%90%E4%B8%B2/">最长回文子串</a>
+						<a class="paging-link" href="/lintcode/20161006-4/">LintCode 连续子数组求和</a>
 		            </div>
 		            
 
 					
 					<div class="paging-older">
 						<span class="dark-red">Older</span><span class="decorative-marker">//</span>
-			            <a class="paging-link" href="/cplusplus/C&#43;&#43;%20explicit%E5%85%B3%E9%94%AE%E5%AD%97/">C&#43;&#43; explicit关键字</a>
+			            <a class="paging-link" href="/lintcode/20161006-2/">LintCode 硬币排成线||</a>
 		            </div>
 		            
 	            </div>

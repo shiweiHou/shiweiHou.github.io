@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
 <head>
   <title>
-    first // Hello world!
+    LintCode 连续子数组求和 // Hello world!
   </title>
 
   <link href="http://gmpg.org/xfn/11" rel="profile">
@@ -16,11 +16,11 @@
 <meta name="author" content="">
 <meta name="generator" content="Hugo 0.16" />
 
-  <meta property="og:title" content="first" />
+  <meta property="og:title" content="LintCode 连续子数组求和" />
 <meta property="og:description" content="" />
 <meta property="og:type" content="website" />
 <meta property="og:locale" content="en_US" />
-<meta property="og:url" content="https://shiweihou.github.io/lintcode/first/" />
+<meta property="og:url" content="https://shiweihou.github.io/lintcode/20161006-4/" />
 
 
   
@@ -113,14 +113,14 @@
 	    
   		<section class="post">
             <h1 class="post-title">
-              <a href="/lintcode/first/">first</a>
+              <a href="/lintcode/20161006-4/">LintCode 连续子数组求和</a>
             </h1>
             <h3 class="post-subtitle">
             	
             </h3>
             
             	<span class="post-date">
-                	<span class="post-date-day"><sup>3</sup></span><span class="post-date-separator">/</span><span class="post-date-month">Oct</span> <span class="post-date-year">2016</span>
+                	<span class="post-date-day"><sup>6</sup></span><span class="post-date-separator">/</span><span class="post-date-month">Oct</span> <span class="post-date-year">2016</span>
             	</span>
             	
             
@@ -134,7 +134,43 @@
 
 			
 
-            <p>lintcode</p>
+            <p>题目描述：
+给定一个整数数组，请找出一个连续子数组，使得该子数组的和最大。输出答案时，请分别返回第一个数字和最后一个数字的下标。（如果两个相同的答案，请返回其中任意一个）
+样例：
+给定<code>[-3, 1, 3, -3, 4]</code>,返回<code>[1, 4]</code>
+思路：
+最大连续子数组问题，只要在求最大连续子数组和的过程中，记录最大值更改时的下标start和end就可以。利用动态规划来求最大子数组，因为要求是连续的，设dp[i]为第i个位置子数组的最大值。第i个位置的数要不要放进去，就要看如果第i个位置放进去，与dp[i-1]的和是否大于A[i],如果大于，就放进去，否则不放。时间复杂度O(n),代码如下：</p>
+
+<pre><code>vector&lt;int&gt; continuousSubarraySum(vector&lt;int&gt;&amp; A) {
+    // Write your code here
+    vector&lt;int&gt; ret;
+    if (A.empty()) return ret;
+    int n = A.size();
+    vector&lt;int&gt; cur(n,0);
+    int maxSum = A[0];
+    cur[0] = A[0];
+    int curStart = 0;
+    int start = 0;
+    int end = 0;
+    for (int i = 1; i &lt; n; ++i) {
+        if (cur[i-1] + A[i] &gt; A[i]) { // 放进去，curs s e均不作更改
+            cur[i] = cur[i-1] + A[i];
+        } else {
+            cur[i] = A[i];
+            curStart = i;
+        }
+        if (cur[i] &gt; maxSum) {
+            maxSum = cur[i];
+            start = curStart;
+            end   = i;
+        }
+    }
+
+    ret.push_back(start);
+    ret.push_back(end);
+    return ret;
+}
+</code></pre>
 
 	
 			
@@ -145,16 +181,11 @@
 				<div class="paging">
 					<span class="paging-label">More Reading</span>
 					
-					<div class="paging-newer">
-						<span class="dark-red">Newer</span><span class="decorative-marker">//</span>
-						<a class="paging-link" href="/algorithm/%E6%9C%80%E9%95%BF%E5%9B%9E%E6%96%87%E5%AD%90%E4%B8%B2/">最长回文子串</a>
-		            </div>
-		            
 
 					
 					<div class="paging-older">
 						<span class="dark-red">Older</span><span class="decorative-marker">//</span>
-			            <a class="paging-link" href="/cplusplus/C&#43;&#43;%20explicit%E5%85%B3%E9%94%AE%E5%AD%97/">C&#43;&#43; explicit关键字</a>
+			            <a class="paging-link" href="/lintcode/20161006-3/">LintCode 排序矩阵中的从小到大第k个数</a>
 		            </div>
 		            
 	            </div>

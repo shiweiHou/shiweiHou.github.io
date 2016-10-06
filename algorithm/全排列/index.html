@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+  <title>
+    全排列问题 // Hello world!
+  </title>
+
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+<meta name="description" content="">
+<meta name="keywords" content="">
+<meta name="author" content="">
+<meta name="generator" content="Hugo 0.16" />
+
+  <meta property="og:title" content="全排列问题" />
+<meta property="og:description" content="" />
+<meta property="og:type" content="website" />
+<meta property="og:locale" content="en_US" />
+<meta property="og:url" content="https://shiweihou.github.io/algorithm/%E5%85%A8%E6%8E%92%E5%88%97/" />
+
+
+  
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.5.0/base-min.css">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.5.0/pure-min.css">
+  
+  
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.5.0/grids-responsive-min.css">
+  
+  
+
+  <link rel="stylesheet" href="https://shiweihou.github.io//css/redlounge.css">
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet">
+  <link href='//fonts.googleapis.com/css?family=Raleway:400,200,100,700,300,500,600,800' rel='stylesheet' type='text/css'>
+  <link href='//fonts.googleapis.com/css?family=Libre+Baskerville:400,700,400italic' rel='stylesheet' type='text/css'>
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.png">
+
+  
+  <link href="" rel="alternate" type="application/rss+xml" title="Hello world!" />
+
+    
+  
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.7/styles/tomorrow-night-bright.min.css">
+  
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.7/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+
+
+  
+
+  
+
+  
+
+  
+</head>
+
+<body>
+	
+
+	<div id="layout" class="pure-g">
+    <div class="sidebar pure-u-1 pure-u-md-1-4">
+  <div class="header">
+    
+
+	
+	  <img src="/img/close.png" class="sidebarphoto">
+	
+
+    <h1 class="brand-title">Matthew</h1>
+    <h2 class="brand-tagline">Is super awesome</h2>
+
+    <nav class="nav">
+      <ul class="nav-list">
+        <li class="nav-item"><span class="nav-item-separator">//</span><a href="https://shiweihou.github.io/">Home</a></li>
+        
+          <li class="nav-item"><span class="nav-item-separator">//</span><a href="/cplusplus/">C&#43;&#43;</a></li>
+        
+          <li class="nav-item"><span class="nav-item-separator">//</span><a href="/lintcode/">lintcode</a></li>
+        
+      </ul>
+    </nav>
+
+    
+    <div class="social-buttons">
+      
+        
+        <a href="http://www.twitter.com/shift8creative" target="_blank"><i class='fa fa-twitter'></i></a>
+        
+      
+      
+    </div>
+    
+
+  </div>
+</div>
+
+	
+	
+
+    <div class="content pure-u-1 pure-u-md-3-4">
+		<a name="top"></a>
+		
+
+		
+			
+		    <div id="toc" class="pure-u-1 pure-u-md-1-4">
+				<small class="toc-label">Contents</small>
+		   	 	<nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#全排列的非递归实现">全排列的非递归实现：</a></li>
+<li><a href="#一种另类的全排列问题">一种另类的全排列问题：</a></li>
+<li><a href="#一种另类的全排列问题-2">一种另类的全排列问题 2：</a></li>
+</ul></li>
+</ul>
+</nav>
+		    </div>
+		    
+	    
+  		<section class="post">
+            <h1 class="post-title">
+              <a href="/algorithm/%E5%85%A8%E6%8E%92%E5%88%97/">全排列问题</a>
+            </h1>
+            <h3 class="post-subtitle">
+            	
+            </h3>
+            
+            	<span class="post-date">
+                	<span class="post-date-day"><sup>4</sup></span><span class="post-date-separator">/</span><span class="post-date-month">Oct</span> <span class="post-date-year">2016</span>
+            	</span>
+            	
+            
+            	
+            
+
+			
+			
+
+			
+
+			
+
+            
+
+<h2 id="全排列的非递归实现">全排列的非递归实现：</h2>
+
+<p>考虑排列 “926520”这个字符串，它的下一个排列是哪一个呢？我们从后往前开始找，找到第一组相邻数字递增的组合：0-2-5-6 都不行，但 6-2可以，即 2 和 6 这组数字是从后往前数，第一组递增的。这时候，2 即为 替换数， 替换数的下标称之为替换点。找到替换点之后，从替换点开始，向后找到一个比替换点大的数里面最小的那个大数，即为 5，这时候，将 5 和2进行交换，得到956220，再将替换点之后的数进行反转，得到950226 ，这时候这个排列就是下一个排列。对于像54321这种已经是最后一个排列的全排列，其下一个排列当然为12345 。</p>
+
+<p>对于从替换点开始，找到后面最小的大数，我们可以从后往前找，因为除了替换点和替换点后面的数之外，其余的都是递减的（从前往后看），所以最右边的第一个大于替换数的数一定是最小的大数。</p>
+
+<pre><code>void nextPermutation(vector&lt;int&gt; &amp;nums) {
+
+    if (nums.empty()) return ;
+    int len = nums.size();
+    int i = len - 1;
+    bool flag = false;
+
+    while (i &gt; 0 ) { // 找替换点
+        if (nums[i] &lt;= nums[i - 1]) --i;
+        else {
+            flag = true;
+            break;
+        }
+    }
+
+    if (flag == false) reverse(nums.begin(), nums.end());
+    else {
+        --i;
+        int j = i + 1;
+        int pos = j;
+        while (j &lt; len) { // 找替换点之后最小的大数
+            if (nums[j] &gt; nums[i]) {
+                if (nums[j] &lt;= nums[pos]) pos = j;
+            }
+            ++j;
+        }
+        swap(nums[i], nums[pos]);
+        ++i;
+        j = len - 1;  
+        while (i &lt; j) swap(nums[i++], nums[j--]);  // 反转
+    }
+
+    return ;
+}
+</code></pre>
+
+<h2 id="一种另类的全排列问题">一种另类的全排列问题：</h2>
+
+<p>给你一个排列，问这是在所有的全排列中，第几个排列？排列序号从1开始，按顺序增长的方向开始。排列中不包含重复数字。例如给定排列124，它是第一个排列。看到这个题目首先想到的就是求出所有的全排列，然后在求解过程中与给出的排列进行比较，看看是第几个。思路是ok的，然而在oj上面会超时，说明这个方法不行。也就说其实不是要让你求出所有的排列然后进行比较，而是化成组合问题，在这个排列前，有多少个排列。</p>
+
+<p>例如对于排列  list = 95412：
+在排列list前面的所有的全排列中，位于位置1的数字可能是5、4、1、2中的任意一个数，而一旦位置1确定了，其全排列个数为4！（5-1）个。
+同理，对应位置2的数字可以是4、 1、 2的任意一个，而一旦位置2确定了，其全排列个数为3！（5-2）个。
+同理，对应位置3的数字可以是1 、 2的任意一个，而一旦位置3确定了，其全排列个数为2！（5-3）个。
+同理，对应位置4的数字可以是0个（因为没有数字比1还小），一旦位置4确定了，其全排列个数为1！（5-4）个。
+最后，对应位置5的数字可以是0个，全排列个数为0！（5-5）个。
+从上面我们就可以看出，对于一个给定的排列，求出其在全排列的的序号，只需要对给定的序列进行查找，找到从位置2开始一直到倒数第二个位置可变数字的个数（就是该位置后面的，比当前位置数字小的）*（n-i）!.
+即，对于位置 i （i &gt;= 0 &amp;&amp;  i&lt; n-1）,其后面的数字比当前 i 位置小的个数为 k 个，则其排列个数为 k * (n - i - 1)! 个。对这个排列整个遍历一遍，就得到当前排列之前的全排列个数。代码如下：</p>
+
+<pre><code>long long permutationIndex(vector&lt;int&gt;&amp; A) {
+
+    map&lt;int, int&gt; mapCount;
+    for (int i = 0; i &lt; A.size() - 1; ++i) {
+        int count = 0;
+        for (int j = i + 1; j &lt; A.size(); ++j) {
+            if (A[i] &gt; A[j]) {
+                ++count;
+            }
+        }
+        // 保存i个位置后面有多少个比它小的
+        mapCount[A[i]] = count;
+    }
+
+    long ans = 0;
+    int n = A.size();
+    for (int i = 0; i &lt; A.size() - 1; ++i) {
+        int k = n - i - 1;
+        long fact = 1;
+        // 当前位置的阶乘
+        while (k &gt; 0) {  
+            fact *= k;
+            --k;
+        }
+        // 阶乘 * k
+        ans += mapCount[A[i]] * fact;
+    }
+    // 因为前面求到的是当前排列前总共有多少个全排列，所以自然当前排列是 ans + 1 个排列
+    return ++ans;
+}
+</code></pre>
+
+<h2 id="一种另类的全排列问题-2">一种另类的全排列问题 2：</h2>
+
+<p>类似于前面的问题，只不过是排列中有重复数字，求当前排列是第几个。基于前面的问题来做，假如没有重复数字，那么答案自然是上面那个。因为有重复数字，只要在发现重复数的那一位用 k * (n - i - 1)! 的结果除去重复的次数就行，当然重复的次数也要做阶乘，例如排列中有3个2,4个8，重复次数
+为 3！ * 4 ！，代码如下：</p>
+
+<p>ps: 这段代码说实在没有太懂</p>
+
+<pre><code>long long permutationIndexII(vector&lt;int&gt;&amp; A) {
+    // Write your code here
+
+    long long index = 0, fact = 1, dup = 1;
+
+    map&lt;int, int&gt; mapCount;
+    for (int i = A.size()-1; i &gt;= 0; i--) {
+
+        if (mapCount.find(A[i]) == mapCount.end()) mapCount[A[i]] = 1;
+        else {
+
+            mapCount[A[i]] += 1;
+            dup *= mapCount[A[i]];
+        }
+        int rank = 0;
+        for (int j = i+1; j &lt; A.size(); j++) {
+            if (A[j] &lt; A[i]) rank++;
+        }
+        index += rank * fact / dup;
+        fact *= (A.size() - i);
+    }
+    return index+1;
+}
+</code></pre>
+
+	
+			
+
+			
+
+			
+				<div class="paging">
+					<span class="paging-label">More Reading</span>
+					
+					<div class="paging-newer">
+						<span class="dark-red">Newer</span><span class="decorative-marker">//</span>
+						<a class="paging-link" href="/lintcode/20161006/">LintCode-硬币排成线</a>
+		            </div>
+		            
+
+					
+					<div class="paging-older">
+						<span class="dark-red">Older</span><span class="decorative-marker">//</span>
+			            <a class="paging-link" href="/algorithm/%E6%9C%80%E9%95%BF%E5%9B%9E%E6%96%87%E5%AD%90%E4%B8%B2/">最长回文子串</a>
+		            </div>
+		            
+	            </div>
+            
+          </section>
+          
+          	
+          
+        
+      <div class="footer">
+	<hr class="thin" />
+	<div class="pure-menu pure-menu-horizontal pure-menu-open">
+		<ul class="footer-menu">
+		
+		</ul>
+	</div>
+
+	<p>&copy; 2016. Matthew Hou All rights reserved.</p>
+</div>
+    </div>
+  </div>
+	
+
+	
+
+  
+</body>
+</html>

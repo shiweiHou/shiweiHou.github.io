@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
 <head>
   <title>
-    first // Hello world!
+    LintCode 硬币排成线|| // Hello world!
   </title>
 
   <link href="http://gmpg.org/xfn/11" rel="profile">
@@ -16,11 +16,11 @@
 <meta name="author" content="">
 <meta name="generator" content="Hugo 0.16" />
 
-  <meta property="og:title" content="first" />
+  <meta property="og:title" content="LintCode 硬币排成线||" />
 <meta property="og:description" content="" />
 <meta property="og:type" content="website" />
 <meta property="og:locale" content="en_US" />
-<meta property="og:url" content="https://shiweihou.github.io/lintcode/first/" />
+<meta property="og:url" content="https://shiweihou.github.io/lintcode/20161006-2/" />
 
 
   
@@ -113,14 +113,14 @@
 	    
   		<section class="post">
             <h1 class="post-title">
-              <a href="/lintcode/first/">first</a>
+              <a href="/lintcode/20161006-2/">LintCode 硬币排成线||</a>
             </h1>
             <h3 class="post-subtitle">
             	
             </h3>
             
             	<span class="post-date">
-                	<span class="post-date-day"><sup>3</sup></span><span class="post-date-separator">/</span><span class="post-date-month">Oct</span> <span class="post-date-year">2016</span>
+                	<span class="post-date-day"><sup>6</sup></span><span class="post-date-separator">/</span><span class="post-date-month">Oct</span> <span class="post-date-year">2016</span>
             	</span>
             	
             
@@ -134,7 +134,51 @@
 
 			
 
-            <p>lintcode</p>
+            <p>题目描述：
+有 n 个不同价值的硬币排成一条线。两个参赛者轮流从左边依次拿走 1 或 2 个硬币，直到没有硬币为止。计算两个人分别拿到的硬币总价值，价值高的人获胜。</p>
+
+<p>请判定 第一个玩家 是输还是赢？</p>
+
+<p>样例：</p>
+
+<ul>
+<li>给定数组 A = [1,2,2],返回true</li>
+<li>给定数组 A = [1,2,4],返回false</li>
+</ul>
+
+<p>思路：
+这道题看上去和前面那道硬币排线题很像，只不过第一个玩家赢的条件从是否能拿到最后一枚硬币变成第一个玩家拿到的硬币价值总和是否大于第二个玩家拿到的硬币价值总和。典型的博弈论题目，每个人都尽量在保证自己获得最大价值的情况下让对方获得最小价值。设第一个玩家为player1，第二个玩家为player2，v[i]为player1从硬币i到end所能拿到的最大价值。我们从后往前推：
+对于硬币i和硬币i+1，player1有两种情况可以选择：</p>
+
+<ul>
+<li>拿走硬币i，获得的价值为values[i]: 在player1拿走硬币i的情况下，那么player2有两种可以选择，一是拿走硬币i+1，那么此时player1拿走硬币i获得的价值就为 v1 = values[i] + v[i+2];二是拿走硬币i和硬币i+1,那么此时player1拿走硬币i获得的价值为 v2 = values[i] + v[i+3]。当然在博弈原则下，player2肯定是想让player1获得的价值最小，所以player1在拿走硬币i获得的最大价值为 choose1 = values[i] + min(v[i+2], v[i+3]).</li>
+<li>拿走硬币i和硬币i+1，获得的价值为values[i+1] + values[i]: 同上所述，player2同样有两种选择，一是拿走硬币i+2和硬币i+3，此时player1所能获得的最大价值为 v3 = values[i] + values[i+1] + v[i+4];二是拿走硬币i+2，此时player1所能获得的最大价值为 v4 = values[i] + values[i+1] + v[i+3]。同样基于博弈，player2肯定想让player1获得的最大价值最小，所以player1在拿走硬币i和硬币i+1的情况下获得的最大价值为 choose2 = values[i] + values[i+1] + min(v[i+3], v[i+4]).</li>
+</ul>
+
+<p>所以，player1在两种选择下，要选择一个最大的价值 v[i] = max(choose1, choose2).
+代码如下，注意越界情况，所以我定义v的数组时多定义了两个，并且设置为0：</p>
+
+<pre><code>bool firstWillWin(vector&lt;int&gt; &amp;values) {
+    // write your code here
+    if (values.empty()) return false;
+
+    int len = values.size();
+    if (len &lt;= 2) return true;
+    vector&lt;int&gt; v(len+2,0);
+    v[len-1] = values[len-1];
+    v[len-2] = values[len-1] + values[len-2];
+    int sum = values[len-1] + values[len-2];
+    for (int i = len - 3; i &gt;= 0; --i) {
+        sum += values[i];
+        int choose1, choose2;
+        choose1 = values[i] + min(v[i+2], v[i+3]);
+        choose2 = values[i] + values[i+1] + min(v[i+4],v[i+3]);
+        v[i] = max(choose1, choose2);
+    }
+
+    return sum-v[0] &lt; v[0];
+}
+</code></pre>
 
 	
 			
@@ -147,14 +191,14 @@
 					
 					<div class="paging-newer">
 						<span class="dark-red">Newer</span><span class="decorative-marker">//</span>
-						<a class="paging-link" href="/algorithm/%E6%9C%80%E9%95%BF%E5%9B%9E%E6%96%87%E5%AD%90%E4%B8%B2/">最长回文子串</a>
+						<a class="paging-link" href="/lintcode/20161006-3/">LintCode 排序矩阵中的从小到大第k个数</a>
 		            </div>
 		            
 
 					
 					<div class="paging-older">
 						<span class="dark-red">Older</span><span class="decorative-marker">//</span>
-			            <a class="paging-link" href="/cplusplus/C&#43;&#43;%20explicit%E5%85%B3%E9%94%AE%E5%AD%97/">C&#43;&#43; explicit关键字</a>
+			            <a class="paging-link" href="/lintcode/20161006/">LintCode-硬币排成线</a>
 		            </div>
 		            
 	            </div>

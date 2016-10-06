@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
 <head>
   <title>
-    first // Hello world!
+    LintCode-硬币排成线 // Hello world!
   </title>
 
   <link href="http://gmpg.org/xfn/11" rel="profile">
@@ -16,11 +16,11 @@
 <meta name="author" content="">
 <meta name="generator" content="Hugo 0.16" />
 
-  <meta property="og:title" content="first" />
+  <meta property="og:title" content="LintCode-硬币排成线" />
 <meta property="og:description" content="" />
 <meta property="og:type" content="website" />
 <meta property="og:locale" content="en_US" />
-<meta property="og:url" content="https://shiweihou.github.io/lintcode/first/" />
+<meta property="og:url" content="https://shiweihou.github.io/lintcode/20161006/" />
 
 
   
@@ -113,14 +113,14 @@
 	    
   		<section class="post">
             <h1 class="post-title">
-              <a href="/lintcode/first/">first</a>
+              <a href="/lintcode/20161006/">LintCode-硬币排成线</a>
             </h1>
             <h3 class="post-subtitle">
             	
             </h3>
             
             	<span class="post-date">
-                	<span class="post-date-day"><sup>3</sup></span><span class="post-date-separator">/</span><span class="post-date-month">Oct</span> <span class="post-date-year">2016</span>
+                	<span class="post-date-day"><sup>6</sup></span><span class="post-date-separator">/</span><span class="post-date-month">Oct</span> <span class="post-date-year">2016</span>
             	</span>
             	
             
@@ -134,7 +134,55 @@
 
 			
 
-            <p>lintcode</p>
+            <p>题目描述：
+    有N个硬币排成一条线，两个参赛者轮流从右边依次拿走1个或2个硬币，直到没有硬币为止。拿到最后一个硬币的玩家获胜。请判定第一个玩家是输还是赢？
+    样例：</p>
+
+<ul>
+<li><p>n = 1, 返回 true</p></li>
+
+<li><p>n = 2, 返回 true</p></li>
+
+<li><p>n = 3, 返回 false</p></li>
+
+<li><p>n = 4, 返回 true</p></li>
+
+<li><p>n = 5, 返回 true
+思路：
+这道题是有关博弈论的初级题目。题目很简单，就是判断第一个人最后能否拿到最后一枚硬币。我们不能依赖于第二个玩家怎么拿，我们需要的答案是无论第二个玩家怎么拿，第一个玩家在现有的拿法下（每次拿一个或者两个）可以拿到最后一个硬币或者拿不到。很明显，当只剩下三个硬币的时候，无论第一个玩家怎么拿，最后一个硬币都有可能不是他的，也就是说第一个玩家没有机会获胜。因此，我们只需要判断当还剩下三个的时候，最后一个拿硬币的人是否是第一个人就可以了，很明显可以用递归来做：</p>
+
+<pre><code>bool firstWillWin(int n) {
+    // write your code here
+    if (n &lt;= 0 || n == 3) return false;
+    else if (n &lt;= 4) return true;
+    return firstWillWin(n-3);
+}
+</code></pre>
+
+<p>同理，亦可以利用动态规划来做，因为第i个硬币是否为第一个人拿和第i-3个硬币是否是第一个人拿真假值相同：</p>
+
+<pre><code>bool firstWillWin(int n){
+    vector&lt;bool&gt; dp(n + 1, false);
+    dp[0] = false;
+    dp[1] = true;
+    dp[2] = true;
+    dp[3] = false;
+    for (int i = 4; i &lt;= n; ++i) {
+        dp[i] = dp[i-3];
+    }
+    return dp[n];
+}
+</code></pre></li>
+</ul>
+
+<p>一种更为简洁的数学方法，因为我们发现如果硬币的个数不是3的倍数，那么第一个人就可以拿到最后一个硬币：</p>
+
+<pre><code>    bool firstWillWin(int n){
+        if (n &lt;= 0) return false;
+        if (n % 3 == 1 || n % 3 == 2) return true;
+        return false;
+    }
+</code></pre>
 
 	
 			
@@ -147,14 +195,14 @@
 					
 					<div class="paging-newer">
 						<span class="dark-red">Newer</span><span class="decorative-marker">//</span>
-						<a class="paging-link" href="/algorithm/%E6%9C%80%E9%95%BF%E5%9B%9E%E6%96%87%E5%AD%90%E4%B8%B2/">最长回文子串</a>
+						<a class="paging-link" href="/lintcode/20161006-2/">LintCode 硬币排成线||</a>
 		            </div>
 		            
 
 					
 					<div class="paging-older">
 						<span class="dark-red">Older</span><span class="decorative-marker">//</span>
-			            <a class="paging-link" href="/cplusplus/C&#43;&#43;%20explicit%E5%85%B3%E9%94%AE%E5%AD%97/">C&#43;&#43; explicit关键字</a>
+			            <a class="paging-link" href="/algorithm/%E5%85%A8%E6%8E%92%E5%88%97/">全排列问题</a>
 		            </div>
 		            
 	            </div>
