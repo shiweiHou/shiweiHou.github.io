@@ -14,12 +14,16 @@
       <pubDate>Thu, 06 Oct 2016 21:16:05 +0800</pubDate>
       
       <guid>https://shiweihou.github.io/lintcode/20161006-4/</guid>
-      <description>&lt;p&gt;题目描述：
-给定一个整数数组，请找出一个连续子数组，使得该子数组的和最大。输出答案时，请分别返回第一个数字和最后一个数字的下标。（如果两个相同的答案，请返回其中任意一个）
-样例：
-给定&lt;code&gt;[-3, 1, 3, -3, 4]&lt;/code&gt;,返回&lt;code&gt;[1, 4]&lt;/code&gt;
-思路：
-最大连续子数组问题，只要在求最大连续子数组和的过程中，记录最大值更改时的下标start和end就可以。利用动态规划来求最大子数组，因为要求是连续的，设dp[i]为第i个位置子数组的最大值。第i个位置的数要不要放进去，就要看如果第i个位置放进去，与dp[i-1]的和是否大于A[i],如果大于，就放进去，否则不放。时间复杂度O(n),代码如下：&lt;/p&gt;
+      <description>&lt;p&gt;题目描述：&lt;/p&gt;
+
+&lt;p&gt;给定一个整数数组，请找出一个连续子数组，使得该子数组的和最大。输出答案时，请分别返回第一个数字和最后一个数字的下标。（如果两个相同的答案，请返回其中任意一个）&lt;/p&gt;
+
+&lt;p&gt;样例：
+给定&lt;code&gt;[-3, 1, 3, -3, 4]&lt;/code&gt;,返回&lt;code&gt;[1, 4]&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;思路：&lt;/p&gt;
+
+&lt;p&gt;最大连续子数组问题，只要在求最大连续子数组和的过程中，记录最大值更改时的下标start和end就可以。利用动态规划来求最大子数组，因为要求是连续的，设dp[i]为第i个位置子数组的最大值。第i个位置的数要不要放进去，就要看如果第i个位置放进去，与dp[i-1]的和是否大于A[i],如果大于，就放进去，否则不放。时间复杂度O(n),代码如下：&lt;/p&gt;
 
 &lt;pre&gt;&lt;code&gt;vector&amp;lt;int&amp;gt; continuousSubarraySum(vector&amp;lt;int&amp;gt;&amp;amp; A) {
     // Write your code here
@@ -60,10 +64,13 @@
       <pubDate>Thu, 06 Oct 2016 21:08:04 +0800</pubDate>
       
       <guid>https://shiweihou.github.io/lintcode/20161006-3/</guid>
-      <description>&lt;p&gt;题目要求：
-在一个排序矩阵中找从小到大的第 k 个整数。排序矩阵的定义为：每一行递增，每一列也递增。
-样例：
-给定 K = 4 和一个排序矩阵：&lt;/p&gt;
+      <description>&lt;p&gt;题目要求：&lt;/p&gt;
+
+&lt;p&gt;在一个排序矩阵中找从小到大的第 k 个整数。排序矩阵的定义为：每一行递增，每一列也递增。&lt;/p&gt;
+
+&lt;p&gt;样例：&lt;/p&gt;
+
+&lt;p&gt;给定 K = 4 和一个排序矩阵：&lt;/p&gt;
 
 &lt;pre&gt;&lt;code&gt;[
  [1,5,7],
@@ -72,10 +79,13 @@
 ]
 &lt;/code&gt;&lt;/pre&gt;
 
-&lt;p&gt;返回答案 5
-思路：
-一开始想错了，以为第i行的数字一定比第i+1行的数字要小，其实题目只要求每一行是递增，每一列数字是递增的，但并没有要求第i行的最后一个数字一定比第i+1行的倒数第二个数字小。我一开始是这样认为的，然后写好提交，发现居然过了73%的test，好神奇~~
-后来发现需要利用堆来做，利用STL里的堆模板，很容易写出来，代码如下：&lt;/p&gt;
+&lt;p&gt;返回答案 5&lt;/p&gt;
+
+&lt;p&gt;思路：&lt;/p&gt;
+
+&lt;p&gt;一开始想错了，以为第i行的数字一定比第i+1行的数字要小，其实题目只要求每一行是递增，每一列数字是递增的，但并没有要求第i行的最后一个数字一定比第i+1行的倒数第二个数字小。我一开始是这样认为的，然后写好提交，发现居然过了73%的test，好神奇~~&lt;/p&gt;
+
+&lt;p&gt;后来发现需要利用堆来做，利用STL里的堆模板，很容易写出来，代码如下：&lt;/p&gt;
 
 &lt;pre&gt;&lt;code&gt;int kthSmallest(vector&amp;lt;vector&amp;lt;int&amp;gt; &amp;gt; &amp;amp;matrix, int k) {
     // write your code here
@@ -120,8 +130,9 @@
       <pubDate>Thu, 06 Oct 2016 20:46:56 +0800</pubDate>
       
       <guid>https://shiweihou.github.io/lintcode/20161006-2/</guid>
-      <description>&lt;p&gt;题目描述：
-有 n 个不同价值的硬币排成一条线。两个参赛者轮流从左边依次拿走 1 或 2 个硬币，直到没有硬币为止。计算两个人分别拿到的硬币总价值，价值高的人获胜。&lt;/p&gt;
+      <description>&lt;p&gt;题目描述：&lt;/p&gt;
+
+&lt;p&gt;有 n 个不同价值的硬币排成一条线。两个参赛者轮流从左边依次拿走 1 或 2 个硬币，直到没有硬币为止。计算两个人分别拿到的硬币总价值，价值高的人获胜。&lt;/p&gt;
 
 &lt;p&gt;请判定 第一个玩家 是输还是赢？&lt;/p&gt;
 
@@ -132,8 +143,9 @@
 &lt;li&gt;给定数组 A = [1,2,4],返回false&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;p&gt;思路：
-这道题看上去和前面那道硬币排线题很像，只不过第一个玩家赢的条件从是否能拿到最后一枚硬币变成第一个玩家拿到的硬币价值总和是否大于第二个玩家拿到的硬币价值总和。典型的博弈论题目，每个人都尽量在保证自己获得最大价值的情况下让对方获得最小价值。设第一个玩家为player1，第二个玩家为player2，v[i]为player1从硬币i到end所能拿到的最大价值。我们从后往前推：
+&lt;p&gt;思路：&lt;/p&gt;
+
+&lt;p&gt;这道题看上去和前面那道硬币排线题很像，只不过第一个玩家赢的条件从是否能拿到最后一枚硬币变成第一个玩家拿到的硬币价值总和是否大于第二个玩家拿到的硬币价值总和。典型的博弈论题目，每个人都尽量在保证自己获得最大价值的情况下让对方获得最小价值。设第一个玩家为player1，第二个玩家为player2，v[i]为player1从硬币i到end所能拿到的最大价值。我们从后往前推：
 对于硬币i和硬币i+1，player1有两种情况可以选择：&lt;/p&gt;
 
 &lt;ul&gt;
@@ -174,9 +186,11 @@
       <pubDate>Thu, 06 Oct 2016 20:29:52 +0800</pubDate>
       
       <guid>https://shiweihou.github.io/lintcode/20161006/</guid>
-      <description>&lt;p&gt;题目描述：
-    有N个硬币排成一条线，两个参赛者轮流从右边依次拿走1个或2个硬币，直到没有硬币为止。拿到最后一个硬币的玩家获胜。请判定第一个玩家是输还是赢？
-    样例：&lt;/p&gt;
+      <description>&lt;p&gt;题目描述：&lt;/p&gt;
+
+&lt;p&gt;有N个硬币排成一条线，两个参赛者轮流从右边依次拿走1个或2个硬币，直到没有硬币为止。拿到最后一个硬币的玩家获胜。请判定第一个玩家是输还是赢？&lt;/p&gt;
+
+&lt;p&gt;样例：&lt;/p&gt;
 
 &lt;ul&gt;
 &lt;li&gt;&lt;p&gt;n = 1, 返回 true&lt;/p&gt;&lt;/li&gt;
@@ -188,32 +202,33 @@
 &lt;li&gt;&lt;p&gt;n = 4, 返回 true&lt;/p&gt;&lt;/li&gt;
 
 &lt;li&gt;&lt;p&gt;n = 5, 返回 true
-思路：
-这道题是有关博弈论的初级题目。题目很简单，就是判断第一个人最后能否拿到最后一枚硬币。我们不能依赖于第二个玩家怎么拿，我们需要的答案是无论第二个玩家怎么拿，第一个玩家在现有的拿法下（每次拿一个或者两个）可以拿到最后一个硬币或者拿不到。很明显，当只剩下三个硬币的时候，无论第一个玩家怎么拿，最后一个硬币都有可能不是他的，也就是说第一个玩家没有机会获胜。因此，我们只需要判断当还剩下三个的时候，最后一个拿硬币的人是否是第一个人就可以了，很明显可以用递归来做：&lt;/p&gt;
+思路：&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
 
-&lt;pre&gt;&lt;code&gt;bool firstWillWin(int n) {
-    // write your code here
-    if (n &amp;lt;= 0 || n == 3) return false;
-    else if (n &amp;lt;= 4) return true;
-    return firstWillWin(n-3);
-}
+&lt;p&gt;这道题是有关博弈论的初级题目。题目很简单，就是判断第一个人最后能否拿到最后一枚硬币。我们不能依赖于第二个玩家怎么拿，我们需要的答案是无论第二个玩家怎么拿，第一个玩家在现有的拿法下（每次拿一个或者两个）可以拿到最后一个硬币或者拿不到。很明显，当只剩下三个硬币的时候，无论第一个玩家怎么拿，最后一个硬币都有可能不是他的，也就是说第一个玩家没有机会获胜。因此，我们只需要判断当还剩下三个的时候，最后一个拿硬币的人是否是第一个人就可以了，很明显可以用递归来做：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;    bool firstWillWin(int n) {
+        // write your code here
+        if (n &amp;lt;= 0 || n == 3) return false;
+        else if (n &amp;lt;= 4) return true;
+        return firstWillWin(n-3);
+    }
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;同理，亦可以利用动态规划来做，因为第i个硬币是否为第一个人拿和第i-3个硬币是否是第一个人拿真假值相同：&lt;/p&gt;
 
-&lt;pre&gt;&lt;code&gt;bool firstWillWin(int n){
-    vector&amp;lt;bool&amp;gt; dp(n + 1, false);
-    dp[0] = false;
-    dp[1] = true;
-    dp[2] = true;
-    dp[3] = false;
-    for (int i = 4; i &amp;lt;= n; ++i) {
-        dp[i] = dp[i-3];
+&lt;pre&gt;&lt;code&gt;    bool firstWillWin(int n){
+        vector&amp;lt;bool&amp;gt; dp(n + 1, false);
+        dp[0] = false;
+        dp[1] = true;
+        dp[2] = true;
+        dp[3] = false;
+        for (int i = 4; i &amp;lt;= n; ++i) {
+            dp[i] = dp[i-3];
+        }
+        return dp[n];
     }
-    return dp[n];
-}
-&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
-&lt;/ul&gt;
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;一种更为简洁的数学方法，因为我们发现如果硬币的个数不是3的倍数，那么第一个人就可以拿到最后一个硬币：&lt;/p&gt;
 
