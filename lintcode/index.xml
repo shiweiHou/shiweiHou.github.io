@@ -5,8 +5,125 @@
     <link>https://shiweiHou.github.io/lintcode/</link>
     <description>Recent content in Lintcodes on Hello world!</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Thu, 06 Oct 2016 21:16:05 +0800</lastBuildDate>
+    <lastBuildDate>Fri, 07 Oct 2016 20:41:56 +0800</lastBuildDate>
     <atom:link href="https://shiweiHou.github.io/lintcode/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>LintCode 和大于S的最小子数组</title>
+      <link>https://shiweihou.github.io/lintcode/2016-10-07-02/</link>
+      <pubDate>Fri, 07 Oct 2016 20:41:56 +0800</pubDate>
+      
+      <guid>https://shiweihou.github.io/lintcode/2016-10-07-02/</guid>
+      <description>&lt;p&gt;题目：&lt;/p&gt;
+
+&lt;p&gt;给定一个由 n 个整数组成的数组和一个正整数 s ，请找出该数组中满足其和 ≥ s 的最小长度子数组。如果无解，则返回 -1。&lt;/p&gt;
+
+&lt;p&gt;样例：&lt;/p&gt;
+
+&lt;p&gt;给定数组 [2,3,1,2,4,3] 和 s = 7, 子数组 [4,3] 是该条件下的最小长度子数组。&lt;/p&gt;
+
+&lt;p&gt;思路：&lt;/p&gt;
+
+&lt;p&gt;LintCode上面挑战是O(n)时间复杂度，我想O（n*n）不知道可不可以过，于是就试了下，发现还是不行，73%的test通过。对于一个数组，然后要求O（n）时间复杂度的，一般都是通过两根指针，要么一个从头向尾和一个从尾向头，要么一个快指针，一个慢指针。我一开始用第一种方法，后来写出来发现还是O（n*n)的时间复杂度，于是改用快慢指针。因为s是正整数，所以我们可以不考虑负数的情况，利用快慢指针来求答案：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;int minimumSize(vector&amp;lt;int&amp;gt; &amp;amp;nums, int s) {
+    // write your code here
+    if (nums.empty()) return -1;
+
+    int n = nums.size();
+    int sum = 0;
+    int minLength = n + 1;
+    int fast = 0;
+    int slow = 0;
+
+    while (fast &amp;lt; n) {
+        while (fast &amp;lt; n &amp;amp;&amp;amp; sum &amp;lt; s) { //首先找到从slow开始一直和大于s的fast为止
+            sum += nums[fast];
+            ++fast;
+        }           //退出循环后，fast指向第一次和大于s的后面那个位置，即区间为[slow, fast)
+        if (sum &amp;gt;= s &amp;amp;&amp;amp; minLength &amp;gt; fast - slow) minLength = fast - slow ;
+        while (sum &amp;gt;= s) {
+            if (sum &amp;gt;= s &amp;amp;&amp;amp; minLength &amp;gt; fast - slow ) minLength = fast - slow;
+            sum -= nums[slow];  // 开始增加slow，减去前面的值，因为要求是连续的，所以直接减去即可
+            ++slow;
+
+        }
+    }
+
+    if (minLength == n + 1) return -1;
+    return minLength;
+}
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>LintCode 和为零的子矩阵</title>
+      <link>https://shiweihou.github.io/lintcode/2016-10-07-01/</link>
+      <pubDate>Fri, 07 Oct 2016 18:37:40 +0800</pubDate>
+      
+      <guid>https://shiweihou.github.io/lintcode/2016-10-07-01/</guid>
+      <description>&lt;p&gt;题目：&lt;/p&gt;
+
+&lt;p&gt;给定一个整数矩阵，请找出一个子矩阵，使得其数字之和等于0.输出答案时，请返回左上数字和右下数字的坐标。&lt;/p&gt;
+
+&lt;p&gt;样例：&lt;/p&gt;
+
+&lt;p&gt;给定矩阵&lt;code&gt;[[1, 5, 7],[3, 7, 8],[4, -8, 9],]&lt;/code&gt;, 返回&lt;code&gt;[(1,1), (2,2)]&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;思路：&lt;/p&gt;
+
+&lt;p&gt;一开始是想着暴搜看看能不能过，发现果然不能，只过了82%的test，还是可以的了~~~&lt;/p&gt;
+
+&lt;p&gt;后来就想了个思路，既然是求和为0的矩阵，那么必然存在有两个矩阵一大一小，大小矩阵和是相等的，那么大矩阵和小矩阵的差别的那一块矩阵，就是和为0的矩阵。所以我们只要找到那两个矩阵和相等的一大一小的矩阵就可以了。其差值就是要求的答案。&lt;/p&gt;
+
+&lt;p&gt;求矩阵和的时候是有个递推公式的，对于位于（i，j）处的矩阵和，其递推公式为 sum[i][j] = sum[i-1][j] + sum[i][j-1] + matrix[i][j],大家画一下图，很简单就出来了。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;vector&amp;lt;vector&amp;lt;int&amp;gt;&amp;gt; submatrixSum(vector&amp;lt;vector&amp;lt;int&amp;gt;&amp;gt;&amp;amp; matrix) {
+    // Write your code here
+    vector&amp;lt;vector&amp;lt;int&amp;gt; &amp;gt; ret;
+    if (matrix.empty()) return ret;
+    ret.resize(2);
+    ret[0].resize(2);
+    ret[1].resize(2);
+
+    int row = matrix.size();
+    int col = matrix[0].size();
+
+    vector&amp;lt;vector&amp;lt;int&amp;gt; &amp;gt; sum(row+1, vector&amp;lt;int&amp;gt;(col+1, 0));
+
+    for (int j = 0; j &amp;lt;= col; ++j) sum[0][j] = 0;
+    for (int i = 0; i &amp;lt;= row; ++i) sum[i][0] = 0;
+
+    for (int i = 0; i &amp;lt; row; ++i) {
+        for (int j = 0; j &amp;lt; col; ++j) {
+            sum[i+1][j+1] = matrix[i][j] + sum[i][j+1] + sum[i+1][j] - sum[i][j];
+        }
+    }
+
+    for (int i = 0; i &amp;lt; row; ++i) {
+        for (int k = i + 1; k &amp;lt;= row; ++k) {
+            map&amp;lt;int, int&amp;gt; m;
+            for (int j = 0; j &amp;lt;= col; ++j) {
+                // 计算两个矩阵的差，如果差已经在map里面，说明这两个矩阵差相等的这两个矩阵之间就是那个矩阵和为0的子矩阵
+                int diff = sum[k][j] - sum[i][j];
+                if (m.find(diff) != m.end()) {
+                    int l = m[diff];
+                    ret[0][0] = i;
+                    ret[0][1] = l;
+                    ret[1][0] = k - 1;
+                    ret[1][1] = j - 1;
+                    return ret;
+                } else m[diff] = j;
+            }
+        }
+    }
+
+    return ret;
+}
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
     
     <item>
       <title>LintCode 连续子数组求和</title>

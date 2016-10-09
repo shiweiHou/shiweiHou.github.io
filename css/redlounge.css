@@ -96,10 +96,10 @@ h2.brand-tagline {
 	font-weight: 200;
 }
 .sidebar {
-	background: #2d303b;
+	background: rgb(95, 95, 95);
 }
 .sidebar, .sidebar p {
-	color: #8b8b8b;
+	color: #abc0ab;
 }
 .sidebar a {
   color: #fff;
@@ -202,7 +202,7 @@ a.post-author {
 }
 .post {
     padding-bottom: 1.8rem;
-    line-height: 1.75rem;
+    line-height: 1.85rem;
 }
 .post p {
 	margin-bottom: 1.75rem;
@@ -223,7 +223,7 @@ a.post-author {
     margin-top: 0;
 }
 .post-title {
-    font-size: 2rem;
+    font-size: 1.5rem;
     color: #222;
     margin-bottom: 0.25rem;
 }
@@ -278,11 +278,11 @@ a.post-author {
 
 .post-description {
     color: #444;
-    line-height: 1.8rem;
+    line-height: 1rem;
 }
 .post-meta {
     color: #2d303b;
-    font-size: 90%;
+    font-size: 80%;
     margin: 0;
 }
 p.post-meta {

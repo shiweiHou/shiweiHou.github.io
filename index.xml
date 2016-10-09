@@ -5,8 +5,125 @@
     <link>https://shiweiHou.github.io/</link>
     <description>Recent content on Hello world!</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Thu, 06 Oct 2016 21:16:05 +0800</lastBuildDate>
+    <lastBuildDate>Fri, 07 Oct 2016 20:41:56 +0800</lastBuildDate>
     <atom:link href="https://shiweiHou.github.io/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>LintCode 和大于S的最小子数组</title>
+      <link>https://shiweihou.github.io/lintcode/2016-10-07-02/</link>
+      <pubDate>Fri, 07 Oct 2016 20:41:56 +0800</pubDate>
+      
+      <guid>https://shiweihou.github.io/lintcode/2016-10-07-02/</guid>
+      <description>&lt;p&gt;题目：&lt;/p&gt;
+
+&lt;p&gt;给定一个由 n 个整数组成的数组和一个正整数 s ，请找出该数组中满足其和 ≥ s 的最小长度子数组。如果无解，则返回 -1。&lt;/p&gt;
+
+&lt;p&gt;样例：&lt;/p&gt;
+
+&lt;p&gt;给定数组 [2,3,1,2,4,3] 和 s = 7, 子数组 [4,3] 是该条件下的最小长度子数组。&lt;/p&gt;
+
+&lt;p&gt;思路：&lt;/p&gt;
+
+&lt;p&gt;LintCode上面挑战是O(n)时间复杂度，我想O（n*n）不知道可不可以过，于是就试了下，发现还是不行，73%的test通过。对于一个数组，然后要求O（n）时间复杂度的，一般都是通过两根指针，要么一个从头向尾和一个从尾向头，要么一个快指针，一个慢指针。我一开始用第一种方法，后来写出来发现还是O（n*n)的时间复杂度，于是改用快慢指针。因为s是正整数，所以我们可以不考虑负数的情况，利用快慢指针来求答案：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;int minimumSize(vector&amp;lt;int&amp;gt; &amp;amp;nums, int s) {
+    // write your code here
+    if (nums.empty()) return -1;
+
+    int n = nums.size();
+    int sum = 0;
+    int minLength = n + 1;
+    int fast = 0;
+    int slow = 0;
+
+    while (fast &amp;lt; n) {
+        while (fast &amp;lt; n &amp;amp;&amp;amp; sum &amp;lt; s) { //首先找到从slow开始一直和大于s的fast为止
+            sum += nums[fast];
+            ++fast;
+        }           //退出循环后，fast指向第一次和大于s的后面那个位置，即区间为[slow, fast)
+        if (sum &amp;gt;= s &amp;amp;&amp;amp; minLength &amp;gt; fast - slow) minLength = fast - slow ;
+        while (sum &amp;gt;= s) {
+            if (sum &amp;gt;= s &amp;amp;&amp;amp; minLength &amp;gt; fast - slow ) minLength = fast - slow;
+            sum -= nums[slow];  // 开始增加slow，减去前面的值，因为要求是连续的，所以直接减去即可
+            ++slow;
+
+        }
+    }
+
+    if (minLength == n + 1) return -1;
+    return minLength;
+}
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>LintCode 和为零的子矩阵</title>
+      <link>https://shiweihou.github.io/lintcode/2016-10-07-01/</link>
+      <pubDate>Fri, 07 Oct 2016 18:37:40 +0800</pubDate>
+      
+      <guid>https://shiweihou.github.io/lintcode/2016-10-07-01/</guid>
+      <description>&lt;p&gt;题目：&lt;/p&gt;
+
+&lt;p&gt;给定一个整数矩阵，请找出一个子矩阵，使得其数字之和等于0.输出答案时，请返回左上数字和右下数字的坐标。&lt;/p&gt;
+
+&lt;p&gt;样例：&lt;/p&gt;
+
+&lt;p&gt;给定矩阵&lt;code&gt;[[1, 5, 7],[3, 7, 8],[4, -8, 9],]&lt;/code&gt;, 返回&lt;code&gt;[(1,1), (2,2)]&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;思路：&lt;/p&gt;
+
+&lt;p&gt;一开始是想着暴搜看看能不能过，发现果然不能，只过了82%的test，还是可以的了~~~&lt;/p&gt;
+
+&lt;p&gt;后来就想了个思路，既然是求和为0的矩阵，那么必然存在有两个矩阵一大一小，大小矩阵和是相等的，那么大矩阵和小矩阵的差别的那一块矩阵，就是和为0的矩阵。所以我们只要找到那两个矩阵和相等的一大一小的矩阵就可以了。其差值就是要求的答案。&lt;/p&gt;
+
+&lt;p&gt;求矩阵和的时候是有个递推公式的，对于位于（i，j）处的矩阵和，其递推公式为 sum[i][j] = sum[i-1][j] + sum[i][j-1] + matrix[i][j],大家画一下图，很简单就出来了。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;vector&amp;lt;vector&amp;lt;int&amp;gt;&amp;gt; submatrixSum(vector&amp;lt;vector&amp;lt;int&amp;gt;&amp;gt;&amp;amp; matrix) {
+    // Write your code here
+    vector&amp;lt;vector&amp;lt;int&amp;gt; &amp;gt; ret;
+    if (matrix.empty()) return ret;
+    ret.resize(2);
+    ret[0].resize(2);
+    ret[1].resize(2);
+
+    int row = matrix.size();
+    int col = matrix[0].size();
+
+    vector&amp;lt;vector&amp;lt;int&amp;gt; &amp;gt; sum(row+1, vector&amp;lt;int&amp;gt;(col+1, 0));
+
+    for (int j = 0; j &amp;lt;= col; ++j) sum[0][j] = 0;
+    for (int i = 0; i &amp;lt;= row; ++i) sum[i][0] = 0;
+
+    for (int i = 0; i &amp;lt; row; ++i) {
+        for (int j = 0; j &amp;lt; col; ++j) {
+            sum[i+1][j+1] = matrix[i][j] + sum[i][j+1] + sum[i+1][j] - sum[i][j];
+        }
+    }
+
+    for (int i = 0; i &amp;lt; row; ++i) {
+        for (int k = i + 1; k &amp;lt;= row; ++k) {
+            map&amp;lt;int, int&amp;gt; m;
+            for (int j = 0; j &amp;lt;= col; ++j) {
+                // 计算两个矩阵的差，如果差已经在map里面，说明这两个矩阵差相等的这两个矩阵之间就是那个矩阵和为0的子矩阵
+                int diff = sum[k][j] - sum[i][j];
+                if (m.find(diff) != m.end()) {
+                    int l = m[diff];
+                    ret[0][0] = i;
+                    ret[0][1] = l;
+                    ret[1][0] = k - 1;
+                    ret[1][1] = j - 1;
+                    return ret;
+                } else m[diff] = j;
+            }
+        }
+    }
+
+    return ret;
+}
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
     
     <item>
       <title>LintCode 连续子数组求和</title>
@@ -906,171 +1023,6 @@ p是一个指向5个整型大小的数组的指针，看到new，我们就知道
 &lt;/ul&gt;
 
 &lt;p&gt;在C++中，构造函数无法被声明为虚函数，但析构函数可以。并且如果某个类作为基类，其析构函数最好还是声明为虚析构函数。&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>利用Hugo在GitHub上建立个人博客</title>
-      <link>https://shiweihou.github.io/about/</link>
-      <pubDate>Sat, 09 Apr 2016 10:54:16 +0800</pubDate>
-      
-      <guid>https://shiweihou.github.io/about/</guid>
-      <description>
-
-&lt;p&gt;使用Hugo和GitHub生成个人博客。
-本人完全新手，弄了2天，一直出现各种问题，现在终于基本搞定。现将基本流程告知如下，后续补充。
-本人工作环境：Windows10 + hugo  + go  + mercurial + git&lt;/p&gt;
-
-&lt;p&gt;安装前建议：自己学会GitHub及git的简单用法，推荐一个git的&lt;a href=&#34;http://www.bootcss.com/p/git-guide/&#34;&gt;简易教程网站&lt;/a&gt;，强烈简易看懂git的用法，这样如果中间出了什么问题也可以解决。另，善用搜索引擎。&lt;/p&gt;
-
-&lt;h2 id=&#34;1-配置环境&#34;&gt;1.配置环境&lt;/h2&gt;
-
-&lt;p&gt;&lt;a href=&#34;https://golang.org/&#34;&gt;go&lt;/a&gt;语言去官网下载，找到对应的版本，下载好后直接安装，next，windows用户直接默认安装路径就行。&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&#34;https://www.mercurial-scm.org/&#34;&gt;mercurial&lt;/a&gt;同理，也是下载对应的可执行文件，下载安装，默认安装路径就行。&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&#34;https://git-scm.com/&#34;&gt;git&lt;/a&gt;也是如此，去官网下载最新版本，windows上安装，next。&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&#34;https://github.com/spf13/hugo/releases&#34;&gt;hugo&lt;/a&gt;去官网下载操作系统对应的release版本。
-hugo是个二进制文件，windows用户下载好之后不需要安装，将它放到一个你容易找到的文件夹内。例如我的是C:\Hugo\bin。然后设置环境变量，将C:\Hugo\bin加入到当前用户路径path中，并重启电脑。这样操作系统就能直接识别hugo命令。&lt;/p&gt;
-
-&lt;h2 id=&#34;2-生成站点&#34;&gt;2.生成站点&lt;/h2&gt;
-
-&lt;p&gt;你可以在你想要的目录下生成站点。我为了方便，直接放在了C:\Hugo\Sites目录下。sites目录是我新建的，和bin目录一个级别，也就是说现在Hugo文件夹现在有两个子文件夹，一个bin，一个sites，这样做是为了方便管理。然后在sites目录上，右键选择Git Bash Here,进入git命令。然后，开始生成新的站点：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$ hugo new site mysite
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;这样就在mysite目录里生成了初始站点目录mysite，进去目录：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$ cd mysite
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;我们可以看到里面有已经默认创建好了4个文件夹和一个config.toml。
-config.toml是网站的配置文件，包括baseurl, title, copyright等等网站参数。&lt;br /&gt;
-这几个文件夹的作用分别是：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;archetypes：包括内容类型，在创建新内容时自动生成内容的配置&lt;/li&gt;
-&lt;li&gt;content：包括网站内容，全部使用markdown格式&lt;/li&gt;
-&lt;li&gt;layouts：包括了网站的模版，决定内容如何呈现&lt;/li&gt;
-&lt;li&gt;static：包括了css, js, fonts, media等，决定网站的外观
-&lt;br /&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;接着，我们就可以在这里面创建我们需要展示的文章。&lt;/p&gt;
-
-&lt;h2 id=&#34;3-创建文章&#34;&gt;3.创建文章&lt;/h2&gt;
-
-&lt;p&gt;首先，我们来创建一个about页面 (在mysite目录下启动git bash)：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$ hugo new  about.md
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;about.md自动生成到了content/about.md,打开about.md看下：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;+++
-date = &amp;quot;2016-04-09T10:28:02+08:00&amp;quot;
-draft = true
-title = &amp;quot;about&amp;quot;
-+++
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;格式是markdown格式的文件。我们可以看到文件创建时的时间，页面名，是否为草稿等信息都在里面。我们可以在后面加一些内容，例如&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;+++
-date = &amp;quot;2016-04-09T10:28:02+08:00&amp;quot;
-draft = true
-title = &amp;quot;about&amp;quot;
-
-+++
-#关于本文
--nothing
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;然后保存退出，运行hugo&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$ hugo server --buildDrafts
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;我们打开localhost:1313发现什么内容也没有，因为我们没有指定模板，退出，安装皮肤。&lt;/p&gt;
-
-&lt;h2 id=&#34;4-安装皮肤&#34;&gt;4.安装皮肤&lt;/h2&gt;
-
-&lt;p&gt;hugo自己有集成了很多种皮肤，可以去&lt;a href=&#34;https://themes.gohugo.io/&#34;&gt;官网&lt;/a&gt;上搜寻，找到你喜欢的皮肤。我所用的皮肤是RED LOUNGE，找到相关的GitHub地址，创建目录themes（和content这些一个级别）,在themes目录里把皮肤git clone下来：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$ cd themes
-$ git clone https://github.com/tmaiaroto/hugo-redlounge.git
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;我们再次运行hugo&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$ hugo server --theme=hugo-redlounge --buildDrafts
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;这时再打开localhost:1313就能看到页面了&lt;/p&gt;
-
-&lt;p&gt;ps：关于皮肤这块，如果每次运行时都要指定皮肤模式，很麻烦，所以有个很简单的办法。假如你很喜欢redlounge这个皮肤，然后把它git到themes文件夹中，这时redlounge文件夹内就有两个好几个子文件夹，其中包括layouts和static文件夹。你可以直接复制这两个文件夹，替换掉站点根目录下的两个对应的layouts和static文件夹，这样，下次运行的时候，只需要&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$ hugo server
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;就OK了。同理，如果喜欢其它的皮肤，也是如此做。&lt;/p&gt;
-
-&lt;h2 id=&#34;5-部署到github上&#34;&gt;5.部署到GitHub上&lt;/h2&gt;
-
-&lt;p&gt;假设你需要部署在GitHub Pages上，首先在GitHub上创建一个Repository，命名为username.github.io 例如，我的用户名为shiweiHou,所以我创建的Repository名字就为：shiweiHou.github.io&lt;/p&gt;
-
-&lt;p&gt;注意：创建Repository时，不要选择生成readme.md选项，你如果了解git命令，在后面就能看到原因。如果你是新手，建议不要生成。&lt;/p&gt;
-
-&lt;p&gt;在你的站点根目录下执行hugo(同样利用git bash)&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$ hugo  --baseUrl=&amp;quot;http://shiweiHou.github.io/&amp;quot;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;我们为了方便，在每一次生成md的时候，都将文章头部的draft=true去掉，这样，就不用考虑草稿的问题。&lt;/p&gt;
-
-&lt;p&gt;如果一切顺利，在站点根目录下会生成一个public文件夹，接着要做的事情就是将public目录所有的文件push到刚刚创建的Repository的master分支上。&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$ cd public
-$ git init
-$ git remote add origin https://github.com/shiweiHou/shiweiHou.github.io.git
-$ git add -A
-$ git commit -m &amp;quot;first commit&amp;quot;
-$ git push -u origin master    
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;等一会，打开 &lt;a href=&#34;http://shiweiHou.github.io&#34;&gt;http://shiweiHou.github.io&lt;/a&gt; 访问你刚刚生成的界面，要将shiweiHou替换成你的用户名。&lt;/p&gt;
-
-&lt;p&gt;续：关于生成public文件夹这块，hugo在0.15版本之后，就默认是在内存中修改而不是直接生成public文件夹在磁盘中修改。意思是说，如果你运行&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$ hugo server 
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;是不会生成public文件夹，它会调用到内存中，进行修改。如果想要生成public文件夹，只需要直接运行&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$ hugo
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;即可。&lt;/p&gt;
-
-&lt;h2 id=&#34;6-更新&#34;&gt;6.更新&lt;/h2&gt;
-
-&lt;p&gt;在第五步的时候，我们将初始化的站点部署到了GitHub上，那么如果我修改了其中的几个文件，比如about.md,或者增加了其它的文档md，那么就需要进行更新操作。同样，我们进入站点根目录：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$ hugo
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;然后同样，和第一次初始化的时候很像：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;$ cd public
-$ git init
-$ git add .
-$ git commit -m &amp;quot;something changed&amp;quot;
-$ git push origin master
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;即可。&lt;/p&gt;
 </description>
     </item>
     
