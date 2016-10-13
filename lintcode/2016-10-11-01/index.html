@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+  <title>
+    LintCode 买卖股票的最佳时机（1 2 3 4） // Hello world!
+  </title>
+
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+<meta name="description" content="">
+<meta name="keywords" content="">
+<meta name="author" content="">
+<meta name="generator" content="Hugo 0.16" />
+
+  <meta property="og:title" content="LintCode 买卖股票的最佳时机（1 2 3 4）" />
+<meta property="og:description" content="" />
+<meta property="og:type" content="website" />
+<meta property="og:locale" content="en_US" />
+<meta property="og:url" content="https://shiweihou.github.io/lintcode/2016-10-11-01/" />
+
+
+  
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.5.0/base-min.css">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.5.0/pure-min.css">
+  
+  
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.5.0/grids-responsive-min.css">
+  
+  
+
+  <link rel="stylesheet" href="https://shiweihou.github.io//css/redlounge.css">
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet">
+  <link href='//fonts.googleapis.com/css?family=Raleway:400,200,100,700,300,500,600,800' rel='stylesheet' type='text/css'>
+  <link href='//fonts.googleapis.com/css?family=Libre+Baskerville:400,700,400italic' rel='stylesheet' type='text/css'>
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.png">
+
+  
+  <link href="" rel="alternate" type="application/rss+xml" title="Hello world!" />
+
+    
+  
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.7/styles/tomorrow-night-bright.min.css">
+  
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.7/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+
+
+  
+
+  
+
+  
+
+  
+</head>
+
+<body>
+	
+
+	<div id="layout" class="pure-g">
+    <div class="sidebar pure-u-1 pure-u-md-1-4">
+  <div class="header">
+    
+
+	
+	  <img src="/img/1.jpg" class="sidebarphoto">
+	
+
+    <h1 class="brand-title">Matthew</h1>
+    <h2 class="brand-tagline">积跬步，至千里</h2>
+
+    <nav class="nav">
+      <ul class="nav-list">
+        <li class="nav-item"><span class="nav-item-separator">//</span><a href="https://shiweihou.github.io/">Home</a></li>
+        
+          <li class="nav-item"><span class="nav-item-separator">//</span><a href="/cplusplus/">C&#43;&#43;</a></li>
+        
+          <li class="nav-item"><span class="nav-item-separator">//</span><a href="/algorithm/">algorithm</a></li>
+        
+          <li class="nav-item"><span class="nav-item-separator">//</span><a href="/lintcode/">lintcode</a></li>
+        
+      </ul>
+    </nav>
+
+    
+
+  </div>
+</div>
+
+	
+	
+
+    <div class="content pure-u-1 pure-u-md-3-4">
+		<a name="top"></a>
+		
+
+		
+			
+		    <div id="toc" class="pure-u-1 pure-u-md-1-4">
+				<small class="toc-label">Contents</small>
+		   	 	<nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#买卖股票的最佳时机-1-1"><a href="http://www.lintcode.com/zh-cn/problem/best-time-to-buy-and-sell-stock/">买卖股票的最佳时机</a> 1</a></li>
+<li><a href="#买卖股票的最佳时机-ii-2"><a href="http://www.lintcode.com/zh-cn/problem/best-time-to-buy-and-sell-stock-ii/">买卖股票的最佳时机 II</a></a></li>
+<li><a href="#买卖股票的最佳时机-iii-3"><a href="http://www.lintcode.com/zh-cn/problem/best-time-to-buy-and-sell-stock-iii/">买卖股票的最佳时机 III</a></a></li>
+<li><a href="#买卖股票的最佳时机-iv-4"><a href="http://www.lintcode.com/zh-cn/problem/best-time-to-buy-and-sell-stock-iv/">买卖股票的最佳时机 IV</a></a></li>
+</ul></li>
+</ul>
+</nav>
+		    </div>
+		    
+	    
+  		<section class="post">
+            <h1 class="post-title">
+              <a href="/lintcode/2016-10-11-01/">LintCode 买卖股票的最佳时机（1 2 3 4）</a>
+            </h1>
+            <h3 class="post-subtitle">
+            	
+            </h3>
+            
+            	<span class="post-date">
+                	<span class="post-date-day"><sup>11</sup></span><span class="post-date-separator">/</span><span class="post-date-month">Oct</span> <span class="post-date-year">2016</span>
+            	</span>
+            	
+            
+            	
+            
+
+			
+			
+
+			
+
+			
+
+            
+
+<h2 id="买卖股票的最佳时机-1-1"><a href="http://www.lintcode.com/zh-cn/problem/best-time-to-buy-and-sell-stock/">买卖股票的最佳时机</a> 1</h2>
+
+<p>题目就不贴了，链接在上面</p>
+
+<p>思路：</p>
+
+<p>题意很简单，因为我们最多只可以完成一次交易，而且股票交易必须在前面买入才可以卖出，所以我们只需要从前往后遍历，维护两个变量值，minPrice表示所有的股票中价钱最低的那个，maxProfit表示到第i天所能获得的最大利润。代码如下：</p>
+
+<pre><code>int maxProfit(vector&lt;int&gt; &amp;prices) {
+    // write your code here
+    if (prices.empty()) return 0;
+
+    int n = prices.size();Lint
+    int minPrice = prices[0];
+    int maxProfit = 0;
+
+    for (int i = 1; i &lt; n; ++i) {
+    // 如果当前股票价格还要小于前面的已知的最低价格，就替换之，当然不需要进行卖出，相反还要买入
+        if (minPrice &gt; prices[i]) {
+            minPrice = prices[i];
+        } else  // 否则的话，在第i天使可以尝试卖出的，更新maxProfit
+            maxProfit = max(maxProfit, prices[i] - minPrice);
+    }
+
+    return maxProfit;
+}
+</code></pre>
+
+<h2 id="买卖股票的最佳时机-ii-2"><a href="http://www.lintcode.com/zh-cn/problem/best-time-to-buy-and-sell-stock-ii/">买卖股票的最佳时机 II</a></h2>
+
+<p>思路：</p>
+
+<p>最笨的一种方法。因为要尽可能的获得最大利润，当然是完成每次交易的获得的利润越大越好。因为我没有想到当天卖出再买入这件事，只是想到一天只能买入或者卖出，所以得到如下代码：</p>
+
+<pre><code>int maxProfit(vector&lt;int&gt; &amp;prices) {
+    // write your code here
+    int sum = 0;
+    if (prices.empty() || prices.size() &lt; 2) return sum;
+
+    int n = prices.size();
+
+    int i = 1;
+    // buy 记录买入股票的价钱
+    int buy = prices[0];
+    while ( i &lt; n ) {
+    // 如果当天的价格还在上涨，那就不卖出，继续往下看；如果不是，说明从buy的那一天到i-1天都是上涨的，那么就在第i-1天卖出，继续往下看。
+        if (prices[i] &gt; prices[i-1]) {
+            ++i;
+            if (i == n) sum += prices[i-1] - buy;
+        }
+        else {
+            sum += prices[i-1] - buy;
+            buy = prices[i];
+            ++i;
+        }
+    }
+
+    return sum;
+}
+</code></pre>
+
+<p>网上还有一种更简单的算法，就是尽可能交易更多的次数，当天可以买也可以卖，代码如下：</p>
+
+<pre><code>int maxProfit(vector&lt;int&gt; &amp;prices) {
+    // write your code here
+    int sum = 0;
+    if (prices.empty() || prices.size() &lt; 2) return sum;
+
+    int n = prices.size();
+    for (int i = 1; i &lt; n; ++i) {
+    // 意思是只要当天卖可以有利润，就卖出去，再买回来，继续往后看
+        if (prices[i] &gt; prices[i-1])
+            sum += prices[i] - prices[i-1];
+    }
+
+    return sum;
+}
+</code></pre>
+
+<h2 id="买卖股票的最佳时机-iii-3"><a href="http://www.lintcode.com/zh-cn/problem/best-time-to-buy-and-sell-stock-iii/">买卖股票的最佳时机 III</a></h2>
+
+<p>思路：</p>
+
+<p>因为是可以完成两笔交易，所以最最容易想到的办法就是对每个时间点i，分别计算1~i 和 i~n 所能获得的最大利润和。但这样时间复杂度为 O(n^2)。但是我们知道我们在计算1~i的最大利润的时候，1~i-1的利润已经计算过了，不需要再重新计算一遍，因此：<strong>保存两个数组，left[i], right[i],分别记录从左到右和从右往左分别到i位置所能产生的最大利润，最后直接遍历一遍两个数组就可以了，找出最大的left[i] + right[i] 组合，该解法实际上就是将 1 的解法双向各执行一遍记录结果</strong>。</p>
+
+<pre><code>int maxProfit(vector&lt;int&gt; &amp;prices) {
+    // write your code here
+    if(prices.empty()) return 0;
+
+    vector&lt;int&gt; left (prices.size(), 0);
+    vector&lt;int&gt; right (prices.size(), 0);
+
+    int leftMin = prices[0];
+    int rightMax = prices[prices.size()-1];
+
+    int sum = 0;
+    //计算左半段最大收益
+    for(int i = 1 ; i &lt; prices.size(); ++i){
+        leftMin = min(prices[i], leftMin);
+        left[i] = max(prices[i] - leftMin, left[i-1]);
+    }
+    //计算右半段最大收益
+    for(int i = prices.size() - 2 ; i &gt;= 0; --i){
+        rightMax = max(prices[i], rightMax);
+        right[i] = max(rightMax - prices[i], right[i+1]);
+    }
+    //找出两次交易最大收益组合
+    for(int i = 0 ; i &lt; prices.size(); ++i){
+        if( (left[i]+right[i]) &gt; sum ) 
+            sum = left[i] + right[i];
+    }
+    return sum;
+}
+</code></pre>
+
+<p>在网上还看到一种解法，十分巧妙：其实我们并不需要知道每个时间点买卖第一第二笔股票收益的全部信息，我们只要知道前一个时间点买卖第一第二笔股票的最大收益信息，就可以直到当前最大的收益信息了，这样可以为我们省去额外空间。这里我们遍历prices数组的时候，维护四个变量:</p>
+
+<ul>
+<li>release2是在该价格点卖出第二笔股票后手里剩的钱，等于上一轮买入第二笔股票后手里剩的钱加上卖出当前股票价格的钱，或者上一轮卖出第二笔股票后手里剩的钱两者中较大的。</li>
+<li>hold2是在该价格点买入第二笔股票后手里剩的钱，等于上一轮卖出第一笔股票后手里剩的钱减去买入当前股票价格的钱，或者上一轮买入第二笔股票后手里剩的钱两者中较大的。</li>
+<li>release1是在该价格点卖出第一笔股票后手里剩的钱，等于上一轮买入第一笔股票后手里剩的钱加上卖出当前股票价格的钱，或者上一轮卖出第一笔股票后手里剩的钱两者中较大的。</li>
+<li>hold1是在该价格点买入第一笔股票后手里剩的钱，等于初始资金减去买入当前股票价格的钱或者初始资金（不买）中较大的。</li>
+</ul>
+
+<p>这里计算顺序按照release2 -&gt; hold2 -&gt; release1 -&gt; hold1，因为卖是要后于买的，而第二次交易也是后于第一次交易的，通过这个顺序我们能用这些变量自身来记录上次的值。相当于release2的时间点要先于hold1四个点。</p>
+
+<pre><code>int maxProfit(vector&lt;int&gt; &amp;prices) {
+    // write your code here
+    int hold1 = INT_MIN, hold2 = INT_MIN;
+    int release1 = 0, release2 = 0;
+    int n = prices.size();
+    for(int i = 0; i &lt; n; ++i){
+        // 在该价格点卖出第二笔股票后手里剩的钱，等于上一轮买入第二笔股票后手里剩的钱加上卖出当前股票价格的钱
+        // 或者上一轮卖出第二笔股票后手里剩的钱两者中较大的
+        release2 = max(release2, hold2 + prices[i]);
+        // 在该价格点买入第二笔股票后手里剩的钱，等于上一轮卖出第一笔股票后手里剩的钱减去买入当前股票价格的钱
+        // 或者上一轮买入第二笔股票后手里剩的钱两者中较大的
+        hold2 = max(hold2, release1 - prices[i]);
+        // 在该价格点卖出第一笔股票后手里剩的钱，等于上一轮买入第一笔股票后手里剩的钱加上卖出当前股票价格的钱
+        // 或者上一轮卖出第一笔股票后手里剩的钱两者中较大的
+        release1 = max(release1, hold1 + prices[i]);
+        // 在该价格点买入第一笔股票后手里剩的钱，等于初始资金减去买入当前股票价格的钱
+        // 或者初始资金（不买）中较大的
+        hold1 = max(hold1, 0 - prices[i]);
+    }
+    return release2;
+}
+</code></pre>
+
+<h2 id="买卖股票的最佳时机-iv-4"><a href="http://www.lintcode.com/zh-cn/problem/best-time-to-buy-and-sell-stock-iv/">买卖股票的最佳时机 IV</a></h2>
+
+<p>思路：</p>
+
+<p>我们将第 i 天已经执行 j 笔交易的最大收益作为全局变量 global[i][j], 将第 i 天正好完成第 j 笔交易的最大收益作为局部变量 local[i][j].</p>
+
+<p>也就是说， global[i][j] 就是我们最终要得到的结果，但 local[i][j] 的意思是，再第i天必须当天完成第j笔交易，而 global[i][j] 则不需要。</p>
+
+<p>对于 global[i][j], 也就是我们要知道的第i天已经完成j笔交易获得的最大收益，可以基于第 i-1 天完成 j 笔交易的最大收益与 第 i 天正好完成第 j 笔交易的最大收益，即 global[i][j] = max ( global[i-1][j], local[i][j] ).</p>
+
+<p>对于 local[i][j], 也就是我们要求的第i天刚好完成第j笔交易的最大收益，可以基于第i-1天正好完成第j-1笔交易的最大收益加上当天交易的差值， 还有第i-1天正好完成第j笔交易的最大收益加上当天交易的差值。 要注意的是，</p>
+
+<p>第i-1天正好完成第j-1笔交易的这种情况，当前交易的差值去0和实际昨天今天差价中较大的那个，因为如果我们还剩下1次交易机会，如果prices[i] &gt; prices[i-1],我们完全可以在第i-1天完成第j-1笔交易后，再当天买入，第i天卖出。</p>
+
+<p>但是对于第i-1天正好完成第j笔交易这种情况，因为第i-1天正好完成第j笔交易，那么第i天的交易其实在第i-1天交易里面，也就是第i天要连着第i-1天交易，使得第i-1天完成的第j笔交易正好和第i天完成的第j笔交易是同一天交易，所以无论prices[i]是否大于prices[i-1], 这次交易都要进行下去，所以local[i][j] = max ( global[i-1][j-1] + max (diff, 0), local[i-1][j] + diff);diff = prices[i] - prices[i-1].</p>
+
+<p>PS:</p>
+
+<ul>
+<li>对于k &gt; n /
+2的情况，我们可以用II的解法来节省空间。因为按照题意必须先买后卖，那么对于n天交易，能够产生有效收益的交易次数是小于等于n/2的，只有不同天买卖才能产生差价。对于大于n/2的那部分交易，必定是当天买卖没有任何收益的，无论交易多少次都是一样的。所以如果k &gt; n / 2，就相当于无限次交易。
+<br /></li>
+</ul>
+
+<p>这种方法理解了很简单，但真要自己写出来很难。我也没有写出来，还是参考的别人的答案才做出来，还需努力啊。</p>
+
+<pre><code>int maxProfit(int k, vector&lt;int&gt; &amp;prices) {
+    // write your code here
+    if(prices.empty()) return 0;
+    //用II的解法优化k &gt; n / 2的情况
+    int n = prices.size();
+    if(k &gt; n / 2){
+        int sum = 0;
+        for(int i = 1; i &lt; n; ++i){
+            if(prices[i] &gt; prices[i-1]) sum += prices[i] - prices[i-1];
+        }
+        return sum;
+    }
+    //初始化全局变量和局部变量
+    vector&lt;vector&lt;int&gt;&gt; local(n+1, vector&lt;int&gt;(k+1, 0));
+    vector&lt;vector&lt;int&gt;&gt; global(n+1, vector&lt;int&gt;(k+1, 0));
+
+    for(int i = 1; i &lt; n; ++i){
+        int diff = prices[i] - prices[i-1];
+        for(int j = 1; j &lt; k + 1; ++j){
+            //更新局部变量
+            local[i][j] = max(global[i-1][j-1] + max(0, diff), local[i-1][j] + diff);
+            //更新全局变量
+            global[i][j] = max(global[i-1][j], local[i][j]);
+        }
+    }
+    return global[n - 1][k];
+}
+</code></pre>
+
+<p>还有一种解法，类似于 ||| 中后一种解法一样，区别是我们这次要用 2K 个变量来记录 K 次交易。</p>
+
+<pre><code>int maxProfit(int k, vector&lt;int&gt; &amp;prices) {
+    // write your code here
+    if(prices.empty()) return 0;
+    //用II的解法优化k &gt; n / 2的情况
+    int n = prices.size();
+
+    if(k &gt; n / 2){
+        int sum = 0;
+        for(int i = 1; i &lt; n; ++i){
+            if(prices[i] &gt; prices[i-1]) sum += prices[i] - prices[i-1];
+        }
+        return sum;
+    }
+    //初始化买卖股票后剩余金钱的数组
+    vector&lt;int&gt; release (k + 1, 0);
+    vector&lt;int&gt; hold    (k + 1, INT_MIN);
+
+
+    for(int i = 0; i &lt; n; i++){
+        for(int j = 1; j &lt; k+1; ++j){
+            //卖出第j笔交易，所剩余的钱
+            release[j] = max(release[j], hold[j] + prices[i]);
+            //买入第j笔交易，所剩余的钱
+            hold[j] = max(hold[j], release[j-1] - prices[i]);
+        }
+    }
+    return release[k];
+}
+</code></pre>
+
+	
+			
+
+			
+
+			
+				<div class="paging">
+					<span class="paging-label">More Reading</span>
+					
+					<div class="paging-newer">
+						<span class="dark-red">Newer</span><span class="decorative-marker">//</span>
+						<a class="paging-link" href="/lintcode/2016-10-13-01/"> LintCode 逆波兰表达式求值</a>
+		            </div>
+		            
+
+					
+					<div class="paging-older">
+						<span class="dark-red">Older</span><span class="decorative-marker">//</span>
+			            <a class="paging-link" href="/lintcode/2016-10-09-02/">LintCode 克隆二叉树</a>
+		            </div>
+		            
+	            </div>
+            
+          </section>
+          
+          	
+          
+        
+      <div class="footer">
+	<hr class="thin" />
+	<div class="pure-menu pure-menu-horizontal pure-menu-open">
+		<ul class="footer-menu">
+		
+		</ul>
+	</div>
+
+	<p>&copy; 2016. Matthew Hou All rights reserved.</p>
+</div>
+    </div>
+  </div>
+	
+
+	
+
+  
+</body>
+</html>

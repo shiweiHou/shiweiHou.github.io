@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
 <head>
   <title>
-    LintCode 和大于S的最小子数组 // Hello world!
+    LintCode 克隆二叉树 // Hello world!
   </title>
 
   <link href="http://gmpg.org/xfn/11" rel="profile">
@@ -16,11 +16,11 @@
 <meta name="author" content="">
 <meta name="generator" content="Hugo 0.16" />
 
-  <meta property="og:title" content="LintCode 和大于S的最小子数组" />
+  <meta property="og:title" content="LintCode 克隆二叉树" />
 <meta property="og:description" content="" />
 <meta property="og:type" content="website" />
 <meta property="og:locale" content="en_US" />
-<meta property="og:url" content="https://shiweihou.github.io/lintcode/2016-10-07-02/" />
+<meta property="og:url" content="https://shiweihou.github.io/lintcode/2016-10-09-02/" />
 
 
   
@@ -106,14 +106,14 @@
 	    
   		<section class="post">
             <h1 class="post-title">
-              <a href="/lintcode/2016-10-07-02/">LintCode 和大于S的最小子数组</a>
+              <a href="/lintcode/2016-10-09-02/">LintCode 克隆二叉树</a>
             </h1>
             <h3 class="post-subtitle">
             	
             </h3>
             
             	<span class="post-date">
-                	<span class="post-date-day"><sup>7</sup></span><span class="post-date-separator">/</span><span class="post-date-month">Oct</span> <span class="post-date-year">2016</span>
+                	<span class="post-date-day"><sup>9</sup></span><span class="post-date-separator">/</span><span class="post-date-month">Oct</span> <span class="post-date-year">2016</span>
             	</span>
             	
             
@@ -127,45 +127,37 @@
 
 			
 
-            <p>题目：</p>
+            <p>题目链接：<a href="http://www.lintcode.com/zh-cn/problem/clone-binary-tree/">LintCode 克隆二叉树</a></p>
 
-<p>给定一个由 n 个整数组成的数组和一个正整数 s ，请找出该数组中满足其和 ≥ s 的最小长度子数组。如果无解，则返回 -1。</p>
+<p>很简单，就是在对二叉树进行遍历的时候重新生成节点就可以了，前序、中序或者后序遍历都可以，我用的是前序遍历：</p>
 
-<p>样例：</p>
-
-<p>给定数组 [2,3,1,2,4,3] 和 s = 7, 子数组 [4,3] 是该条件下的最小长度子数组。</p>
-
-<p>思路：</p>
-
-<p>LintCode上面挑战是O(n)时间复杂度，我想O（n*n）不知道可不可以过，于是就试了下，发现还是不行，73%的test通过。对于一个数组，然后要求O（n）时间复杂度的，一般都是通过两根指针，要么一个从头向尾和一个从尾向头，要么一个快指针，一个慢指针。我一开始用第一种方法，后来写出来发现还是O（n*n)的时间复杂度，于是改用快慢指针。因为s是正整数，所以我们可以不考虑负数的情况，利用快慢指针来求答案：</p>
-
-<pre><code>int minimumSize(vector&lt;int&gt; &amp;nums, int s) {
-    // write your code here
-    if (nums.empty()) return -1;
-
-    int n = nums.size();
-    int sum = 0;
-    int minLength = n + 1;
-    int fast = 0;
-    int slow = 0;
-
-    while (fast &lt; n) {
-        while (fast &lt; n &amp;&amp; sum &lt; s) { //首先找到从slow开始一直和大于s的fast为止
-            sum += nums[fast];
-            ++fast;
-        }           //退出循环后，fast指向第一次和大于s的后面那个位置，即区间为[slow, fast)
-        if (sum &gt;= s &amp;&amp; minLength &gt; fast - slow) minLength = fast - slow ;
-        while (sum &gt;= s) {
-            if (sum &gt;= s &amp;&amp; minLength &gt; fast - slow ) minLength = fast - slow;
-            sum -= nums[slow];  // 开始增加slow，减去前面的值，因为要求是连续的，所以直接减去即可
-            ++slow;
-
-        }
+<pre><code>/**
+* Definition of TreeNode:
+* class TreeNode {
+* public:
+*     int val;
+*     TreeNode *left, *right;
+*     TreeNode(int val) {
+*         this-&gt;val = val;
+*         this-&gt;left = this-&gt;right = NULL;
+*     }
+* }
+*/
+class Solution {
+public:
+/**
+ * @param root: The root of binary tree
+ * @return root of new tree
+ */
+TreeNode* cloneTree(TreeNode *root) {
+    // Write your code here
+    if (root == NULL) return NULL;
+    TreeNode *newRoot = new TreeNode(root-&gt;val);
+    if (root-&gt;left) newRoot-&gt;left = cloneTree(root-&gt;left);
+    if (root-&gt;right) newRoot-&gt;right = cloneTree(root-&gt;right);
+    return newRoot;
     }
-
-    if (minLength == n + 1) return -1;
-    return minLength;
-}
+};
 </code></pre>
 
 	
@@ -179,14 +171,14 @@
 					
 					<div class="paging-newer">
 						<span class="dark-red">Newer</span><span class="decorative-marker">//</span>
-						<a class="paging-link" href="/lintcode/2016-10-09-01/">LintCode 平面列表</a>
+						<a class="paging-link" href="/lintcode/2016-10-11-01/">LintCode 买卖股票的最佳时机（1 2 3 4）</a>
 		            </div>
 		            
 
 					
 					<div class="paging-older">
 						<span class="dark-red">Older</span><span class="decorative-marker">//</span>
-			            <a class="paging-link" href="/lintcode/2016-10-07-01/">LintCode 和为零的子矩阵</a>
+			            <a class="paging-link" href="/lintcode/2016-10-09-01/">LintCode 平面列表</a>
 		            </div>
 		            
 	            </div>

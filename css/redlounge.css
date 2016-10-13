@@ -114,11 +114,17 @@ h2.brand-tagline {
     padding: 0;
     list-style: none;
     padding-bottom: 1rem;
+	*width:50px;
+	float:right;
 }
 .nav-item {
-    display: inline-block;
-    *display: inline;
+    *display: inline-block;
+    *display: list-item;
+	*float:left;
     zoom: 1;
+	text-align:left;
+	*width:50px;
+	*float:right;
 }
 .nav-item a {
     background: transparent;

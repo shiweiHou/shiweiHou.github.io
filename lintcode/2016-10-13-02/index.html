@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
 <head>
   <title>
-    LintCode 和大于S的最小子数组 // Hello world!
+    LintCode 二进制表示 // Hello world!
   </title>
 
   <link href="http://gmpg.org/xfn/11" rel="profile">
@@ -16,11 +16,11 @@
 <meta name="author" content="">
 <meta name="generator" content="Hugo 0.16" />
 
-  <meta property="og:title" content="LintCode 和大于S的最小子数组" />
+  <meta property="og:title" content="LintCode 二进制表示" />
 <meta property="og:description" content="" />
 <meta property="og:type" content="website" />
 <meta property="og:locale" content="en_US" />
-<meta property="og:url" content="https://shiweihou.github.io/lintcode/2016-10-07-02/" />
+<meta property="og:url" content="https://shiweihou.github.io/lintcode/2016-10-13-02/" />
 
 
   
@@ -106,14 +106,14 @@
 	    
   		<section class="post">
             <h1 class="post-title">
-              <a href="/lintcode/2016-10-07-02/">LintCode 和大于S的最小子数组</a>
+              <a href="/lintcode/2016-10-13-02/">LintCode 二进制表示</a>
             </h1>
             <h3 class="post-subtitle">
             	
             </h3>
             
             	<span class="post-date">
-                	<span class="post-date-day"><sup>7</sup></span><span class="post-date-separator">/</span><span class="post-date-month">Oct</span> <span class="post-date-year">2016</span>
+                	<span class="post-date-day"><sup>13</sup></span><span class="post-date-separator">/</span><span class="post-date-month">Oct</span> <span class="post-date-year">2016</span>
             	</span>
             	
             
@@ -127,46 +127,105 @@
 
 			
 
-            <p>题目：</p>
+            <p><a href="http://www.lintcode.com/zh-cn/problem/binary-representation/">题目链接</a></p>
 
-<p>给定一个由 n 个整数组成的数组和一个正整数 s ，请找出该数组中满足其和 ≥ s 的最小长度子数组。如果无解，则返回 -1。</p>
+<p>说是困难题，其实很简单的，就是将字符串中整数部分和小数部分分别提取出来，然后根据整数化二进制和小数划二进制的形式来求。唯一有问题的就是字符串中的小数部分化成小数时，如果按照传统的一个个来做的话，在计算机中表示很奇怪，例如对于<code>4096.6435546875</code>，小数部分按照6*10（-1） + 4*10（-2）&hellip;这样求的话，在计算机中实际表示为<code>0.64355468750000011</code>，所以很奇怪，估计是和计算机中浮点型的存储方式有关，所以后来就直接用C++自带的库函数<code>atof()</code>函数来转换，这样就ok了。</p>
 
-<p>样例：</p>
-
-<p>给定数组 [2,3,1,2,4,3] 和 s = 7, 子数组 [4,3] 是该条件下的最小长度子数组。</p>
-
-<p>思路：</p>
-
-<p>LintCode上面挑战是O(n)时间复杂度，我想O（n*n）不知道可不可以过，于是就试了下，发现还是不行，73%的test通过。对于一个数组，然后要求O（n）时间复杂度的，一般都是通过两根指针，要么一个从头向尾和一个从尾向头，要么一个快指针，一个慢指针。我一开始用第一种方法，后来写出来发现还是O（n*n)的时间复杂度，于是改用快慢指针。因为s是正整数，所以我们可以不考虑负数的情况，利用快慢指针来求答案：</p>
-
-<pre><code>int minimumSize(vector&lt;int&gt; &amp;nums, int s) {
-    // write your code here
-    if (nums.empty()) return -1;
-
-    int n = nums.size();
-    int sum = 0;
-    int minLength = n + 1;
-    int fast = 0;
-    int slow = 0;
-
-    while (fast &lt; n) {
-        while (fast &lt; n &amp;&amp; sum &lt; s) { //首先找到从slow开始一直和大于s的fast为止
-            sum += nums[fast];
-            ++fast;
-        }           //退出循环后，fast指向第一次和大于s的后面那个位置，即区间为[slow, fast)
-        if (sum &gt;= s &amp;&amp; minLength &gt; fast - slow) minLength = fast - slow ;
-        while (sum &gt;= s) {
-            if (sum &gt;= s &amp;&amp; minLength &gt; fast - slow ) minLength = fast - slow;
-            sum -= nums[slow];  // 开始增加slow，减去前面的值，因为要求是连续的，所以直接减去即可
-            ++slow;
-
-        }
+<pre><code>class Solution {
+public:
+/**
+ *@param n: Given a decimal number that is passed in as a string
+ *@return: A string
+ */
+string binaryRepresentation(string n) {
+    // wirte your code here
+    string ret;
+    if (n.empty()) return 0;
+    int len = n.size();
+    int i = 0;
+    while (i &lt; len &amp;&amp; n[i] != '.') ++i;
+    int j = 0;
+    bool flag = true;
+    if (n[0] == '-') {
+        flag = false;
+        ++j;
+        ret += &quot;1&quot;;
     }
 
-    if (minLength == n + 1) return -1;
-    return minLength;
+    long number = 0;
+    while (j &lt; i) {
+        number = number * 10 + (n[j] - '0');
+        ++j;
+    }
+    longToBinary(number, ret);
+
+    if (i == len) return ret;
+    ret += &quot;.&quot;;
+
+
+    double number1 = 0.0;
+    ++i;
+    int count = -1;
+    while (i &lt; len) {
+        number1 += (n[i] - '0') * (double)pow(10, count);
+        ++i;
+        --count;
+    }
+
+    bool yes = true;
+    // 自己计算的不行，还得靠库函数
+    double decPart = atof(n.substr(n.find(&quot;.&quot;), n.size() - n.find(&quot;.&quot;)).c_str());
+    number1 = decPart;
+    yes = digitToBinary(number1, ret);
+
+    int len1 = ret.size();
+    if (ret[len1-1] == '.') ret = ret.substr(0,len1-1);
+    if (yes) return ret;
+    ret = &quot;ERROR&quot;;
+    return ret;
+}
+
+bool digitToBinary(double number, string &amp;s) {
+    int time = 0;
+    double number1 = 1.0;
+    double number2 = 0.0;
+    while (time &lt;= 32) {
+        if (number == number1) 
+            break;
+        if (number == number2) 
+            break;
+        number *= 2;
+        if (number &gt;= 1) {
+            number -= 1.0;
+            s += to_string(1);
+        } else s += to_string(0);
+
+        ++time;
+    }
+
+    if (time &lt;= 32) return true;
+    return false;
+}
+void longToBinary(long number, string &amp;s) {
+    vector&lt;int&gt; vb;
+    while (number != 0) {
+        vb.push_back(number % 2) ;
+        number /= 2;
+    }
+    if (vb.empty()) {
+        s += to_string(0);
+        return;
+    }
+    reverse(vb.begin(), vb.end());
+    for (auto e : vb) {
+        s += to_string(e);
+    }
+
+    return ;
 }
 </code></pre>
+
+<p>};</p>
 
 	
 			
@@ -177,16 +236,11 @@
 				<div class="paging">
 					<span class="paging-label">More Reading</span>
 					
-					<div class="paging-newer">
-						<span class="dark-red">Newer</span><span class="decorative-marker">//</span>
-						<a class="paging-link" href="/lintcode/2016-10-09-01/">LintCode 平面列表</a>
-		            </div>
-		            
 
 					
 					<div class="paging-older">
 						<span class="dark-red">Older</span><span class="decorative-marker">//</span>
-			            <a class="paging-link" href="/lintcode/2016-10-07-01/">LintCode 和为零的子矩阵</a>
+			            <a class="paging-link" href="/lintcode/2016-10-13-01/"> LintCode 逆波兰表达式求值</a>
 		            </div>
 		            
 	            </div>

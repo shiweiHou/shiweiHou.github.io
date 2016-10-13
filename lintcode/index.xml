@@ -5,8 +5,526 @@
     <link>https://shiweiHou.github.io/lintcode/</link>
     <description>Recent content in Lintcodes on Hello world!</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Fri, 07 Oct 2016 20:41:56 +0800</lastBuildDate>
+    <lastBuildDate>Thu, 13 Oct 2016 20:46:54 +0800</lastBuildDate>
     <atom:link href="https://shiweiHou.github.io/lintcode/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>LintCode 二进制表示</title>
+      <link>https://shiweihou.github.io/lintcode/2016-10-13-02/</link>
+      <pubDate>Thu, 13 Oct 2016 20:46:54 +0800</pubDate>
+      
+      <guid>https://shiweihou.github.io/lintcode/2016-10-13-02/</guid>
+      <description>&lt;p&gt;&lt;a href=&#34;http://www.lintcode.com/zh-cn/problem/binary-representation/&#34;&gt;题目链接&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;说是困难题，其实很简单的，就是将字符串中整数部分和小数部分分别提取出来，然后根据整数化二进制和小数划二进制的形式来求。唯一有问题的就是字符串中的小数部分化成小数时，如果按照传统的一个个来做的话，在计算机中表示很奇怪，例如对于&lt;code&gt;4096.6435546875&lt;/code&gt;，小数部分按照6*10（-1） + 4*10（-2）&amp;hellip;这样求的话，在计算机中实际表示为&lt;code&gt;0.64355468750000011&lt;/code&gt;，所以很奇怪，估计是和计算机中浮点型的存储方式有关，所以后来就直接用C++自带的库函数&lt;code&gt;atof()&lt;/code&gt;函数来转换，这样就ok了。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;class Solution {
+public:
+/**
+ *@param n: Given a decimal number that is passed in as a string
+ *@return: A string
+ */
+string binaryRepresentation(string n) {
+    // wirte your code here
+    string ret;
+    if (n.empty()) return 0;
+    int len = n.size();
+    int i = 0;
+    while (i &amp;lt; len &amp;amp;&amp;amp; n[i] != &#39;.&#39;) ++i;
+    int j = 0;
+    bool flag = true;
+    if (n[0] == &#39;-&#39;) {
+        flag = false;
+        ++j;
+        ret += &amp;quot;1&amp;quot;;
+    }
+
+    long number = 0;
+    while (j &amp;lt; i) {
+        number = number * 10 + (n[j] - &#39;0&#39;);
+        ++j;
+    }
+    longToBinary(number, ret);
+
+    if (i == len) return ret;
+    ret += &amp;quot;.&amp;quot;;
+
+
+    double number1 = 0.0;
+    ++i;
+    int count = -1;
+    while (i &amp;lt; len) {
+        number1 += (n[i] - &#39;0&#39;) * (double)pow(10, count);
+        ++i;
+        --count;
+    }
+
+    bool yes = true;
+    // 自己计算的不行，还得靠库函数
+    double decPart = atof(n.substr(n.find(&amp;quot;.&amp;quot;), n.size() - n.find(&amp;quot;.&amp;quot;)).c_str());
+    number1 = decPart;
+    yes = digitToBinary(number1, ret);
+
+    int len1 = ret.size();
+    if (ret[len1-1] == &#39;.&#39;) ret = ret.substr(0,len1-1);
+    if (yes) return ret;
+    ret = &amp;quot;ERROR&amp;quot;;
+    return ret;
+}
+
+bool digitToBinary(double number, string &amp;amp;s) {
+    int time = 0;
+    double number1 = 1.0;
+    double number2 = 0.0;
+    while (time &amp;lt;= 32) {
+        if (number == number1) 
+            break;
+        if (number == number2) 
+            break;
+        number *= 2;
+        if (number &amp;gt;= 1) {
+            number -= 1.0;
+            s += to_string(1);
+        } else s += to_string(0);
+
+        ++time;
+    }
+
+    if (time &amp;lt;= 32) return true;
+    return false;
+}
+void longToBinary(long number, string &amp;amp;s) {
+    vector&amp;lt;int&amp;gt; vb;
+    while (number != 0) {
+        vb.push_back(number % 2) ;
+        number /= 2;
+    }
+    if (vb.empty()) {
+        s += to_string(0);
+        return;
+    }
+    reverse(vb.begin(), vb.end());
+    for (auto e : vb) {
+        s += to_string(e);
+    }
+
+    return ;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;};&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title> LintCode 逆波兰表达式求值</title>
+      <link>https://shiweihou.github.io/lintcode/2016-10-13-01/</link>
+      <pubDate>Thu, 13 Oct 2016 20:43:48 +0800</pubDate>
+      
+      <guid>https://shiweihou.github.io/lintcode/2016-10-13-01/</guid>
+      <description>&lt;p&gt;&lt;a href=&#34;http://www.lintcode.com/zh-cn/problem/evaluate-reverse-polish-notation/&#34;&gt;题目链接&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;题意很明确，其实就是四则运算的后缀求值，用栈来维护，中间过程中没有考虑栈元素不够或者除数为0的情况，但也AC了，说明输入的数据比较严格。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;int evalRPN(vector&amp;lt;string&amp;gt;&amp;amp; tokens) {
+    // Write your code here
+    stack&amp;lt;int&amp;gt; s;
+    int ans;
+    if (tokens.empty()) return ans;
+    for (auto e : tokens) {
+        if (e != &amp;quot;+&amp;quot; &amp;amp;&amp;amp; e != &amp;quot;-&amp;quot; &amp;amp;&amp;amp; e != &amp;quot;*&amp;quot; &amp;amp;&amp;amp; e != &amp;quot;/&amp;quot;) {
+            int number = stoi(e);
+            s.push(number);
+            continue;
+        } 
+        int x = s.top();
+        s.pop();
+        int y = s.top();
+        s.pop();
+        if (e == &amp;quot;+&amp;quot;) s.push(x + y);
+        if (e == &amp;quot;-&amp;quot;) s.push(y - x);
+        if (e == &amp;quot;/&amp;quot;) s.push(y / x);
+        if (e == &amp;quot;*&amp;quot;) s.push(x * y);
+    }
+
+    return s.top();
+}
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>LintCode 买卖股票的最佳时机（1 2 3 4）</title>
+      <link>https://shiweihou.github.io/lintcode/2016-10-11-01/</link>
+      <pubDate>Tue, 11 Oct 2016 20:21:15 +0800</pubDate>
+      
+      <guid>https://shiweihou.github.io/lintcode/2016-10-11-01/</guid>
+      <description>
+
+&lt;h2 id=&#34;买卖股票的最佳时机-1-1&#34;&gt;&lt;a href=&#34;http://www.lintcode.com/zh-cn/problem/best-time-to-buy-and-sell-stock/&#34;&gt;买卖股票的最佳时机&lt;/a&gt; 1&lt;/h2&gt;
+
+&lt;p&gt;题目就不贴了，链接在上面&lt;/p&gt;
+
+&lt;p&gt;思路：&lt;/p&gt;
+
+&lt;p&gt;题意很简单，因为我们最多只可以完成一次交易，而且股票交易必须在前面买入才可以卖出，所以我们只需要从前往后遍历，维护两个变量值，minPrice表示所有的股票中价钱最低的那个，maxProfit表示到第i天所能获得的最大利润。代码如下：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;int maxProfit(vector&amp;lt;int&amp;gt; &amp;amp;prices) {
+    // write your code here
+    if (prices.empty()) return 0;
+
+    int n = prices.size();Lint
+    int minPrice = prices[0];
+    int maxProfit = 0;
+
+    for (int i = 1; i &amp;lt; n; ++i) {
+    // 如果当前股票价格还要小于前面的已知的最低价格，就替换之，当然不需要进行卖出，相反还要买入
+        if (minPrice &amp;gt; prices[i]) {
+            minPrice = prices[i];
+        } else  // 否则的话，在第i天使可以尝试卖出的，更新maxProfit
+            maxProfit = max(maxProfit, prices[i] - minPrice);
+    }
+
+    return maxProfit;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;买卖股票的最佳时机-ii-2&#34;&gt;&lt;a href=&#34;http://www.lintcode.com/zh-cn/problem/best-time-to-buy-and-sell-stock-ii/&#34;&gt;买卖股票的最佳时机 II&lt;/a&gt;&lt;/h2&gt;
+
+&lt;p&gt;思路：&lt;/p&gt;
+
+&lt;p&gt;最笨的一种方法。因为要尽可能的获得最大利润，当然是完成每次交易的获得的利润越大越好。因为我没有想到当天卖出再买入这件事，只是想到一天只能买入或者卖出，所以得到如下代码：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;int maxProfit(vector&amp;lt;int&amp;gt; &amp;amp;prices) {
+    // write your code here
+    int sum = 0;
+    if (prices.empty() || prices.size() &amp;lt; 2) return sum;
+
+    int n = prices.size();
+
+    int i = 1;
+    // buy 记录买入股票的价钱
+    int buy = prices[0];
+    while ( i &amp;lt; n ) {
+    // 如果当天的价格还在上涨，那就不卖出，继续往下看；如果不是，说明从buy的那一天到i-1天都是上涨的，那么就在第i-1天卖出，继续往下看。
+        if (prices[i] &amp;gt; prices[i-1]) {
+            ++i;
+            if (i == n) sum += prices[i-1] - buy;
+        }
+        else {
+            sum += prices[i-1] - buy;
+            buy = prices[i];
+            ++i;
+        }
+    }
+
+    return sum;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;网上还有一种更简单的算法，就是尽可能交易更多的次数，当天可以买也可以卖，代码如下：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;int maxProfit(vector&amp;lt;int&amp;gt; &amp;amp;prices) {
+    // write your code here
+    int sum = 0;
+    if (prices.empty() || prices.size() &amp;lt; 2) return sum;
+
+    int n = prices.size();
+    for (int i = 1; i &amp;lt; n; ++i) {
+    // 意思是只要当天卖可以有利润，就卖出去，再买回来，继续往后看
+        if (prices[i] &amp;gt; prices[i-1])
+            sum += prices[i] - prices[i-1];
+    }
+
+    return sum;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;买卖股票的最佳时机-iii-3&#34;&gt;&lt;a href=&#34;http://www.lintcode.com/zh-cn/problem/best-time-to-buy-and-sell-stock-iii/&#34;&gt;买卖股票的最佳时机 III&lt;/a&gt;&lt;/h2&gt;
+
+&lt;p&gt;思路：&lt;/p&gt;
+
+&lt;p&gt;因为是可以完成两笔交易，所以最最容易想到的办法就是对每个时间点i，分别计算1~i 和 i~n 所能获得的最大利润和。但这样时间复杂度为 O(n^2)。但是我们知道我们在计算1~i的最大利润的时候，1~i-1的利润已经计算过了，不需要再重新计算一遍，因此：&lt;strong&gt;保存两个数组，left[i], right[i],分别记录从左到右和从右往左分别到i位置所能产生的最大利润，最后直接遍历一遍两个数组就可以了，找出最大的left[i] + right[i] 组合，该解法实际上就是将 1 的解法双向各执行一遍记录结果&lt;/strong&gt;。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;int maxProfit(vector&amp;lt;int&amp;gt; &amp;amp;prices) {
+    // write your code here
+    if(prices.empty()) return 0;
+
+    vector&amp;lt;int&amp;gt; left (prices.size(), 0);
+    vector&amp;lt;int&amp;gt; right (prices.size(), 0);
+
+    int leftMin = prices[0];
+    int rightMax = prices[prices.size()-1];
+
+    int sum = 0;
+    //计算左半段最大收益
+    for(int i = 1 ; i &amp;lt; prices.size(); ++i){
+        leftMin = min(prices[i], leftMin);
+        left[i] = max(prices[i] - leftMin, left[i-1]);
+    }
+    //计算右半段最大收益
+    for(int i = prices.size() - 2 ; i &amp;gt;= 0; --i){
+        rightMax = max(prices[i], rightMax);
+        right[i] = max(rightMax - prices[i], right[i+1]);
+    }
+    //找出两次交易最大收益组合
+    for(int i = 0 ; i &amp;lt; prices.size(); ++i){
+        if( (left[i]+right[i]) &amp;gt; sum ) 
+            sum = left[i] + right[i];
+    }
+    return sum;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;在网上还看到一种解法，十分巧妙：其实我们并不需要知道每个时间点买卖第一第二笔股票收益的全部信息，我们只要知道前一个时间点买卖第一第二笔股票的最大收益信息，就可以直到当前最大的收益信息了，这样可以为我们省去额外空间。这里我们遍历prices数组的时候，维护四个变量:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;release2是在该价格点卖出第二笔股票后手里剩的钱，等于上一轮买入第二笔股票后手里剩的钱加上卖出当前股票价格的钱，或者上一轮卖出第二笔股票后手里剩的钱两者中较大的。&lt;/li&gt;
+&lt;li&gt;hold2是在该价格点买入第二笔股票后手里剩的钱，等于上一轮卖出第一笔股票后手里剩的钱减去买入当前股票价格的钱，或者上一轮买入第二笔股票后手里剩的钱两者中较大的。&lt;/li&gt;
+&lt;li&gt;release1是在该价格点卖出第一笔股票后手里剩的钱，等于上一轮买入第一笔股票后手里剩的钱加上卖出当前股票价格的钱，或者上一轮卖出第一笔股票后手里剩的钱两者中较大的。&lt;/li&gt;
+&lt;li&gt;hold1是在该价格点买入第一笔股票后手里剩的钱，等于初始资金减去买入当前股票价格的钱或者初始资金（不买）中较大的。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;这里计算顺序按照release2 -&amp;gt; hold2 -&amp;gt; release1 -&amp;gt; hold1，因为卖是要后于买的，而第二次交易也是后于第一次交易的，通过这个顺序我们能用这些变量自身来记录上次的值。相当于release2的时间点要先于hold1四个点。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;int maxProfit(vector&amp;lt;int&amp;gt; &amp;amp;prices) {
+    // write your code here
+    int hold1 = INT_MIN, hold2 = INT_MIN;
+    int release1 = 0, release2 = 0;
+    int n = prices.size();
+    for(int i = 0; i &amp;lt; n; ++i){
+        // 在该价格点卖出第二笔股票后手里剩的钱，等于上一轮买入第二笔股票后手里剩的钱加上卖出当前股票价格的钱
+        // 或者上一轮卖出第二笔股票后手里剩的钱两者中较大的
+        release2 = max(release2, hold2 + prices[i]);
+        // 在该价格点买入第二笔股票后手里剩的钱，等于上一轮卖出第一笔股票后手里剩的钱减去买入当前股票价格的钱
+        // 或者上一轮买入第二笔股票后手里剩的钱两者中较大的
+        hold2 = max(hold2, release1 - prices[i]);
+        // 在该价格点卖出第一笔股票后手里剩的钱，等于上一轮买入第一笔股票后手里剩的钱加上卖出当前股票价格的钱
+        // 或者上一轮卖出第一笔股票后手里剩的钱两者中较大的
+        release1 = max(release1, hold1 + prices[i]);
+        // 在该价格点买入第一笔股票后手里剩的钱，等于初始资金减去买入当前股票价格的钱
+        // 或者初始资金（不买）中较大的
+        hold1 = max(hold1, 0 - prices[i]);
+    }
+    return release2;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;买卖股票的最佳时机-iv-4&#34;&gt;&lt;a href=&#34;http://www.lintcode.com/zh-cn/problem/best-time-to-buy-and-sell-stock-iv/&#34;&gt;买卖股票的最佳时机 IV&lt;/a&gt;&lt;/h2&gt;
+
+&lt;p&gt;思路：&lt;/p&gt;
+
+&lt;p&gt;我们将第 i 天已经执行 j 笔交易的最大收益作为全局变量 global[i][j], 将第 i 天正好完成第 j 笔交易的最大收益作为局部变量 local[i][j].&lt;/p&gt;
+
+&lt;p&gt;也就是说， global[i][j] 就是我们最终要得到的结果，但 local[i][j] 的意思是，再第i天必须当天完成第j笔交易，而 global[i][j] 则不需要。&lt;/p&gt;
+
+&lt;p&gt;对于 global[i][j], 也就是我们要知道的第i天已经完成j笔交易获得的最大收益，可以基于第 i-1 天完成 j 笔交易的最大收益与 第 i 天正好完成第 j 笔交易的最大收益，即 global[i][j] = max ( global[i-1][j], local[i][j] ).&lt;/p&gt;
+
+&lt;p&gt;对于 local[i][j], 也就是我们要求的第i天刚好完成第j笔交易的最大收益，可以基于第i-1天正好完成第j-1笔交易的最大收益加上当天交易的差值， 还有第i-1天正好完成第j笔交易的最大收益加上当天交易的差值。 要注意的是，&lt;/p&gt;
+
+&lt;p&gt;第i-1天正好完成第j-1笔交易的这种情况，当前交易的差值去0和实际昨天今天差价中较大的那个，因为如果我们还剩下1次交易机会，如果prices[i] &amp;gt; prices[i-1],我们完全可以在第i-1天完成第j-1笔交易后，再当天买入，第i天卖出。&lt;/p&gt;
+
+&lt;p&gt;但是对于第i-1天正好完成第j笔交易这种情况，因为第i-1天正好完成第j笔交易，那么第i天的交易其实在第i-1天交易里面，也就是第i天要连着第i-1天交易，使得第i-1天完成的第j笔交易正好和第i天完成的第j笔交易是同一天交易，所以无论prices[i]是否大于prices[i-1], 这次交易都要进行下去，所以local[i][j] = max ( global[i-1][j-1] + max (diff, 0), local[i-1][j] + diff);diff = prices[i] - prices[i-1].&lt;/p&gt;
+
+&lt;p&gt;PS:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;对于k &amp;gt; n /
+2的情况，我们可以用II的解法来节省空间。因为按照题意必须先买后卖，那么对于n天交易，能够产生有效收益的交易次数是小于等于n/2的，只有不同天买卖才能产生差价。对于大于n/2的那部分交易，必定是当天买卖没有任何收益的，无论交易多少次都是一样的。所以如果k &amp;gt; n / 2，就相当于无限次交易。
+&lt;br /&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;这种方法理解了很简单，但真要自己写出来很难。我也没有写出来，还是参考的别人的答案才做出来，还需努力啊。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;int maxProfit(int k, vector&amp;lt;int&amp;gt; &amp;amp;prices) {
+    // write your code here
+    if(prices.empty()) return 0;
+    //用II的解法优化k &amp;gt; n / 2的情况
+    int n = prices.size();
+    if(k &amp;gt; n / 2){
+        int sum = 0;
+        for(int i = 1; i &amp;lt; n; ++i){
+            if(prices[i] &amp;gt; prices[i-1]) sum += prices[i] - prices[i-1];
+        }
+        return sum;
+    }
+    //初始化全局变量和局部变量
+    vector&amp;lt;vector&amp;lt;int&amp;gt;&amp;gt; local(n+1, vector&amp;lt;int&amp;gt;(k+1, 0));
+    vector&amp;lt;vector&amp;lt;int&amp;gt;&amp;gt; global(n+1, vector&amp;lt;int&amp;gt;(k+1, 0));
+
+    for(int i = 1; i &amp;lt; n; ++i){
+        int diff = prices[i] - prices[i-1];
+        for(int j = 1; j &amp;lt; k + 1; ++j){
+            //更新局部变量
+            local[i][j] = max(global[i-1][j-1] + max(0, diff), local[i-1][j] + diff);
+            //更新全局变量
+            global[i][j] = max(global[i-1][j], local[i][j]);
+        }
+    }
+    return global[n - 1][k];
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;还有一种解法，类似于 ||| 中后一种解法一样，区别是我们这次要用 2K 个变量来记录 K 次交易。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;int maxProfit(int k, vector&amp;lt;int&amp;gt; &amp;amp;prices) {
+    // write your code here
+    if(prices.empty()) return 0;
+    //用II的解法优化k &amp;gt; n / 2的情况
+    int n = prices.size();
+
+    if(k &amp;gt; n / 2){
+        int sum = 0;
+        for(int i = 1; i &amp;lt; n; ++i){
+            if(prices[i] &amp;gt; prices[i-1]) sum += prices[i] - prices[i-1];
+        }
+        return sum;
+    }
+    //初始化买卖股票后剩余金钱的数组
+    vector&amp;lt;int&amp;gt; release (k + 1, 0);
+    vector&amp;lt;int&amp;gt; hold    (k + 1, INT_MIN);
+
+
+    for(int i = 0; i &amp;lt; n; i++){
+        for(int j = 1; j &amp;lt; k+1; ++j){
+            //卖出第j笔交易，所剩余的钱
+            release[j] = max(release[j], hold[j] + prices[i]);
+            //买入第j笔交易，所剩余的钱
+            hold[j] = max(hold[j], release[j-1] - prices[i]);
+        }
+    }
+    return release[k];
+}
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>LintCode 克隆二叉树</title>
+      <link>https://shiweihou.github.io/lintcode/2016-10-09-02/</link>
+      <pubDate>Sun, 09 Oct 2016 20:57:46 +0800</pubDate>
+      
+      <guid>https://shiweihou.github.io/lintcode/2016-10-09-02/</guid>
+      <description>&lt;p&gt;题目链接：&lt;a href=&#34;http://www.lintcode.com/zh-cn/problem/clone-binary-tree/&#34;&gt;LintCode 克隆二叉树&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;很简单，就是在对二叉树进行遍历的时候重新生成节点就可以了，前序、中序或者后序遍历都可以，我用的是前序遍历：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;/**
+* Definition of TreeNode:
+* class TreeNode {
+* public:
+*     int val;
+*     TreeNode *left, *right;
+*     TreeNode(int val) {
+*         this-&amp;gt;val = val;
+*         this-&amp;gt;left = this-&amp;gt;right = NULL;
+*     }
+* }
+*/
+class Solution {
+public:
+/**
+ * @param root: The root of binary tree
+ * @return root of new tree
+ */
+TreeNode* cloneTree(TreeNode *root) {
+    // Write your code here
+    if (root == NULL) return NULL;
+    TreeNode *newRoot = new TreeNode(root-&amp;gt;val);
+    if (root-&amp;gt;left) newRoot-&amp;gt;left = cloneTree(root-&amp;gt;left);
+    if (root-&amp;gt;right) newRoot-&amp;gt;right = cloneTree(root-&amp;gt;right);
+    return newRoot;
+    }
+};
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>LintCode 平面列表</title>
+      <link>https://shiweihou.github.io/lintcode/2016-10-09-01/</link>
+      <pubDate>Sun, 09 Oct 2016 20:43:08 +0800</pubDate>
+      
+      <guid>https://shiweihou.github.io/lintcode/2016-10-09-01/</guid>
+      <description>&lt;p&gt;不贴题目描述了，链接在这：&lt;a href=&#34;http://www.lintcode.com/zh-cn/problem/flatten-list/&#34;&gt;LintCode 平面列表&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;因为这个用递归就特别好做，只要一直递归层次就行，知道为空或者找到数字。递归的代码就不写了，很简单。题目希望我们可以用非递归的方法，一般像这种嵌套的查找，都可以用栈来实现，注意栈内元素是先进后出的，也就是说出来的元素顺序和原始列表中是相反的，因此需要做一次反转操作，代码如下：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;class Solution {
+public:
+// @param nestedList a list of NestedInteger
+// @return a list of integer
+vector&amp;lt;int&amp;gt; flatten(vector&amp;lt;NestedInteger&amp;gt; &amp;amp;nestedList) {
+    // Write your code here
+    vector&amp;lt;int&amp;gt; ret;
+    vector&amp;lt;int&amp;gt; tmpans;
+    if (nestedList.empty()) return ret;
+    int n = nestedList.size();
+    for (int i = 0; i &amp;lt; n; ++i) {
+        if (nestedList[i].isInteger()) ret.push_back(nestedList[i].getInteger());
+        else {
+            tmpans.clear();
+            NestedInteger tmp = nestedList[i];
+            stack&amp;lt;NestedInteger&amp;gt; st;
+            st.push(tmp);
+            while (st.empty() == false) {
+                tmp = st.top();
+                st.pop();
+                if (tmp.isInteger()) tmpans.push_back(tmp.getInteger());
+                else {
+                    vector&amp;lt;NestedInteger&amp;gt; vn = tmp.getList();
+                    for (int i = 0; i &amp;lt; vn.size(); ++i) st.push(vn[i]);
+                }
+            }
+            if (tmpans.empty() == false) {
+                reverse(tmpans.begin(), tmpans.end());
+                for (int i = 0; i &amp;lt; tmpans.size(); ++i) ret.push_back(tmpans[i]);
+            }
+        }
+    }
+
+    return ret;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;很惊讶的是，我想用栈可以做，那我用队列也可以啊，而且队列是先进先出的，元素顺序是不变的，多好？然而结果出来大吃一惊，发现是有问题，同一个列表元素相对顺序没问题，但整体顺序出现了问题，用队列的代码如下：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;class Solution {
+public:
+// @param nestedList a list of NestedInteger
+// @return a list of integer
+vector&amp;lt;int&amp;gt; flatten(vector&amp;lt;NestedInteger&amp;gt; &amp;amp;nestedList) {
+    // Write your code here
+    vector&amp;lt;int&amp;gt; ret;
+    vector&amp;lt;int&amp;gt; tmpans;
+    if (nestedList.empty()) return ret;
+    int n = nestedList.size();
+    for (int i = 0; i &amp;lt; n; ++i) {
+        if (nestedList[i].isInteger()) ret.push_back(nestedList[i].getInteger());
+        else {
+            tmpans.clear();
+            NestedInteger tmp = nestedList[i];
+            queue&amp;lt;NestedInteger&amp;gt; qt;
+            qt.push(tmp);
+            while (qt.empty() == false) {
+                tmp = qt.front();
+                qt.pop();
+                if (tmp.isInteger()) ret.push_back(tmp.getInteger());
+                else {
+                    vector&amp;lt;NestedInteger&amp;gt; vn = tmp.getList();
+                    for (int i = 0; i &amp;lt; vn.size(); ++i) qt.push(vn[i]);
+                }
+            }
+        }
+    }
+
+    return ret;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;例如对于输入数据&lt;code&gt;[[1,1],2,[1,1]]&lt;/code&gt;,我得到的结果是&lt;code&gt;[2,1,1,1,1]&lt;/code&gt;,本来应该是&lt;code&gt;[1,1,2,1,1]&lt;/code&gt;,但是我用其它数据测试的时候，例如&lt;code&gt;[1,2,[1,1]]&lt;/code&gt;,我的结果和答案是一致的，再比如&lt;code&gt;[[1,2],3,[1,1]]&lt;/code&gt;,我的答案是&lt;code&gt;[3,1,2,1,1]&lt;/code&gt;,而正确答案为&lt;code&gt;[1,2,3,1,1]&lt;/code&gt;,好像就是如果第一个元素是列表的话，就会出错，我没有想明白为什么。&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>LintCode 和大于S的最小子数组</title>
