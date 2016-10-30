@@ -5,8 +5,187 @@
     <link>https://shiweiHou.github.io/</link>
     <description>Recent content on Hello world!</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Thu, 13 Oct 2016 20:46:54 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 30 Oct 2016 16:10:31 +0800</lastBuildDate>
     <atom:link href="https://shiweiHou.github.io/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>线性回归</title>
+      <link>https://shiweihou.github.io/machinelearning/ex1/</link>
+      <pubDate>Sun, 30 Oct 2016 16:10:31 +0800</pubDate>
+      
+      <guid>https://shiweihou.github.io/machinelearning/ex1/</guid>
+      <description>
+
+&lt;p&gt;从今天开始，开始记录学习机器学习学习过程。目前的学习方法是根据&lt;a href=&#34;https://www.coursera.org/learn/machine-learning&#34;&gt;Coursera&lt;/a&gt;上Andrew Ng大牛的机器学习课程，据说是同名的斯坦福大学公开课的简化版本，仅介绍基本原理及提供配套的练习，非常适合新手入门。强烈推荐大家去看下视频，讲解的很详细，而且还有配套的演示过程，非常适合新手。&lt;/p&gt;
+
+&lt;p&gt;有关线性回归的具体内容我就不多说了，网上例子有很多，教程有很多，我只谈下在学习过程中自己遇到的一些问题及看法：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;在学习过程中，参数需要同时更新，不能用更新好的参数去更新下一个参数，例如不能用更新好的 theta0 去更新 theta1.&lt;/li&gt;
+&lt;li&gt;如果数据特征变化尺度过大，例如x1在[1,10]范围内，而x2就在[10000,10000000]范围内，就需要进行特征缩放，重新缩放特征的范围到[0, 1]或[-1, 1]。&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;顺便贴下第一课的课后作业的答案：&lt;/p&gt;
+
+&lt;h2 id=&#34;computecost-m&#34;&gt;computeCost.m&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code&gt;function J = computeCost(X, y, theta)
+%COMPUTECOST Compute cost for linear regression
+%   J = COMPUTECOST(X, y, theta) computes the cost of using theta as the
+%   parameter for linear regression to fit the data points in X and y
+% Initialize some useful values
+m = length(y); % number of training examples
+% You need to return the following variables correctly 
+J = 0;
+% ====================== YOUR CODE HERE ======================
+% Instructions: Compute the cost of a particular choice of theta
+%               You should set J to the cost.
+for i = 1 : m,
+J = J + (theta(1) * X(i,1) + theta(2) * X(i,2) - y(i)) ^ 2;
+end
+J = J / (2 * m);
+% =========================================================================
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;computecostmulti-m&#34;&gt;computeCostMulti.m&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code&gt;function J = computeCostMulti(X, y, theta)
+%COMPUTECOSTMULTI Compute cost for linear regression with multiple variables
+%   J = COMPUTECOSTMULTI(X, y, theta) computes the cost of using theta as the
+%   parameter for linear regression to fit the data points in X and y
+% Initialize some useful values
+m = length(y); % number of training examples
+% You need to return the following variables correctly 
+J = 0;
+% ====================== YOUR CODE HERE ======================
+% Instructions: Compute the cost of a particular choice of theta
+%               You should set J to the cost.
+for i = 1 : m 
+    JJ = 0;
+    for j = 1 : size(theta,1)
+        JJ = JJ + theta(j) * X(i,j);
+    end
+    JJ = JJ - y(i);
+    J = J + JJ ^ 2;
+end
+J = J / (2 * m);
+% =========================================================================
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;featurenormalize-m&#34;&gt;featureNormalize.m&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code&gt;function [X_norm, mu, sigma] = featureNormalize(X)
+%FEATURENORMALIZE Normalizes the features in X 
+%   FEATURENORMALIZE(X) returns a normalized version of X where
+%   the mean value of each feature is 0 and the standard deviation
+%   is 1. This is often a good preprocessing step to do when
+%   working with learning algorithms.
+% You need to set these values correctly
+X_norm = X;
+mu = zeros(1, size(X, 2));
+sigma = zeros(1, size(X, 2));
+% ====================== YOUR CODE HERE ======================
+% Instructions: First, for each feature dimension, compute the mean
+%               of the feature and subtract it from the dataset,
+%               storing the mean value in mu. Next, compute the 
+%               standard deviation of each feature and divide
+%               each feature by it&#39;s standard deviation, storing
+%               the standard deviation in sigma. 
+%
+%               Note that X is a matrix where each column is a 
+%               feature and each row is an example. You need 
+%               to perform the normalization separately for 
+%               each feature. 
+%
+% Hint: You might find the &#39;mean&#39; and &#39;std&#39; functions useful.
+%       
+avg = mean(X);
+piancha = std(X);
+for row = 1 : size(X,1)
+    for col = 1 : size(X,2)
+        X_norm(row,col) = (X(row,col) - avg(col)) / piancha(col);
+    end
+end
+mu = avg;
+sigma = piancha;
+% ============================================================
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;gradientdescent-m&#34;&gt;gradientDescent.m&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code&gt;function [theta, J_history] = gradientDescent(X, y, theta, alpha, num_iters)
+%GRADIENTDESCENT Performs gradient descent to learn theta
+%   theta = GRADIENTDESENT(X, y, theta, alpha, num_iters) updates theta by 
+%   taking num_iters gradient steps with learning rate alpha
+
+% Initialize some useful values
+m = length(y); % number of training examples
+J_history = zeros(num_iters, 1);
+
+for iter = 1:num_iters
+% ====================== YOUR CODE HERE ======================
+% Instructions: Perform a single gradient step on the parameter vector
+%               theta. 
+%
+% Hint: While debugging, it can be useful to print out the values
+%       of the cost function (computeCost) and gradient here.
+%
+% ============================================================
+% Save the cost J in every iteration    
+    J_history(iter) = computeCost(X, y, theta);
+    theta1 = theta;
+    for j = 1:2
+    J = 0;
+    for i = 1 : m
+        J = J + (theta(1) * X(i,1) + theta(2) * X(i,2) - y(i)) * X(i,j);
+    end
+    theta1(j) = theta(j) - alpha * J / m;
+    end
+    theta = theta1;
+end
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;gradientdescentmulti-m&#34;&gt;gradientDescentMulti.m&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code&gt;function [theta, J_history] = gradientDescent(X, y, theta, alpha, num_iters)
+%GRADIENTDESCENT Performs gradient descent to learn theta
+%   theta = GRADIENTDESENT(X, y, theta, alpha, num_iters) updates theta by 
+%   taking num_iters gradient steps with learning rate alpha
+
+% Initialize some useful values
+m = length(y); % number of training examples
+J_history = zeros(num_iters, 1);
+
+for iter = 1:num_iters
+% ====================== YOUR CODE HERE ======================
+% Instructions: Perform a single gradient step on the parameter vector
+%               theta. 
+%
+% Hint: While debugging, it can be useful to print out the values
+%       of the cost function (computeCost) and gradient here.
+%
+% ============================================================
+% Save the cost J in every iteration    
+    J_history(iter) = computeCost(X, y, theta);
+    theta1 = theta;
+    for j = 1:2
+    J = 0;
+    for i = 1 : m
+        J = J + (theta(1) * X(i,1) + theta(2) * X(i,2) - y(i)) * X(i,j);
+    end
+    theta1(j) = theta(j) - alpha * J / m;
+    end
+    theta = theta1;
+end
+
+end
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
     
     <item>
       <title>LintCode 二进制表示</title>
@@ -1125,52 +1304,6 @@ string longestPalindrome(string&amp;amp; s) {
       
       <guid>https://shiweihou.github.io/lintcode/first/</guid>
       <description>&lt;p&gt;lintcode&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>C&#43;&#43; explicit关键字</title>
-      <link>https://shiweihou.github.io/cplusplus/C&#43;&#43;%20explicit%E5%85%B3%E9%94%AE%E5%AD%97/</link>
-      <pubDate>Sat, 17 Sep 2016 15:08:13 +0800</pubDate>
-      
-      <guid>https://shiweihou.github.io/cplusplus/C&#43;&#43;%20explicit%E5%85%B3%E9%94%AE%E5%AD%97/</guid>
-      <description>&lt;p&gt;&lt;strong&gt;被声明为explicit的构造函数通常比其non-explicit兄弟更受欢迎，因为它们禁止编译器执行非预期（往往也不被期望）的类型转换。&lt;/strong&gt;&lt;/p&gt;
-
-&lt;p&gt;C++ explicit关键字用于修饰类的构造函数，用于显示的表明类的构造函数是显示的，禁止编译器执行非预期的（大部分都是隐式的，不受期待的）类型转换。
-例如对于一个类：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;class A{
-public:
-     A(int num);//默认构造函数
-     int _num;
-};
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;如果我们执行：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;A a1(3);
-A a1 = 3;//编译器会将整型的 3 转换为 类A 的形式，类似于 A temp(3); A a1 = temp;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;这个操作
-这两种方式都是正确的，都是定义了一个类对象并默认初始化num为3.但是有个问题，对于第二种定义方式，我们原意可能并不是想将3作为类的初始值，而是
-对类内的某个属性进行初始化（更一般来讲，我们看到 A a1 = 3 这种形式的代码的时候，会下意识的认为A是一个类型而不是一个类）这样，就会产生一个显示的错误：对一个类进行赋值而不是对一个类型进行赋值。&lt;/p&gt;
-
-&lt;p&gt;要避免这种情况就需要在类的构造函数前键入explicit关键字，用于告诉编译器，禁止&lt;strong&gt;隐性的类型转换。&lt;/strong&gt;&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;class A{
-public:
-     explicit A(int num);//默认构造函数
-     int _num;
-};
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;再执行&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;A a1 = 3;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;就会提示错误了。&lt;/p&gt;
 </description>
     </item>
     
