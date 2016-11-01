@@ -5,8 +5,62 @@
     <link>https://shiweiHou.github.io/lintcode/</link>
     <description>Recent content in Lintcodes on Hello world!</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Thu, 13 Oct 2016 20:46:54 +0800</lastBuildDate>
+    <lastBuildDate>Mon, 31 Oct 2016 20:01:12 +0800</lastBuildDate>
     <atom:link href="https://shiweiHou.github.io/lintcode/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>LintCode 分糖果</title>
+      <link>https://shiweihou.github.io/lintcode/2016-10-31-01/</link>
+      <pubDate>Mon, 31 Oct 2016 20:01:12 +0800</pubDate>
+      
+      <guid>https://shiweihou.github.io/lintcode/2016-10-31-01/</guid>
+      <description>&lt;p&gt;题目链接：&lt;a href=&#34;http://www.lintcode.com/zh-cn/problem/candy/&#34;&gt;分糖果&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;思路：&lt;/p&gt;
+
+&lt;p&gt;一开始想的先排序，然后从低到高遍历，定义一个rat和pre，rat保存当前需要加的糖果数，pre为上一个rating，如果当前ratings[i] == pre， 就将rat置为1，不是就将rat++。。。。。后来发现不是这么做的，因为测试数据怎么都过不了。&lt;/p&gt;
+
+&lt;p&gt;首先，不能排序！不能改变原有的顺序！题目的意思应该理解为“ 当前rating如果比其左右都高的话，其糖果个数不应该小于其左右的糖果个数”。 所以需要遍历两次，&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;首先从左到右遍历一次，保证当右边的rating大于其左边的rating值时，糖果个数不小于左边的糖果值&lt;/li&gt;
+&lt;li&gt;然后从右往左再遍历一次，保证当左边的rating大于其右边的rating值时，糖果个数不小于右边的糖果值&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;最后所有的加起来就可以了&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;class Solution {
+public:
+    /**
+     * @param ratings Children&#39;s ratings
+     * @return the minimum candies you must give
+     */
+    int candy(vector&amp;lt;int&amp;gt;&amp;amp; ratings) {
+        // Write your code here
+        int sum = 0;
+        int len = ratings.size();
+        int *num = new int[len];
+
+        num[0] = 1;
+        // 从左往右
+        for (int i = 1; i &amp;lt; len; ++i) {
+            num[i] = ratings[i] &amp;gt; ratings[i-1] ? num[i-1] + 1 : 1;
+        }
+        //从右往左
+        for (int i = len - 1; i &amp;gt; 0; --i) {
+            num[i - 1] = ratings[i] &amp;lt; ratings[i-1] ? max(num[i] + 1, num[i - 1]) : num[i - 1];
+        }
+        for (int i = 0; i &amp;lt; len; ++i) sum += num[i];
+
+        delete []num;
+        return sum;
+    }
+};
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;，&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>LintCode 二进制表示</title>

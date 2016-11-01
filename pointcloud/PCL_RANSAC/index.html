@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+  <title>
+    利用PCL对三维点云进行面提取 // Hello world!
+  </title>
+
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+<meta name="description" content="">
+<meta name="keywords" content="">
+<meta name="author" content="">
+<meta name="generator" content="Hugo 0.16" />
+
+  <meta property="og:title" content="利用PCL对三维点云进行面提取" />
+<meta property="og:description" content="" />
+<meta property="og:type" content="website" />
+<meta property="og:locale" content="en_US" />
+<meta property="og:url" content="https://shiweihou.github.io/pointcloud/PCL_RANSAC/" />
+
+
+  
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.5.0/base-min.css">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.5.0/pure-min.css">
+  
+  
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.5.0/grids-responsive-min.css">
+  
+  
+
+  <link rel="stylesheet" href="https://shiweihou.github.io//css/redlounge.css">
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet">
+  <link href='//fonts.googleapis.com/css?family=Raleway:400,200,100,700,300,500,600,800' rel='stylesheet' type='text/css'>
+  <link href='//fonts.googleapis.com/css?family=Libre+Baskerville:400,700,400italic' rel='stylesheet' type='text/css'>
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.png">
+
+  
+  <link href="" rel="alternate" type="application/rss+xml" title="Hello world!" />
+
+    
+  
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.7/styles/tomorrow-night-bright.min.css">
+  
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.7/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+
+
+  
+
+  
+
+  
+
+  
+</head>
+
+<body>
+	
+
+	<div id="layout" class="pure-g">
+    <div class="sidebar pure-u-1 pure-u-md-1-4">
+  <div class="header">
+    
+
+	
+	  <img src="/img/1.jpg" class="sidebarphoto">
+	
+
+    <h1 class="brand-title">Matthew</h1>
+    <h2 class="brand-tagline">积跬步，至千里</h2>
+
+    <nav class="nav">
+      <ul class="nav-list">
+        <li class="nav-item"><span class="nav-item-separator">//</span><a href="https://shiweihou.github.io/">Home</a></li>
+        
+          <li class="nav-item"><span class="nav-item-separator">//</span><a href="/cplusplus/">C&#43;&#43;</a></li>
+        
+          <li class="nav-item"><span class="nav-item-separator">//</span><a href="/machinelearning/">Machine Learning</a></li>
+        
+          <li class="nav-item"><span class="nav-item-separator">//</span><a href="/pointcloud/">PointClouds</a></li>
+        
+          <li class="nav-item"><span class="nav-item-separator">//</span><a href="/algorithm/">algorithm</a></li>
+        
+          <li class="nav-item"><span class="nav-item-separator">//</span><a href="/lintcode/">lintcode</a></li>
+        
+      </ul>
+    </nav>
+
+    
+
+  </div>
+</div>
+
+	
+	
+
+    <div class="content pure-u-1 pure-u-md-3-4">
+		<a name="top"></a>
+		
+
+		
+			
+	    
+  		<section class="post">
+            <h1 class="post-title">
+              <a href="/pointcloud/PCL_RANSAC/">利用PCL对三维点云进行面提取</a>
+            </h1>
+            <h3 class="post-subtitle">
+            	
+            </h3>
+            
+            	<span class="post-date">
+                	<span class="post-date-day"><sup>1</sup></span><span class="post-date-separator">/</span><span class="post-date-month">Nov</span> <span class="post-date-year">2016</span>
+            	</span>
+            	
+            
+            	
+            
+
+			
+			
+
+			
+
+			
+
+            <p>因为要做三维重建，早上刚和老师讨论下基本流程，目前的想法是先提取出室内建筑物的线框结构，然后利用线框结构进行表面重建。后来有个师兄讲可以先利用PCL里RANSAC函数先进行面提取，所以就试了下。下面是主要代码，一些内容都写到注释里面去了：</p>
+
+<pre><code>bool LasFunction::ransac(void) {
+    std::string fileName = &quot;basementCut.las&quot;;
+    pcl::PointCloud&lt;pcl::PointXYZ&gt;::Ptr cloud (new pcl::PointCloud&lt;pcl::PointXYZ&gt;);
+    CLasOperator las;
+    las.readLasFile(fileName.c_str());
+    std::vector&lt;Point3D&gt; points = las.getPointData();
+    for (size_t i = 0; i &lt; points.size(); ++i) {
+        pcl::PointXYZ onepoint;
+        onepoint.x = points[i].x;
+        onepoint.y = points[i].y;
+        onepoint.z = points[i].z;
+        cloud-&gt;push_back(onepoint);
+    }
+    // Create the filtering object: downsample the dataset using a leaf size of 1cm
+    // 用来进行降采样操作，应该就是用LeafSize进行，里面单位是以m为单位，在这么个立方体内，得到一个点
+    pcl::VoxelGrid&lt;pcl::PointXYZ&gt; vg;
+    pcl::PointCloud&lt;pcl::PointXYZ&gt;::Ptr cloud_filtered(new pcl::PointCloud&lt;pcl::PointXYZ&gt;);
+    vg.setInputCloud(cloud);
+    vg.setLeafSize(0.1f, 0.1f, 0.1f);
+    vg.filter(*cloud_filtered);
+    std::cout &lt;&lt; &quot;PointCloud before filtering has: &quot; &lt;&lt; cloud-&gt;points.size() &lt;&lt; &quot; data points.&quot; &lt;&lt; std::endl;
+    std::cout &lt;&lt; &quot;PointCloud after filtering has: &quot; &lt;&lt; cloud_filtered-&gt;points.size() &lt;&lt; &quot; data points.&quot; &lt;&lt; std::endl;
+
+
+    //构建一个ransac分割器，inliers存储索引，即到底哪些个点是在ransac得到的目标内，setModelType是用来表示ransac分割到底是分割成面或者分割成线或者分割成其它形状，coefficients用来存储系数，即加入表示的是个平面的话，点应该在类似于 a*x + b*y + c*z + d = 0内
+
+    pcl::ModelCoefficients::Ptr coefficients (new pcl::ModelCoefficients);
+    pcl::PointIndices::Ptr inliers (new pcl::PointIndices);
+    pcl::SACSegmentation&lt;pcl::PointXYZ&gt; sac;
+    sac.setInputCloud(cloud);
+    sac.setMethodType(pcl::SAC_RANSAC);
+    sac.setModelType(pcl::SACMODEL_PLANE);
+    //sac.setModelType(pcl::SACMODEL_LINE);
+    sac.setDistanceThreshold(0.01);
+    sac.setMaxIterations(100);
+    sac.setProbability(0.9);
+
+
+    pcl::PointCloud&lt;pcl::PointXYZ&gt;::Ptr cloud_plane(new pcl::PointCloud&lt;pcl::PointXYZ&gt;());
+    pcl::PointCloud&lt;pcl::PointXYZ&gt;::Ptr cloud_f(new pcl::PointCloud&lt;pcl::PointXYZ&gt;());
+    int num = 1;
+
+    // 保留原始点云中点云数量多少
+    int nr_points = (int)cloud_filtered-&gt;points.size();
+
+    // 可以生成多个面，直到剩余点云中点的数量小于原始点云数量的 1/10
+    while (cloud_filtered-&gt;points.size() &gt; 0.1 * nr_points) {
+        sac.setInputCloud(cloud_filtered);
+        sac.segment(*inliers, *coefficients);
+        if (inliers-&gt;indices.size() == 0) {
+            std::cout &lt;&lt; &quot;Could not estimate a planar nodel for the given dataset.&quot; &lt;&lt; std::endl;
+            break;
+        }
+        // 构建析取模型
+        pcl::ExtractIndices&lt;pcl::PointXYZ&gt; extract;
+        extract.setInputCloud(cloud_filtered);
+        extract.setIndices(inliers);
+        //如果为真，则前面放进去点除了索引里面的都会保留下来
+        //否则，只保留下索引里面的点，通过filter函数将需要保留下的点放进去 
+        extract.setNegative(false);     
+        extract.filter(*cloud_plane);
+        for (size_t i = 0; i &lt; inliers-&gt;indices.size(); ++i) {
+            pcl::PointXYZ onePoint;
+            onePoint.x = cloud_filtered-&gt;points[inliers-&gt;indices[i]].x;
+            onePoint.y = cloud_filtered-&gt;points[inliers-&gt;indices[i]].y;
+            onePoint.z = cloud_filtered-&gt;points[inliers-&gt;indices[i]].z;
+            cloud_plane-&gt;push_back(onePoint);
+        }
+        pcl::PCDWriter writer;
+        std::string fileName = &quot;ransacPlane&quot;, houzhui = &quot;.pcd&quot;;
+        fileName += std::to_string(num);
+        fileName += houzhui;
+        writer.write&lt;pcl::PointXYZ&gt;(fileName, *cloud_plane);
+        std::cout &lt;&lt; fileName &lt;&lt; &quot; is ok.&quot; &lt;&lt; std::endl;
+        ++num;
+
+        //再设置为真，这样点云中除了索引里面的点，都会保留下来，这样我们就将前面提取出来的面里点去除掉了
+        extract.setNegative(true);
+        extract.filter(*cloud_f);
+        cloud_filtered = cloud_f;
+    }
+
+    return true;
+</code></pre>
+
+<p>}</p>
+
+	
+			
+
+			
+
+			
+				<div class="paging">
+					<span class="paging-label">More Reading</span>
+					
+
+					
+					<div class="paging-older">
+						<span class="dark-red">Older</span><span class="decorative-marker">//</span>
+			            <a class="paging-link" href="/lintcode/2016-10-31-01/">LintCode 分糖果</a>
+		            </div>
+		            
+	            </div>
+            
+          </section>
+          
+          	
+          
+        
+      <div class="footer">
+	<hr class="thin" />
+	<div class="pure-menu pure-menu-horizontal pure-menu-open">
+		<ul class="footer-menu">
+		
+		</ul>
+	</div>
+
+	<p>&copy; 2016. Matthew Hou All rights reserved.</p>
+</div>
+    </div>
+  </div>
+	
+
+	
+
+  
+</body>
+</html>

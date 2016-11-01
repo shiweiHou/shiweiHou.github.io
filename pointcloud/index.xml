@@ -5,8 +5,105 @@
     <link>https://shiweiHou.github.io/pointcloud/</link>
     <description>Recent content in PointClouds on Hello world!</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Mon, 31 Oct 2016 15:45:15 +0800</lastBuildDate>
+    <lastBuildDate>Tue, 01 Nov 2016 21:15:04 +0800</lastBuildDate>
     <atom:link href="https://shiweiHou.github.io/pointcloud/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>利用PCL对三维点云进行面提取</title>
+      <link>https://shiweihou.github.io/pointcloud/PCL_RANSAC/</link>
+      <pubDate>Tue, 01 Nov 2016 21:15:04 +0800</pubDate>
+      
+      <guid>https://shiweihou.github.io/pointcloud/PCL_RANSAC/</guid>
+      <description>&lt;p&gt;因为要做三维重建，早上刚和老师讨论下基本流程，目前的想法是先提取出室内建筑物的线框结构，然后利用线框结构进行表面重建。后来有个师兄讲可以先利用PCL里RANSAC函数先进行面提取，所以就试了下。下面是主要代码，一些内容都写到注释里面去了：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;bool LasFunction::ransac(void) {
+    std::string fileName = &amp;quot;basementCut.las&amp;quot;;
+    pcl::PointCloud&amp;lt;pcl::PointXYZ&amp;gt;::Ptr cloud (new pcl::PointCloud&amp;lt;pcl::PointXYZ&amp;gt;);
+    CLasOperator las;
+    las.readLasFile(fileName.c_str());
+    std::vector&amp;lt;Point3D&amp;gt; points = las.getPointData();
+    for (size_t i = 0; i &amp;lt; points.size(); ++i) {
+        pcl::PointXYZ onepoint;
+        onepoint.x = points[i].x;
+        onepoint.y = points[i].y;
+        onepoint.z = points[i].z;
+        cloud-&amp;gt;push_back(onepoint);
+    }
+    // Create the filtering object: downsample the dataset using a leaf size of 1cm
+    // 用来进行降采样操作，应该就是用LeafSize进行，里面单位是以m为单位，在这么个立方体内，得到一个点
+    pcl::VoxelGrid&amp;lt;pcl::PointXYZ&amp;gt; vg;
+    pcl::PointCloud&amp;lt;pcl::PointXYZ&amp;gt;::Ptr cloud_filtered(new pcl::PointCloud&amp;lt;pcl::PointXYZ&amp;gt;);
+    vg.setInputCloud(cloud);
+    vg.setLeafSize(0.1f, 0.1f, 0.1f);
+    vg.filter(*cloud_filtered);
+    std::cout &amp;lt;&amp;lt; &amp;quot;PointCloud before filtering has: &amp;quot; &amp;lt;&amp;lt; cloud-&amp;gt;points.size() &amp;lt;&amp;lt; &amp;quot; data points.&amp;quot; &amp;lt;&amp;lt; std::endl;
+    std::cout &amp;lt;&amp;lt; &amp;quot;PointCloud after filtering has: &amp;quot; &amp;lt;&amp;lt; cloud_filtered-&amp;gt;points.size() &amp;lt;&amp;lt; &amp;quot; data points.&amp;quot; &amp;lt;&amp;lt; std::endl;
+
+
+    //构建一个ransac分割器，inliers存储索引，即到底哪些个点是在ransac得到的目标内，setModelType是用来表示ransac分割到底是分割成面或者分割成线或者分割成其它形状，coefficients用来存储系数，即加入表示的是个平面的话，点应该在类似于 a*x + b*y + c*z + d = 0内
+
+    pcl::ModelCoefficients::Ptr coefficients (new pcl::ModelCoefficients);
+    pcl::PointIndices::Ptr inliers (new pcl::PointIndices);
+    pcl::SACSegmentation&amp;lt;pcl::PointXYZ&amp;gt; sac;
+    sac.setInputCloud(cloud);
+    sac.setMethodType(pcl::SAC_RANSAC);
+    sac.setModelType(pcl::SACMODEL_PLANE);
+    //sac.setModelType(pcl::SACMODEL_LINE);
+    sac.setDistanceThreshold(0.01);
+    sac.setMaxIterations(100);
+    sac.setProbability(0.9);
+
+
+    pcl::PointCloud&amp;lt;pcl::PointXYZ&amp;gt;::Ptr cloud_plane(new pcl::PointCloud&amp;lt;pcl::PointXYZ&amp;gt;());
+    pcl::PointCloud&amp;lt;pcl::PointXYZ&amp;gt;::Ptr cloud_f(new pcl::PointCloud&amp;lt;pcl::PointXYZ&amp;gt;());
+    int num = 1;
+
+    // 保留原始点云中点云数量多少
+    int nr_points = (int)cloud_filtered-&amp;gt;points.size();
+
+    // 可以生成多个面，直到剩余点云中点的数量小于原始点云数量的 1/10
+    while (cloud_filtered-&amp;gt;points.size() &amp;gt; 0.1 * nr_points) {
+        sac.setInputCloud(cloud_filtered);
+        sac.segment(*inliers, *coefficients);
+        if (inliers-&amp;gt;indices.size() == 0) {
+            std::cout &amp;lt;&amp;lt; &amp;quot;Could not estimate a planar nodel for the given dataset.&amp;quot; &amp;lt;&amp;lt; std::endl;
+            break;
+        }
+        // 构建析取模型
+        pcl::ExtractIndices&amp;lt;pcl::PointXYZ&amp;gt; extract;
+        extract.setInputCloud(cloud_filtered);
+        extract.setIndices(inliers);
+        //如果为真，则前面放进去点除了索引里面的都会保留下来
+        //否则，只保留下索引里面的点，通过filter函数将需要保留下的点放进去 
+        extract.setNegative(false);     
+        extract.filter(*cloud_plane);
+        for (size_t i = 0; i &amp;lt; inliers-&amp;gt;indices.size(); ++i) {
+            pcl::PointXYZ onePoint;
+            onePoint.x = cloud_filtered-&amp;gt;points[inliers-&amp;gt;indices[i]].x;
+            onePoint.y = cloud_filtered-&amp;gt;points[inliers-&amp;gt;indices[i]].y;
+            onePoint.z = cloud_filtered-&amp;gt;points[inliers-&amp;gt;indices[i]].z;
+            cloud_plane-&amp;gt;push_back(onePoint);
+        }
+        pcl::PCDWriter writer;
+        std::string fileName = &amp;quot;ransacPlane&amp;quot;, houzhui = &amp;quot;.pcd&amp;quot;;
+        fileName += std::to_string(num);
+        fileName += houzhui;
+        writer.write&amp;lt;pcl::PointXYZ&amp;gt;(fileName, *cloud_plane);
+        std::cout &amp;lt;&amp;lt; fileName &amp;lt;&amp;lt; &amp;quot; is ok.&amp;quot; &amp;lt;&amp;lt; std::endl;
+        ++num;
+
+        //再设置为真，这样点云中除了索引里面的点，都会保留下来，这样我们就将前面提取出来的面里点去除掉了
+        extract.setNegative(true);
+        extract.filter(*cloud_f);
+        cloud_filtered = cloud_f;
+    }
+
+    return true;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;}&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>pcl 1.8.0 ALL in one &#43; vs 2013</title>

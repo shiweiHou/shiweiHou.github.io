@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
 <head>
   <title>
-    PointClouds // Hello world!
+    LintCode 分糖果 // Hello world!
   </title>
 
   <link href="http://gmpg.org/xfn/11" rel="profile">
@@ -16,11 +16,11 @@
 <meta name="author" content="">
 <meta name="generator" content="Hugo 0.16" />
 
-  <meta property="og:title" content="PointClouds" />
+  <meta property="og:title" content="LintCode 分糖果" />
 <meta property="og:description" content="" />
 <meta property="og:type" content="website" />
 <meta property="og:locale" content="en_US" />
-<meta property="og:url" content="https://shiweiHou.github.io/pointcloud/" />
+<meta property="og:url" content="https://shiweihou.github.io/lintcode/2016-10-31-01/" />
 
 
   
@@ -42,7 +42,7 @@
   <link rel="shortcut icon" href="/favicon.png">
 
   
-  <link href="https://shiweiHou.github.io/pointcloud/index.xml" rel="alternate" type="application/rss+xml" title="Hello world!" />
+  <link href="" rel="alternate" type="application/rss+xml" title="Hello world!" />
 
     
   
@@ -62,6 +62,8 @@
 </head>
 
 <body>
+	
+
 	<div id="layout" class="pure-g">
     <div class="sidebar pure-u-1 pure-u-md-1-4">
   <div class="header">
@@ -96,67 +98,113 @@
   </div>
 </div>
 
+	
+	
 
     <div class="content pure-u-1 pure-u-md-3-4">
-      <a name="top"></a>
-      
+		<a name="top"></a>
+		
 
-      <div class="posts">
-        
-          <section  class="post">
-            <header class="post-header">
-            
+		
+			
+	    
+  		<section class="post">
             <h1 class="post-title">
-              <a href="/pointcloud/PCL_RANSAC/">利用PCL对三维点云进行面提取</a>
+              <a href="/lintcode/2016-10-31-01/">LintCode 分糖果</a>
             </h1>
-            </header>
-            <p class="post-meta">
+            <h3 class="post-subtitle">
             	
-		          <span class="post-date">
-		            <span class="post-date-day"><sup>1</sup></span><span class="post-date-separator">/</span><span class="post-date-month">Nov</span> <span class="post-date-year">2016</span>
-		          </span>
-      				
-      				
-      					
-      				
-              
-                <span class="post-reading-time"><i class="fa fa-clock-o"></i> <em>2 min. read</em></span>
-              
-      				
-            </p>
-			<div class="read-more-link">
-				<a href="/pointcloud/PCL_RANSAC/"><span class="read-more-slashes">//</span>Read More...</a>
-			</div>
-          </section>
-        
-          <section  class="post">
-            <header class="post-header">
+            </h3>
             
-            <h1 class="post-title">
-              <a href="/pointcloud/pcl/">pcl 1.8.0 ALL in one &#43; vs 2013</a>
-            </h1>
-            </header>
-            <p class="post-meta">
+            	<span class="post-date">
+                	<span class="post-date-day"><sup>31</sup></span><span class="post-date-separator">/</span><span class="post-date-month">Oct</span> <span class="post-date-year">2016</span>
+            	</span>
             	
-		          <span class="post-date">
-		            <span class="post-date-day"><sup>31</sup></span><span class="post-date-separator">/</span><span class="post-date-month">Oct</span> <span class="post-date-year">2016</span>
-		          </span>
-      				
-      				
-      					
-      				
-              
-                <span class="post-reading-time"><i class="fa fa-clock-o"></i> <em>3 min. read</em></span>
-              
-      				
-            </p>
-			<div class="read-more-link">
-				<a href="/pointcloud/pcl/"><span class="read-more-slashes">//</span>Read More...</a>
-			</div>
-          </section>
-        
-      </div>
+            
+            	
+            
 
+			
+			
+
+			
+
+			
+
+            <p>题目链接：<a href="http://www.lintcode.com/zh-cn/problem/candy/">分糖果</a></p>
+
+<p>思路：</p>
+
+<p>一开始想的先排序，然后从低到高遍历，定义一个rat和pre，rat保存当前需要加的糖果数，pre为上一个rating，如果当前ratings[i] == pre， 就将rat置为1，不是就将rat++。。。。。后来发现不是这么做的，因为测试数据怎么都过不了。</p>
+
+<p>首先，不能排序！不能改变原有的顺序！题目的意思应该理解为“ 当前rating如果比其左右都高的话，其糖果个数不应该小于其左右的糖果个数”。 所以需要遍历两次，</p>
+
+<ul>
+<li>首先从左到右遍历一次，保证当右边的rating大于其左边的rating值时，糖果个数不小于左边的糖果值</li>
+<li>然后从右往左再遍历一次，保证当左边的rating大于其右边的rating值时，糖果个数不小于右边的糖果值</li>
+</ul>
+
+<p>最后所有的加起来就可以了</p>
+
+<pre><code>class Solution {
+public:
+    /**
+     * @param ratings Children's ratings
+     * @return the minimum candies you must give
+     */
+    int candy(vector&lt;int&gt;&amp; ratings) {
+        // Write your code here
+        int sum = 0;
+        int len = ratings.size();
+        int *num = new int[len];
+
+        num[0] = 1;
+        // 从左往右
+        for (int i = 1; i &lt; len; ++i) {
+            num[i] = ratings[i] &gt; ratings[i-1] ? num[i-1] + 1 : 1;
+        }
+        //从右往左
+        for (int i = len - 1; i &gt; 0; --i) {
+            num[i - 1] = ratings[i] &lt; ratings[i-1] ? max(num[i] + 1, num[i - 1]) : num[i - 1];
+        }
+        for (int i = 0; i &lt; len; ++i) sum += num[i];
+
+        delete []num;
+        return sum;
+    }
+};
+</code></pre>
+
+<p>，</p>
+
+	
+			
+
+			
+
+			
+				<div class="paging">
+					<span class="paging-label">More Reading</span>
+					
+					<div class="paging-newer">
+						<span class="dark-red">Newer</span><span class="decorative-marker">//</span>
+						<a class="paging-link" href="/pointcloud/PCL_RANSAC/">利用PCL对三维点云进行面提取</a>
+		            </div>
+		            
+
+					
+					<div class="paging-older">
+						<span class="dark-red">Older</span><span class="decorative-marker">//</span>
+			            <a class="paging-link" href="/pointcloud/pcl/">pcl 1.8.0 ALL in one &#43; vs 2013</a>
+		            </div>
+		            
+	            </div>
+            
+          </section>
+          
+          	
+          
+        
       <div class="footer">
 	<hr class="thin" />
 	<div class="pure-menu pure-menu-horizontal pure-menu-open">
@@ -169,6 +217,10 @@
 </div>
     </div>
   </div>
+	
+
+	
+
   
 </body>
 </html>

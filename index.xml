@@ -5,8 +5,159 @@
     <link>https://shiweiHou.github.io/</link>
     <description>Recent content on Hello world!</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Mon, 31 Oct 2016 15:45:15 +0800</lastBuildDate>
+    <lastBuildDate>Tue, 01 Nov 2016 21:15:04 +0800</lastBuildDate>
     <atom:link href="https://shiweiHou.github.io/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>利用PCL对三维点云进行面提取</title>
+      <link>https://shiweihou.github.io/pointcloud/PCL_RANSAC/</link>
+      <pubDate>Tue, 01 Nov 2016 21:15:04 +0800</pubDate>
+      
+      <guid>https://shiweihou.github.io/pointcloud/PCL_RANSAC/</guid>
+      <description>&lt;p&gt;因为要做三维重建，早上刚和老师讨论下基本流程，目前的想法是先提取出室内建筑物的线框结构，然后利用线框结构进行表面重建。后来有个师兄讲可以先利用PCL里RANSAC函数先进行面提取，所以就试了下。下面是主要代码，一些内容都写到注释里面去了：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;bool LasFunction::ransac(void) {
+    std::string fileName = &amp;quot;basementCut.las&amp;quot;;
+    pcl::PointCloud&amp;lt;pcl::PointXYZ&amp;gt;::Ptr cloud (new pcl::PointCloud&amp;lt;pcl::PointXYZ&amp;gt;);
+    CLasOperator las;
+    las.readLasFile(fileName.c_str());
+    std::vector&amp;lt;Point3D&amp;gt; points = las.getPointData();
+    for (size_t i = 0; i &amp;lt; points.size(); ++i) {
+        pcl::PointXYZ onepoint;
+        onepoint.x = points[i].x;
+        onepoint.y = points[i].y;
+        onepoint.z = points[i].z;
+        cloud-&amp;gt;push_back(onepoint);
+    }
+    // Create the filtering object: downsample the dataset using a leaf size of 1cm
+    // 用来进行降采样操作，应该就是用LeafSize进行，里面单位是以m为单位，在这么个立方体内，得到一个点
+    pcl::VoxelGrid&amp;lt;pcl::PointXYZ&amp;gt; vg;
+    pcl::PointCloud&amp;lt;pcl::PointXYZ&amp;gt;::Ptr cloud_filtered(new pcl::PointCloud&amp;lt;pcl::PointXYZ&amp;gt;);
+    vg.setInputCloud(cloud);
+    vg.setLeafSize(0.1f, 0.1f, 0.1f);
+    vg.filter(*cloud_filtered);
+    std::cout &amp;lt;&amp;lt; &amp;quot;PointCloud before filtering has: &amp;quot; &amp;lt;&amp;lt; cloud-&amp;gt;points.size() &amp;lt;&amp;lt; &amp;quot; data points.&amp;quot; &amp;lt;&amp;lt; std::endl;
+    std::cout &amp;lt;&amp;lt; &amp;quot;PointCloud after filtering has: &amp;quot; &amp;lt;&amp;lt; cloud_filtered-&amp;gt;points.size() &amp;lt;&amp;lt; &amp;quot; data points.&amp;quot; &amp;lt;&amp;lt; std::endl;
+
+
+    //构建一个ransac分割器，inliers存储索引，即到底哪些个点是在ransac得到的目标内，setModelType是用来表示ransac分割到底是分割成面或者分割成线或者分割成其它形状，coefficients用来存储系数，即加入表示的是个平面的话，点应该在类似于 a*x + b*y + c*z + d = 0内
+
+    pcl::ModelCoefficients::Ptr coefficients (new pcl::ModelCoefficients);
+    pcl::PointIndices::Ptr inliers (new pcl::PointIndices);
+    pcl::SACSegmentation&amp;lt;pcl::PointXYZ&amp;gt; sac;
+    sac.setInputCloud(cloud);
+    sac.setMethodType(pcl::SAC_RANSAC);
+    sac.setModelType(pcl::SACMODEL_PLANE);
+    //sac.setModelType(pcl::SACMODEL_LINE);
+    sac.setDistanceThreshold(0.01);
+    sac.setMaxIterations(100);
+    sac.setProbability(0.9);
+
+
+    pcl::PointCloud&amp;lt;pcl::PointXYZ&amp;gt;::Ptr cloud_plane(new pcl::PointCloud&amp;lt;pcl::PointXYZ&amp;gt;());
+    pcl::PointCloud&amp;lt;pcl::PointXYZ&amp;gt;::Ptr cloud_f(new pcl::PointCloud&amp;lt;pcl::PointXYZ&amp;gt;());
+    int num = 1;
+
+    // 保留原始点云中点云数量多少
+    int nr_points = (int)cloud_filtered-&amp;gt;points.size();
+
+    // 可以生成多个面，直到剩余点云中点的数量小于原始点云数量的 1/10
+    while (cloud_filtered-&amp;gt;points.size() &amp;gt; 0.1 * nr_points) {
+        sac.setInputCloud(cloud_filtered);
+        sac.segment(*inliers, *coefficients);
+        if (inliers-&amp;gt;indices.size() == 0) {
+            std::cout &amp;lt;&amp;lt; &amp;quot;Could not estimate a planar nodel for the given dataset.&amp;quot; &amp;lt;&amp;lt; std::endl;
+            break;
+        }
+        // 构建析取模型
+        pcl::ExtractIndices&amp;lt;pcl::PointXYZ&amp;gt; extract;
+        extract.setInputCloud(cloud_filtered);
+        extract.setIndices(inliers);
+        //如果为真，则前面放进去点除了索引里面的都会保留下来
+        //否则，只保留下索引里面的点，通过filter函数将需要保留下的点放进去 
+        extract.setNegative(false);     
+        extract.filter(*cloud_plane);
+        for (size_t i = 0; i &amp;lt; inliers-&amp;gt;indices.size(); ++i) {
+            pcl::PointXYZ onePoint;
+            onePoint.x = cloud_filtered-&amp;gt;points[inliers-&amp;gt;indices[i]].x;
+            onePoint.y = cloud_filtered-&amp;gt;points[inliers-&amp;gt;indices[i]].y;
+            onePoint.z = cloud_filtered-&amp;gt;points[inliers-&amp;gt;indices[i]].z;
+            cloud_plane-&amp;gt;push_back(onePoint);
+        }
+        pcl::PCDWriter writer;
+        std::string fileName = &amp;quot;ransacPlane&amp;quot;, houzhui = &amp;quot;.pcd&amp;quot;;
+        fileName += std::to_string(num);
+        fileName += houzhui;
+        writer.write&amp;lt;pcl::PointXYZ&amp;gt;(fileName, *cloud_plane);
+        std::cout &amp;lt;&amp;lt; fileName &amp;lt;&amp;lt; &amp;quot; is ok.&amp;quot; &amp;lt;&amp;lt; std::endl;
+        ++num;
+
+        //再设置为真，这样点云中除了索引里面的点，都会保留下来，这样我们就将前面提取出来的面里点去除掉了
+        extract.setNegative(true);
+        extract.filter(*cloud_f);
+        cloud_filtered = cloud_f;
+    }
+
+    return true;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;}&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>LintCode 分糖果</title>
+      <link>https://shiweihou.github.io/lintcode/2016-10-31-01/</link>
+      <pubDate>Mon, 31 Oct 2016 20:01:12 +0800</pubDate>
+      
+      <guid>https://shiweihou.github.io/lintcode/2016-10-31-01/</guid>
+      <description>&lt;p&gt;题目链接：&lt;a href=&#34;http://www.lintcode.com/zh-cn/problem/candy/&#34;&gt;分糖果&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;思路：&lt;/p&gt;
+
+&lt;p&gt;一开始想的先排序，然后从低到高遍历，定义一个rat和pre，rat保存当前需要加的糖果数，pre为上一个rating，如果当前ratings[i] == pre， 就将rat置为1，不是就将rat++。。。。。后来发现不是这么做的，因为测试数据怎么都过不了。&lt;/p&gt;
+
+&lt;p&gt;首先，不能排序！不能改变原有的顺序！题目的意思应该理解为“ 当前rating如果比其左右都高的话，其糖果个数不应该小于其左右的糖果个数”。 所以需要遍历两次，&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;首先从左到右遍历一次，保证当右边的rating大于其左边的rating值时，糖果个数不小于左边的糖果值&lt;/li&gt;
+&lt;li&gt;然后从右往左再遍历一次，保证当左边的rating大于其右边的rating值时，糖果个数不小于右边的糖果值&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;最后所有的加起来就可以了&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;class Solution {
+public:
+    /**
+     * @param ratings Children&#39;s ratings
+     * @return the minimum candies you must give
+     */
+    int candy(vector&amp;lt;int&amp;gt;&amp;amp; ratings) {
+        // Write your code here
+        int sum = 0;
+        int len = ratings.size();
+        int *num = new int[len];
+
+        num[0] = 1;
+        // 从左往右
+        for (int i = 1; i &amp;lt; len; ++i) {
+            num[i] = ratings[i] &amp;gt; ratings[i-1] ? num[i-1] + 1 : 1;
+        }
+        //从右往左
+        for (int i = len - 1; i &amp;gt; 0; --i) {
+            num[i - 1] = ratings[i] &amp;lt; ratings[i-1] ? max(num[i] + 1, num[i - 1]) : num[i - 1];
+        }
+        for (int i = 0; i &amp;lt; len; ++i) sum += num[i];
+
+        delete []num;
+        return sum;
+    }
+};
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;，&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>pcl 1.8.0 ALL in one &#43; vs 2013</title>
@@ -1452,247 +1603,6 @@ vector&amp;lt;int&amp;gt; flatten(vector&amp;lt;NestedInteger&amp;gt; &amp;amp;n
         return false;
     }
 &lt;/code&gt;&lt;/pre&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>全排列问题</title>
-      <link>https://shiweihou.github.io/algorithm/%E5%85%A8%E6%8E%92%E5%88%97/</link>
-      <pubDate>Tue, 04 Oct 2016 20:34:33 +0800</pubDate>
-      
-      <guid>https://shiweihou.github.io/algorithm/%E5%85%A8%E6%8E%92%E5%88%97/</guid>
-      <description>
-
-&lt;h2 id=&#34;全排列的非递归实现&#34;&gt;全排列的非递归实现：&lt;/h2&gt;
-
-&lt;p&gt;考虑排列 “926520”这个字符串，它的下一个排列是哪一个呢？我们从后往前开始找，找到第一组相邻数字递增的组合：0-2-5-6 都不行，但 6-2可以，即 2 和 6 这组数字是从后往前数，第一组递增的。这时候，2 即为 替换数， 替换数的下标称之为替换点。找到替换点之后，从替换点开始，向后找到一个比替换点大的数里面最小的那个大数，即为 5，这时候，将 5 和2进行交换，得到956220，再将替换点之后的数进行反转，得到950226 ，这时候这个排列就是下一个排列。对于像54321这种已经是最后一个排列的全排列，其下一个排列当然为12345 。&lt;/p&gt;
-
-&lt;p&gt;对于从替换点开始，找到后面最小的大数，我们可以从后往前找，因为除了替换点和替换点后面的数之外，其余的都是递减的（从前往后看），所以最右边的第一个大于替换数的数一定是最小的大数。&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;void nextPermutation(vector&amp;lt;int&amp;gt; &amp;amp;nums) {
-
-    if (nums.empty()) return ;
-    int len = nums.size();
-    int i = len - 1;
-    bool flag = false;
-
-    while (i &amp;gt; 0 ) { // 找替换点
-        if (nums[i] &amp;lt;= nums[i - 1]) --i;
-        else {
-            flag = true;
-            break;
-        }
-    }
-
-    if (flag == false) reverse(nums.begin(), nums.end());
-    else {
-        --i;
-        int j = i + 1;
-        int pos = j;
-        while (j &amp;lt; len) { // 找替换点之后最小的大数
-            if (nums[j] &amp;gt; nums[i]) {
-                if (nums[j] &amp;lt;= nums[pos]) pos = j;
-            }
-            ++j;
-        }
-        swap(nums[i], nums[pos]);
-        ++i;
-        j = len - 1;  
-        while (i &amp;lt; j) swap(nums[i++], nums[j--]);  // 反转
-    }
-
-    return ;
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h2 id=&#34;一种另类的全排列问题&#34;&gt;一种另类的全排列问题：&lt;/h2&gt;
-
-&lt;p&gt;给你一个排列，问这是在所有的全排列中，第几个排列？排列序号从1开始，按顺序增长的方向开始。排列中不包含重复数字。例如给定排列124，它是第一个排列。看到这个题目首先想到的就是求出所有的全排列，然后在求解过程中与给出的排列进行比较，看看是第几个。思路是ok的，然而在oj上面会超时，说明这个方法不行。也就说其实不是要让你求出所有的排列然后进行比较，而是化成组合问题，在这个排列前，有多少个排列。&lt;/p&gt;
-
-&lt;p&gt;例如对于排列  list = 95412：
-在排列list前面的所有的全排列中，位于位置1的数字可能是5、4、1、2中的任意一个数，而一旦位置1确定了，其全排列个数为4！（5-1）个。
-同理，对应位置2的数字可以是4、 1、 2的任意一个，而一旦位置2确定了，其全排列个数为3！（5-2）个。
-同理，对应位置3的数字可以是1 、 2的任意一个，而一旦位置3确定了，其全排列个数为2！（5-3）个。
-同理，对应位置4的数字可以是0个（因为没有数字比1还小），一旦位置4确定了，其全排列个数为1！（5-4）个。
-最后，对应位置5的数字可以是0个，全排列个数为0！（5-5）个。
-从上面我们就可以看出，对于一个给定的排列，求出其在全排列的的序号，只需要对给定的序列进行查找，找到从位置2开始一直到倒数第二个位置可变数字的个数（就是该位置后面的，比当前位置数字小的）*（n-i）!.
-即，对于位置 i （i &amp;gt;= 0 &amp;amp;&amp;amp;  i&amp;lt; n-1）,其后面的数字比当前 i 位置小的个数为 k 个，则其排列个数为 k * (n - i - 1)! 个。对这个排列整个遍历一遍，就得到当前排列之前的全排列个数。代码如下：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;long long permutationIndex(vector&amp;lt;int&amp;gt;&amp;amp; A) {
-
-    map&amp;lt;int, int&amp;gt; mapCount;
-    for (int i = 0; i &amp;lt; A.size() - 1; ++i) {
-        int count = 0;
-        for (int j = i + 1; j &amp;lt; A.size(); ++j) {
-            if (A[i] &amp;gt; A[j]) {
-                ++count;
-            }
-        }
-        // 保存i个位置后面有多少个比它小的
-        mapCount[A[i]] = count;
-    }
-
-    long ans = 0;
-    int n = A.size();
-    for (int i = 0; i &amp;lt; A.size() - 1; ++i) {
-        int k = n - i - 1;
-        long fact = 1;
-        // 当前位置的阶乘
-        while (k &amp;gt; 0) {  
-            fact *= k;
-            --k;
-        }
-        // 阶乘 * k
-        ans += mapCount[A[i]] * fact;
-    }
-    // 因为前面求到的是当前排列前总共有多少个全排列，所以自然当前排列是 ans + 1 个排列
-    return ++ans;
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h2 id=&#34;一种另类的全排列问题-2&#34;&gt;一种另类的全排列问题 2：&lt;/h2&gt;
-
-&lt;p&gt;类似于前面的问题，只不过是排列中有重复数字，求当前排列是第几个。基于前面的问题来做，假如没有重复数字，那么答案自然是上面那个。因为有重复数字，只要在发现重复数的那一位用 k * (n - i - 1)! 的结果除去重复的次数就行，当然重复的次数也要做阶乘，例如排列中有3个2,4个8，重复次数
-为 3！ * 4 ！，代码如下：&lt;/p&gt;
-
-&lt;p&gt;ps: 这段代码说实在没有太懂&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;long long permutationIndexII(vector&amp;lt;int&amp;gt;&amp;amp; A) {
-    // Write your code here
-
-    long long index = 0, fact = 1, dup = 1;
-
-    map&amp;lt;int, int&amp;gt; mapCount;
-    for (int i = A.size()-1; i &amp;gt;= 0; i--) {
-
-        if (mapCount.find(A[i]) == mapCount.end()) mapCount[A[i]] = 1;
-        else {
-
-            mapCount[A[i]] += 1;
-            dup *= mapCount[A[i]];
-        }
-        int rank = 0;
-        for (int j = i+1; j &amp;lt; A.size(); j++) {
-            if (A[j] &amp;lt; A[i]) rank++;
-        }
-        index += rank * fact / dup;
-        fact *= (A.size() - i);
-    }
-    return index+1;
-}
-&lt;/code&gt;&lt;/pre&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>最长回文子串</title>
-      <link>https://shiweihou.github.io/algorithm/%E6%9C%80%E9%95%BF%E5%9B%9E%E6%96%87%E5%AD%90%E4%B8%B2/</link>
-      <pubDate>Tue, 04 Oct 2016 19:27:50 +0800</pubDate>
-      
-      <guid>https://shiweihou.github.io/algorithm/%E6%9C%80%E9%95%BF%E5%9B%9E%E6%96%87%E5%AD%90%E4%B8%B2/</guid>
-      <description>&lt;p&gt;回文的意思大家应该都知道，就是一个子串，从前往后读与从后往前读是一模一样的。
-最长回文子串的意思就是：在一个给定的字符串中，找到一个最长的回文子串。&lt;/p&gt;
-
-&lt;p&gt;一开始的思路很复杂：例如对于串：&lt;strong&gt;abdcdedcab&lt;/strong&gt;，最长回文子串为 &lt;strong&gt;cdedc&lt;/strong&gt;，我一开始的想法是：对于母串，首先遍历一遍，建立一个&lt;strong&gt;map&lt;/strong&gt;，保存每个字符所在的位置。map类型为&lt;code&gt;map&amp;lt;char,stack&amp;lt;int&amp;gt;&amp;gt;&lt;/code&gt;,例如对于字符a，它在母串中的位置是 0,8，那么map[a] = [0,8].保留下所有的字符后，因为子串要求是连续的，所以对于母串的每一个不同的字符都遍历一遍，然后在 stack 中找到它出现的另一个位置，例如还是a，它的位置有两个，0和8，那么就判断 0 - 8 之间是否为回文串。这样所有的遍历一遍，找到最长的那个。在Lintcode上，通过了73%的数据，因为我一开始的代码是 &lt;strong&gt;以母串的前面第一个为基准&lt;/strong&gt;，然后以该字符在其它位置出现作为比较，这样其实没法通过类似于 aaaabaaa的数据。我得到的结果为aaaa，而其实答案为aaabaaa。后来我就想了下，其实我只是对该字符在母串中的位置，两两组合，只判断了一部分情况，例如前面的aaaabaaa,对于a，我只判断了位置（0,7）（0，6）（0,5）（0,3）（0,2）（0,1）这几种情况，而没有判断（1,7）（1,6）（1，5）等等这些情况，所以是没办法通过所有测试数据的。后来就用上面的两两组合思想，后来发现和暴搜是一样的，时间复杂度是 O(n^3), TLE。&lt;/p&gt;
-
-&lt;p&gt;后来想到，暴搜的思想是从外往里搜，找到每一个可能的子串，判断是不是回文。这个过程中其实有很多次重复的动作，那么能不能换个思路，从里往外搜。我们知道对于每一个字符，以它为基准，往外扩展，由于是回文，i-1和i+1位置的字符必然相等。通过以上的思想可以得到如下代码：（考虑　aba 和 abba 两种奇偶不同的情况）：时间复杂度为 O(n^2)&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;class Solution {
-public:
-/**
- * @param s input string
- * @return the longest palindromic substring
- */
-string longestPalindrome(string&amp;amp; s) {
-    // Write your code here
-    if (s.empty()) return NULL;
-    int len = s.size();
-    int pos = 0;
-    string ans = &amp;quot;&amp;quot;;
-
-    while (pos &amp;lt; len) {
-        string s1 = huiwen(s, pos, pos); // aba 的情况
-        string s2 = huiwen(s, pos, pos + 1); // abba 的情况
-        if (s1.size() &amp;gt; s2.size()) {
-            ans = ans.size() &amp;gt; s1.size() ? ans : s1;
-        }
-        else {
-            ans = ans.size() &amp;gt; s2.size() ? ans : s2;
-        }
-        ++pos;
-    }
-
-    return ans;
-}
-
-string huiwen(string &amp;amp;s, int ss, int ee) {
-
-    if (ee &amp;gt;= s.size()) return s.substr(ss,1);
-
-    while (ss &amp;gt;= 0  &amp;amp;&amp;amp; ee &amp;lt; s.size()) {
-        if (s[ss] != s[ee]) {
-            break;
-        }
-        --ss;
-        ++ee;
-    }
-
-    if (ss == ee || ss + 1 == ee) return s.substr(ss, 1);
-    else return s.substr(ss+1, ee - ss - 1);
-}
-};
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;根据上面的算法思想，可以衍生出很多 O(N^2)的算法，例如动态规划。思想就是设置标志flag[N][N]，如果 s[i] == s[j] &amp;amp;&amp;amp; flag[i+1][j-1] == true，那么 flag[i][j] == true;&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;class Solution {
-public:
-/**
- * @param s input string
- * @return the longest palindromic substring
- */
-string longestPalindrome(string&amp;amp; s) {
-    // Write your code here
-
-    if (s.empty()) return &amp;quot;&amp;quot;;
-    int len = s.size();
-    vector&amp;lt;vector&amp;lt;bool&amp;gt; &amp;gt; flag (len, vector&amp;lt;bool&amp;gt;(len, false));
-
-    for (int i = 0; i &amp;lt; len; ++i) {
-        for (int j = 0; j &amp;lt; len; ++j) {
-            // 当i==j的时候，单个字符明显为回文
-            // 当i &amp;gt; j 的时候，设置为true是为了防止出现 s[i] == s[i+1]这种情况，反正如果不相等在下面又会变成false
-            if (i &amp;gt;= j) flag[i][j] = true;
-        }
-    }
-
-    int ss = 0;
-    int maxLen = 1;
-
-    for (int j = 1; j &amp;lt; len; ++j) {
-        for (int i = 0; i &amp;lt; j; ++i) {
-            if (s[i] == s[j]) {
-                if (flag[i+1][j-1]) flag[i][j] = true;
-                else flag[i][j] = false;
-
-                if (flag[i][j]) {
-                    if (maxLen &amp;lt; j - i + 1) {
-                        ss = i;
-                        maxLen = j - i + 1;
-                    }
-                }
-            } else flag[i][j] = false;
-        }
-    }
-
-    return s.substr(ss, maxLen);
-    }
-    };
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;网上还有一种算法，Manacher算法，时间复杂度是 O(N)，有兴趣的同学可以去找下。&lt;/p&gt;
-
-&lt;p&gt;另外，有的同学会说，如果把字符串 s 翻转过来，变成 s&amp;rsquo; ,那么求s和s&amp;rsquo;的最长公共连续子序列是不是就是就是答案？其实不是，例如对于串 &lt;strong&gt;abcdefgdcba&lt;/strong&gt;，如果翻转，就变成 &lt;strong&gt;abcdgfedcba&lt;/strong&gt;, 那么最长子序列为 &lt;strong&gt;abcd&lt;/strong&gt; ，但这个明显不是回文的，所以求两个串的最长公共连续子序列并不一定是回文的。当然，如果要求都是不连续的，那么当然可以这样求。&lt;/p&gt;
 </description>
     </item>
     
