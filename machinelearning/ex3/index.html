@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+  <title>
+    Multi-class Classification and Neural Networks // Hello world!
+  </title>
+
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+<meta name="description" content="">
+<meta name="keywords" content="">
+<meta name="author" content="">
+<meta name="generator" content="Hugo 0.16" />
+
+  <meta property="og:title" content="Multi-class Classification and Neural Networks" />
+<meta property="og:description" content="" />
+<meta property="og:type" content="website" />
+<meta property="og:locale" content="en_US" />
+<meta property="og:url" content="https://shiweihou.github.io/machinelearning/ex3/" />
+
+
+  
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.5.0/base-min.css">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.5.0/pure-min.css">
+  
+  
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.5.0/grids-responsive-min.css">
+  
+  
+
+  <link rel="stylesheet" href="https://shiweihou.github.io//css/redlounge.css">
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet">
+  <link href='//fonts.googleapis.com/css?family=Raleway:400,200,100,700,300,500,600,800' rel='stylesheet' type='text/css'>
+  <link href='//fonts.googleapis.com/css?family=Libre+Baskerville:400,700,400italic' rel='stylesheet' type='text/css'>
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.png">
+
+  
+  <link href="" rel="alternate" type="application/rss+xml" title="Hello world!" />
+
+    
+  
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.7/styles/tomorrow-night-bright.min.css">
+  
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.7/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+
+
+  
+
+  
+
+  
+
+  
+</head>
+
+<body>
+	
+
+	<div id="layout" class="pure-g">
+    <div class="sidebar pure-u-1 pure-u-md-1-4">
+  <div class="header">
+    
+
+	
+	  <img src="/img/1.jpg" class="sidebarphoto">
+	
+
+    <h1 class="brand-title">Matthew</h1>
+    <h2 class="brand-tagline">积跬步，至千里</h2>
+
+    <nav class="nav">
+      <ul class="nav-list">
+        <li class="nav-item"><span class="nav-item-separator">//</span><a href="https://shiweihou.github.io/">Home</a></li>
+        
+          <li class="nav-item"><span class="nav-item-separator">//</span><a href="/cplusplus/">C&#43;&#43;</a></li>
+        
+          <li class="nav-item"><span class="nav-item-separator">//</span><a href="/machinelearning/">Machine Learning</a></li>
+        
+          <li class="nav-item"><span class="nav-item-separator">//</span><a href="/pointcloud/">PointClouds</a></li>
+        
+          <li class="nav-item"><span class="nav-item-separator">//</span><a href="/algorithm/">algorithm</a></li>
+        
+          <li class="nav-item"><span class="nav-item-separator">//</span><a href="/lintcode/">lintcode</a></li>
+        
+      </ul>
+    </nav>
+
+    
+
+  </div>
+</div>
+
+	
+	
+
+    <div class="content pure-u-1 pure-u-md-3-4">
+		<a name="top"></a>
+		
+
+		
+			
+		    <div id="toc" class="pure-u-1 pure-u-md-1-4">
+				<small class="toc-label">Contents</small>
+		   	 	<nav id="TableOfContents">
+<ul>
+<li>
+<ul>
+<li><a href="#lrcostfunction-m">lrCostFunction.m</a></li>
+<li><a href="#one-vs-all-classification">One-vs-all Classification</a></li>
+<li><a href="#predictonevsall-m">predictOneVsAll.m</a></li>
+<li><a href="#neural-networks">Neural Networks</a></li>
+</ul></li>
+</ul>
+</nav>
+		    </div>
+		    
+	    
+  		<section class="post">
+            <h1 class="post-title">
+              <a href="/machinelearning/ex3/">Multi-class Classification and Neural Networks</a>
+            </h1>
+            <h3 class="post-subtitle">
+            	
+            </h3>
+            
+            	<span class="post-date">
+                	<span class="post-date-day"><sup>3</sup></span><span class="post-date-separator">/</span><span class="post-date-month">Nov</span> <span class="post-date-year">2016</span>
+            	</span>
+            	
+            
+            	
+            
+
+			
+			
+
+			
+
+			
+
+            
+
+<p>Multi-class Classification</p>
+
+<p>多分类，其实和前面的二分类，即Logistics regression差不多，只不过因为分类结果有很多个，对于特定的输入，会产生多个输出，在这多个输出里面找到概率最大的那个输出，即为分类答案。</p>
+
+<h2 id="lrcostfunction-m">lrCostFunction.m</h2>
+
+<p>和第二个练习的一样，就是指导文档里要求我们向量化，即矩阵化求解。前面的练习我们已经做到了。</p>
+
+<pre><code>% 求 J
+J1 = sigmoid(X*theta);
+J = (0-y).*log(J1) - (1-y).* log (1-J1);
+J = sum(J);
+J = J / m;
+J = J + (lambda / 2 / m) * (sum(theta.^2) - theta(1)^2);
+% 求 Gradient 
+grad = X' *  (J1 - y ) / m;
+tmp = theta;
+tmp(1) = 0;
+grad = grad + (lambda / m) * tmp;
+</code></pre>
+
+<h2 id="one-vs-all-classification">One-vs-all Classification</h2>
+
+<p>其实多分类也是一个“二分类”问题，只不过每次我们都是选取其中概率最大的那个作为输出“1”，其余的都作为“0”。<strong>oneVsAll.m</strong></p>
+
+<pre><code>for c = 1 : num_labels
+    %yc = (y == c);
+    initial_theta = zeros(n + 1, 1);
+    options = optimset('GradObj', 'on', 'MaxIter', 50);
+    [theta] = ...
+         fmincg (@(t)(lrCostFunction(t, X, (y == c), lambda)), ...
+                 initial_theta, options);
+    all_theta(c,:) = theta';
+end
+</code></pre>
+
+<h2 id="predictonevsall-m">predictOneVsAll.m</h2>
+
+<pre><code>% max函数，得到tmp矩阵中每一行最大的那个列下标
+% 在本题中，列下标即为分类结果
+[maximum, index] = max(tmp, [], 2);
+% 如果下标是10，我们就用0表示
+index(index == 10) = 0;
+p = index;
+</code></pre>
+
+<h2 id="neural-networks">Neural Networks</h2>
+
+<p>这节课Andrew还简单的介绍了下神经网络，并且给出了如何利用神经网络来分类。编程题中Andrew已经给好了训练好的Theta值，只需要我们能根据训练好的Theta值和输入的X值，得到Y值就行。</p>
+
+<pre><code>% You need to return the following variables correctly 
+p = zeros(size(X, 1), 1);
+%加上第一项1（bias unit)，因为X是m * n的，每个样本的特征在一行，所以加上的就是 m*1的一列，即在每一行的前面加上了个1
+X = [ones(m, 1) X];
+for i = 1 : m
+    XX = X(i:i,:);
+    z2 = Theta1 * XX';
+    z2 = sigmoid(z2);
+    %row = size(z2,1)
+    %加上第一项 1，因为z2是 n*1的，即第i个样本的z2都是单独一列，是个列向量，因此需要加上一行1，即增加一行1
+    z22 = [ones(1,1);z2];
+    z3 = Theta2 * z22;
+    % a3 即为输出结果
+    a3 = sigmoid(z3);
+    [maxInd, index] = max(a3,[],1);
+    if index == 0
+        index = 10;
+    end
+    p(i) = index;
+end;
+</code></pre>
+
+<p>注意：</p>
+
+<ul>
+<li>在每一层网络中计算的时候，都要注意要加上一项1作为bias unit</li>
+<li>注意在前面一层输出和Theta积计算完之后，不要忘记做sigmoid操作</li>
+</ul>
+
+	
+			
+
+			
+
+			
+				<div class="paging">
+					<span class="paging-label">More Reading</span>
+					
+
+					
+					<div class="paging-older">
+						<span class="dark-red">Older</span><span class="decorative-marker">//</span>
+			            <a class="paging-link" href="/machinelearning/ex2/">Logistics Regression</a>
+		            </div>
+		            
+	            </div>
+            
+          </section>
+          
+          	
+          
+        
+      <div class="footer">
+	<hr class="thin" />
+	<div class="pure-menu pure-menu-horizontal pure-menu-open">
+		<ul class="footer-menu">
+		
+		</ul>
+	</div>
+
+	<p>&copy; 2016. Matthew Hou All rights reserved.</p>
+</div>
+    </div>
+  </div>
+	
+
+	
+
+  
+</body>
+</html>
