@@ -5,8 +5,74 @@
     <link>https://shiweiHou.github.io/</link>
     <description>Recent content on Hello world!</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Wed, 09 Nov 2016 10:49:07 +0800</lastBuildDate>
+    <lastBuildDate>Thu, 17 Nov 2016 21:15:07 +0800</lastBuildDate>
     <atom:link href="https://shiweiHou.github.io/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>ex5：Regularized Linear Regression and Bias v.s.Variance</title>
+      <link>https://shiweihou.github.io/machinelearning/ex5/</link>
+      <pubDate>Thu, 17 Nov 2016 21:15:07 +0800</pubDate>
+      
+      <guid>https://shiweihou.github.io/machinelearning/ex5/</guid>
+      <description>
+
+&lt;p&gt;这个练习其实很简单，基本上都是以前练习的代码，然后让你再重写一遍。这次编程作业的主要作用就是让我们直观的看到不同大小的训练集及不同大小的lambda对拟合效果的影响。具体有以下几个方面：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;feature太少或者维数过低，会造成高偏差(high bias)，即欠拟合,解决方法是增加feature数，可以是维数增加或者feature数增加（polynomial features)或者降低lambda（正则化项）,feature数增加的前提示增加的feature必须和已有feature是相互独立的，不然没有任何意义，只能增加维数了&lt;/li&gt;
+&lt;li&gt;类似于上条，如果feature过多或者feature的维数过高，会造成高方差(high variance),即过拟合。解决方法是减少feature数，将不是相互独立的feature去掉，或者降低维数，或者增加正则化项，降低维数对theta参数的影响。还有一个很有用的方法是增加训练集样本，来解决过拟合问题&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h2 id=&#34;regularized-linear-regression-cost-function-and-gradient&#34;&gt;Regularized linear regression cost function and Gradient&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code&gt;%非矩阵形式
+for i = 1 : m
+    h = theta(1) * X(i,1) + theta(2) * X(i,2);
+    J = J +  (h - y(i))^2 / 2 / m;
+end
+J = J + lambda / 2 / m * theta(2)^2;
+%矩阵形式
+J = sum((X * theta - y).^2) / 2 / m + lambda / 2 /m * (sum(theta.^2) - theta(1)^2); 
+
+theta1 = theta;
+theta1(1) = 0;
+grad = (X&#39; * (X * theta - y))/m + lambda / m * theta1;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;learning-curves&#34;&gt;Learning curves&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code&gt;% ---------------------- Sample Solution ----------------------
+for i = 1 : m
+    theta = trainLinearReg(X(1:i,:), y(1:i,:), lambda);
+    [error_train(i),grad] = linearRegCostFunction(X(1:i,:), y(1:i,:), theta, 0);
+    [error_val(i),grad] = linearRegCostFunction(Xval, yval, theta, 0);
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;在这个步骤中变得很笨，这个步骤是要让我们形式化的看到不同的训练集大小对误差的影响，我在计算训练误差的时候还好，但在计算error_val交叉集误差的时候，也学训练集那样只用Xval和yval的前i个样本，其实是要全部的样本。&lt;/p&gt;
+
+&lt;h2 id=&#34;polynomial-regression&#34;&gt;Polynomial regression&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code&gt;for i = 1 : p
+    X_poly(:,i) = X.^i;
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;这一部分主要让我们观察不同的feature polynomial对误差的影响，意思是原来的训练集X只有一列，然后我们根据p的值，另外增加p-1列，其中第2列的值为第一列值的平方，第3列的值为第一列值的立方，以此类推&lt;/p&gt;
+
+&lt;h2 id=&#34;selecting-λ-using-a-cross-validation-set&#34;&gt;Selecting λ using a cross validation set&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code&gt;for i = 1 : length(lambda_vec)
+    lambda = lambda_vec(i);
+    theta = trainLinearReg(X, y, lambda);
+    error_train(i) = linearRegCostFunction(X, y, theta, 0);
+    error_val(i) = linearRegCostFunction(Xval, yval, theta, 0);
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;这一部分就和Learning curves这部分很像，所不同的是Learning curves部分看训练集大小对误差的影响，这次呢，是看不同的lambda λ对误差的影响，训练集和交叉集大小是固定的。&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>Neural Networks Learning</title>
@@ -1683,57 +1749,6 @@ vector&amp;lt;int&amp;gt; flatten(vector&amp;lt;NestedInteger&amp;gt; &amp;amp;n
         }
     }
 
-    return ret;
-}
-&lt;/code&gt;&lt;/pre&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>LintCode 连续子数组求和</title>
-      <link>https://shiweihou.github.io/lintcode/20161006-4/</link>
-      <pubDate>Thu, 06 Oct 2016 21:16:05 +0800</pubDate>
-      
-      <guid>https://shiweihou.github.io/lintcode/20161006-4/</guid>
-      <description>&lt;p&gt;题目描述：&lt;/p&gt;
-
-&lt;p&gt;给定一个整数数组，请找出一个连续子数组，使得该子数组的和最大。输出答案时，请分别返回第一个数字和最后一个数字的下标。（如果两个相同的答案，请返回其中任意一个）&lt;/p&gt;
-
-&lt;p&gt;样例：&lt;/p&gt;
-
-&lt;p&gt;给定&lt;code&gt;[-3, 1, 3, -3, 4]&lt;/code&gt;,返回&lt;code&gt;[1, 4]&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;思路：&lt;/p&gt;
-
-&lt;p&gt;最大连续子数组问题，只要在求最大连续子数组和的过程中，记录最大值更改时的下标start和end就可以。利用动态规划来求最大子数组，因为要求是连续的，设dp[i]为第i个位置子数组的最大值。第i个位置的数要不要放进去，就要看如果第i个位置放进去，与dp[i-1]的和是否大于A[i],如果大于，就放进去，否则不放。时间复杂度O(n),代码如下：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;vector&amp;lt;int&amp;gt; continuousSubarraySum(vector&amp;lt;int&amp;gt;&amp;amp; A) {
-    // Write your code here
-    vector&amp;lt;int&amp;gt; ret;
-    if (A.empty()) return ret;
-    int n = A.size();
-    vector&amp;lt;int&amp;gt; cur(n,0);
-    int maxSum = A[0];
-    cur[0] = A[0];
-    int curStart = 0;
-    int start = 0;
-    int end = 0;
-    for (int i = 1; i &amp;lt; n; ++i) {
-        if (cur[i-1] + A[i] &amp;gt; A[i]) { // 放进去，curs s e均不作更改
-            cur[i] = cur[i-1] + A[i];
-        } else {
-            cur[i] = A[i];
-            curStart = i;
-        }
-        if (cur[i] &amp;gt; maxSum) {
-            maxSum = cur[i];
-            start = curStart;
-            end   = i;
-        }
-    }
-
-    ret.push_back(start);
-    ret.push_back(end);
     return ret;
 }
 &lt;/code&gt;&lt;/pre&gt;
