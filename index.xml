@@ -5,8 +5,117 @@
     <link>https://shiweiHou.github.io/</link>
     <description>Recent content on Hello world!</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Thu, 17 Nov 2016 21:15:07 +0800</lastBuildDate>
+    <lastBuildDate>Fri, 18 Nov 2016 13:19:35 +0800</lastBuildDate>
     <atom:link href="https://shiweiHou.github.io/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>PCL SampleConsensusMode</title>
+      <link>https://shiweihou.github.io/pointcloud/pcl_ransac2/</link>
+      <pubDate>Fri, 18 Nov 2016 13:19:35 +0800</pubDate>
+      
+      <guid>https://shiweihou.github.io/pointcloud/pcl_ransac2/</guid>
+      <description>
+
+&lt;p&gt;前面那篇用PCL里的ransac模型进行面提取，其实严格意义来讲并不是真正的RANSAC类，而是利用的SACSegmentation类，然后在类。里面用SACMODEL_PLANE模型进行面提取。后来又找到PCL里真正的RANSAC函数 SampleConsensusMode，遂用这个实现了一下，发现效果要比前面的好一些，并且不仅在提面上效果好，在提线的表现上也非常好。&lt;/p&gt;
+
+&lt;h2 id=&#34;sampleconsensusmodelplane&#34;&gt;SampleConsensusModelPlane&lt;/h2&gt;
+
+&lt;p&gt;这个用来提取面。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;bool SampleConsensusModelPlane(void) {
+    // ransac 提取出来一个最大的平面
+    std::vector&amp;lt;int&amp;gt; inliers;
+    pcl::PointCloud&amp;lt;pcl::PointXYZ&amp;gt;::Ptr cloud(new pcl::PointCloud&amp;lt;pcl::PointXYZ&amp;gt;);
+    pcl::PointCloud&amp;lt;pcl::PointXYZ&amp;gt;::Ptr out(new pcl::PointCloud&amp;lt;pcl::PointXYZ&amp;gt;);
+    // 读取文件，将点云数据放入cloud中
+    cloud = readFile();
+    // 原始点云数量，用来判断何时停止面的提取
+    int rawPoints = cloud-&amp;gt;points.size();
+    pcl::PointCloud&amp;lt;pcl::PointXYZ&amp;gt;::Ptr inputPoints(new pcl::PointCloud&amp;lt;pcl::PointXYZ&amp;gt;);
+    inputPoints = cloud;
+    int count = 1;
+    // 当剩下的点云数量比原始点云数量大于10%时时，继续进行面的提取
+    while (inputPoints-&amp;gt;points.size() &amp;gt; 0.1 * rawPoints) {
+
+        //确定提取模型为面，点云类型要和前面的点云类型一致
+        pcl::SampleConsensusModelPlane&amp;lt;pcl::PointXYZ&amp;gt;::Ptr modle_p(new pcl::SampleConsensusModelPlane&amp;lt;pcl::PointXYZ&amp;gt;(inputPoints));
+        pcl::RandomSampleConsensus&amp;lt;pcl::PointXYZ&amp;gt; ransac(modle_p);
+        //这个Threshold的意思是，同一平面的点相邻距离不能超过0.1m，或者是已0.1m为基准进行搜索，不能超过它。我试过用1 2等参数进行提取，发现提取出来的不仅仅是一个面了，还有高度，就像是一个立方体一样。所以最好小一些，可以根据具体的点云数据进行设置
+        ransac.setDistanceThreshold(0.1);
+        ransac.computeModel();
+        ransac.getInliers(inliers);
+        //这个函数的意思是将inputPoints中，前面提取到的面（索引保留在了inliers中了），复制到点云out中，这时out中存的就是前面提取的面的点
+        pcl::copyPointCloud&amp;lt;pcl::PointXYZ&amp;gt;(*inputPoints, inliers, *out);
+
+        //建立析取器，因为我们需要不停的迭代，需要将上次提取出来的面从原来的点云中去除
+        pcl::ExtractIndices&amp;lt;pcl::PointXYZ&amp;gt; eifilter(false);
+        //因为前面用到的索引是vector类型的，而析取器要求的是PointIndices，所以只要新建个，然后将上面的索引复制给它就行了
+        pcl::PointIndices::Ptr inlier(new pcl::PointIndices);
+        inlier-&amp;gt;indices = inliers;
+        //只有设置为true，才可以将包含在inlier中的下标的点从原来的点云中去除
+        eifilter.setNegative(true);
+        eifilter.setInputCloud(inputPoints);
+        eifilter.setIndices(inlier);
+        eifilter.filter(*inputPoints);
+
+        std::cout &amp;lt;&amp;lt; &amp;quot;ok.&amp;quot; &amp;lt;&amp;lt; std::endl;
+        std::string fileName = &amp;quot;SampleModelPlane&amp;quot;, houzhui = &amp;quot;.pcd&amp;quot;;
+        pcl::PCDWriter w;
+        w.write&amp;lt;pcl::PointXYZ&amp;gt;(fileName + std::to_string(count) + houzhui, *out);
+        ++count;
+    }
+    return true;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;除了可以提取面之外，这个函数还有个变形，就是提取直线，效果也是非常好的&lt;/p&gt;
+
+&lt;h2 id=&#34;sampleconsensusmodelline&#34;&gt;SampleConsensusModelLine&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code&gt;bool SampleConsensusModelLine(void) {
+    std::vector&amp;lt;int&amp;gt; inliers;
+    pcl::PointCloud&amp;lt;pcl::PointXYZ&amp;gt;::Ptr cloud(new pcl::PointCloud&amp;lt;pcl::PointXYZ&amp;gt;);
+    pcl::PointCloud&amp;lt;pcl::PointXYZ&amp;gt;::Ptr out(new pcl::PointCloud&amp;lt;pcl::PointXYZ&amp;gt;);
+    cloud = readFile();
+
+    int rawPoints = cloud-&amp;gt;points.size();
+    pcl::PointCloud&amp;lt;pcl::PointXYZ&amp;gt;::Ptr inputPoints(new pcl::PointCloud&amp;lt;pcl::PointXYZ&amp;gt;);
+    inputPoints = cloud;
+    int count = 1;
+    std::multimap&amp;lt;double, double&amp;gt; mapKb;
+    //和上面的函数几乎没有什么区别，只是将SampleConsensusModelPlane变成SampleConsensusModelLine
+    while (inputPoints-&amp;gt;points.size() &amp;gt; 0.05 * rawPoints) {
+        pcl::SampleConsensusModelLine&amp;lt;pcl::PointXYZ&amp;gt;::Ptr modle_l(new pcl::SampleConsensusModelLine&amp;lt;pcl::PointXYZ&amp;gt;(inputPoints));
+        pcl::RandomSampleConsensus&amp;lt;pcl::PointXYZ&amp;gt; ransac(modle_l);
+        ransac.setDistanceThreshold(0.1);
+        ransac.computeModel();
+        ransac.getInliers(inliers);
+        pcl::copyPointCloud&amp;lt;pcl::PointXYZ&amp;gt;(*inputPoints, inliers, *out);
+
+        //析取
+        pcl::ExtractIndices&amp;lt;pcl::PointXYZ&amp;gt; eifilter(false);
+        pcl::PointIndices::Ptr inlier(new pcl::PointIndices);
+        inlier-&amp;gt;indices = inliers;
+        eifilter.setNegative(true);
+        eifilter.setInputCloud(inputPoints);
+        eifilter.setIndices(inlier);
+        eifilter.filter(*inputPoints);
+
+
+        std::cout &amp;lt;&amp;lt; &amp;quot;ok2.&amp;quot; &amp;lt;&amp;lt; std::endl;
+        std::string fileName = &amp;quot;./line1/SampleModelLine&amp;quot;, houzhui = &amp;quot;.pcd&amp;quot;;
+        pcl::PCDWriter w;
+        w.write&amp;lt;pcl::PointXYZ&amp;gt;(fileName + std::to_string(count) + houzhui, *out);
+        ++count;
+    }
+
+    return true;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;因为用的是1.8版本的PCL，里面实现了好多很需要的函数，所以功能还是很强大，几乎你能想到的都有，只是因为是通用的，所以可能在精度准确度上没有那么高，需要开发者自己再做进一步调整&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>ex5：Regularized Linear Regression and Bias v.s.Variance</title>
@@ -1682,74 +1791,6 @@ vector&amp;lt;int&amp;gt; flatten(vector&amp;lt;NestedInteger&amp;gt; &amp;amp;n
 
     if (minLength == n + 1) return -1;
     return minLength;
-}
-&lt;/code&gt;&lt;/pre&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>LintCode 和为零的子矩阵</title>
-      <link>https://shiweihou.github.io/lintcode/2016-10-07-01/</link>
-      <pubDate>Fri, 07 Oct 2016 18:37:40 +0800</pubDate>
-      
-      <guid>https://shiweihou.github.io/lintcode/2016-10-07-01/</guid>
-      <description>&lt;p&gt;题目：&lt;/p&gt;
-
-&lt;p&gt;给定一个整数矩阵，请找出一个子矩阵，使得其数字之和等于0.输出答案时，请返回左上数字和右下数字的坐标。&lt;/p&gt;
-
-&lt;p&gt;样例：&lt;/p&gt;
-
-&lt;p&gt;给定矩阵&lt;code&gt;[[1, 5, 7],[3, 7, 8],[4, -8, 9],]&lt;/code&gt;, 返回&lt;code&gt;[(1,1), (2,2)]&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;思路：&lt;/p&gt;
-
-&lt;p&gt;一开始是想着暴搜看看能不能过，发现果然不能，只过了82%的test，还是可以的了~~~&lt;/p&gt;
-
-&lt;p&gt;后来就想了个思路，既然是求和为0的矩阵，那么必然存在有两个矩阵一大一小，大小矩阵和是相等的，那么大矩阵和小矩阵的差别的那一块矩阵，就是和为0的矩阵。所以我们只要找到那两个矩阵和相等的一大一小的矩阵就可以了。其差值就是要求的答案。&lt;/p&gt;
-
-&lt;p&gt;求矩阵和的时候是有个递推公式的，对于位于（i，j）处的矩阵和，其递推公式为 sum[i][j] = sum[i-1][j] + sum[i][j-1] + matrix[i][j],大家画一下图，很简单就出来了。&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;vector&amp;lt;vector&amp;lt;int&amp;gt;&amp;gt; submatrixSum(vector&amp;lt;vector&amp;lt;int&amp;gt;&amp;gt;&amp;amp; matrix) {
-    // Write your code here
-    vector&amp;lt;vector&amp;lt;int&amp;gt; &amp;gt; ret;
-    if (matrix.empty()) return ret;
-    ret.resize(2);
-    ret[0].resize(2);
-    ret[1].resize(2);
-
-    int row = matrix.size();
-    int col = matrix[0].size();
-
-    vector&amp;lt;vector&amp;lt;int&amp;gt; &amp;gt; sum(row+1, vector&amp;lt;int&amp;gt;(col+1, 0));
-
-    for (int j = 0; j &amp;lt;= col; ++j) sum[0][j] = 0;
-    for (int i = 0; i &amp;lt;= row; ++i) sum[i][0] = 0;
-
-    for (int i = 0; i &amp;lt; row; ++i) {
-        for (int j = 0; j &amp;lt; col; ++j) {
-            sum[i+1][j+1] = matrix[i][j] + sum[i][j+1] + sum[i+1][j] - sum[i][j];
-        }
-    }
-
-    for (int i = 0; i &amp;lt; row; ++i) {
-        for (int k = i + 1; k &amp;lt;= row; ++k) {
-            map&amp;lt;int, int&amp;gt; m;
-            for (int j = 0; j &amp;lt;= col; ++j) {
-                // 计算两个矩阵的差，如果差已经在map里面，说明这两个矩阵差相等的这两个矩阵之间就是那个矩阵和为0的子矩阵
-                int diff = sum[k][j] - sum[i][j];
-                if (m.find(diff) != m.end()) {
-                    int l = m[diff];
-                    ret[0][0] = i;
-                    ret[0][1] = l;
-                    ret[1][0] = k - 1;
-                    ret[1][1] = j - 1;
-                    return ret;
-                } else m[diff] = j;
-            }
-        }
-    }
-
-    return ret;
 }
 &lt;/code&gt;&lt;/pre&gt;
 </description>

@@ -5,8 +5,117 @@
     <link>https://shiweiHou.github.io/pointcloud/</link>
     <description>Recent content in PointClouds on Hello world!</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Tue, 01 Nov 2016 21:15:04 +0800</lastBuildDate>
+    <lastBuildDate>Fri, 18 Nov 2016 13:19:35 +0800</lastBuildDate>
     <atom:link href="https://shiweiHou.github.io/pointcloud/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>PCL SampleConsensusMode</title>
+      <link>https://shiweihou.github.io/pointcloud/pcl_ransac2/</link>
+      <pubDate>Fri, 18 Nov 2016 13:19:35 +0800</pubDate>
+      
+      <guid>https://shiweihou.github.io/pointcloud/pcl_ransac2/</guid>
+      <description>
+
+&lt;p&gt;前面那篇用PCL里的ransac模型进行面提取，其实严格意义来讲并不是真正的RANSAC类，而是利用的SACSegmentation类，然后在类。里面用SACMODEL_PLANE模型进行面提取。后来又找到PCL里真正的RANSAC函数 SampleConsensusMode，遂用这个实现了一下，发现效果要比前面的好一些，并且不仅在提面上效果好，在提线的表现上也非常好。&lt;/p&gt;
+
+&lt;h2 id=&#34;sampleconsensusmodelplane&#34;&gt;SampleConsensusModelPlane&lt;/h2&gt;
+
+&lt;p&gt;这个用来提取面。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;bool SampleConsensusModelPlane(void) {
+    // ransac 提取出来一个最大的平面
+    std::vector&amp;lt;int&amp;gt; inliers;
+    pcl::PointCloud&amp;lt;pcl::PointXYZ&amp;gt;::Ptr cloud(new pcl::PointCloud&amp;lt;pcl::PointXYZ&amp;gt;);
+    pcl::PointCloud&amp;lt;pcl::PointXYZ&amp;gt;::Ptr out(new pcl::PointCloud&amp;lt;pcl::PointXYZ&amp;gt;);
+    // 读取文件，将点云数据放入cloud中
+    cloud = readFile();
+    // 原始点云数量，用来判断何时停止面的提取
+    int rawPoints = cloud-&amp;gt;points.size();
+    pcl::PointCloud&amp;lt;pcl::PointXYZ&amp;gt;::Ptr inputPoints(new pcl::PointCloud&amp;lt;pcl::PointXYZ&amp;gt;);
+    inputPoints = cloud;
+    int count = 1;
+    // 当剩下的点云数量比原始点云数量大于10%时时，继续进行面的提取
+    while (inputPoints-&amp;gt;points.size() &amp;gt; 0.1 * rawPoints) {
+
+        //确定提取模型为面，点云类型要和前面的点云类型一致
+        pcl::SampleConsensusModelPlane&amp;lt;pcl::PointXYZ&amp;gt;::Ptr modle_p(new pcl::SampleConsensusModelPlane&amp;lt;pcl::PointXYZ&amp;gt;(inputPoints));
+        pcl::RandomSampleConsensus&amp;lt;pcl::PointXYZ&amp;gt; ransac(modle_p);
+        //这个Threshold的意思是，同一平面的点相邻距离不能超过0.1m，或者是已0.1m为基准进行搜索，不能超过它。我试过用1 2等参数进行提取，发现提取出来的不仅仅是一个面了，还有高度，就像是一个立方体一样。所以最好小一些，可以根据具体的点云数据进行设置
+        ransac.setDistanceThreshold(0.1);
+        ransac.computeModel();
+        ransac.getInliers(inliers);
+        //这个函数的意思是将inputPoints中，前面提取到的面（索引保留在了inliers中了），复制到点云out中，这时out中存的就是前面提取的面的点
+        pcl::copyPointCloud&amp;lt;pcl::PointXYZ&amp;gt;(*inputPoints, inliers, *out);
+
+        //建立析取器，因为我们需要不停的迭代，需要将上次提取出来的面从原来的点云中去除
+        pcl::ExtractIndices&amp;lt;pcl::PointXYZ&amp;gt; eifilter(false);
+        //因为前面用到的索引是vector类型的，而析取器要求的是PointIndices，所以只要新建个，然后将上面的索引复制给它就行了
+        pcl::PointIndices::Ptr inlier(new pcl::PointIndices);
+        inlier-&amp;gt;indices = inliers;
+        //只有设置为true，才可以将包含在inlier中的下标的点从原来的点云中去除
+        eifilter.setNegative(true);
+        eifilter.setInputCloud(inputPoints);
+        eifilter.setIndices(inlier);
+        eifilter.filter(*inputPoints);
+
+        std::cout &amp;lt;&amp;lt; &amp;quot;ok.&amp;quot; &amp;lt;&amp;lt; std::endl;
+        std::string fileName = &amp;quot;SampleModelPlane&amp;quot;, houzhui = &amp;quot;.pcd&amp;quot;;
+        pcl::PCDWriter w;
+        w.write&amp;lt;pcl::PointXYZ&amp;gt;(fileName + std::to_string(count) + houzhui, *out);
+        ++count;
+    }
+    return true;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;除了可以提取面之外，这个函数还有个变形，就是提取直线，效果也是非常好的&lt;/p&gt;
+
+&lt;h2 id=&#34;sampleconsensusmodelline&#34;&gt;SampleConsensusModelLine&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code&gt;bool SampleConsensusModelLine(void) {
+    std::vector&amp;lt;int&amp;gt; inliers;
+    pcl::PointCloud&amp;lt;pcl::PointXYZ&amp;gt;::Ptr cloud(new pcl::PointCloud&amp;lt;pcl::PointXYZ&amp;gt;);
+    pcl::PointCloud&amp;lt;pcl::PointXYZ&amp;gt;::Ptr out(new pcl::PointCloud&amp;lt;pcl::PointXYZ&amp;gt;);
+    cloud = readFile();
+
+    int rawPoints = cloud-&amp;gt;points.size();
+    pcl::PointCloud&amp;lt;pcl::PointXYZ&amp;gt;::Ptr inputPoints(new pcl::PointCloud&amp;lt;pcl::PointXYZ&amp;gt;);
+    inputPoints = cloud;
+    int count = 1;
+    std::multimap&amp;lt;double, double&amp;gt; mapKb;
+    //和上面的函数几乎没有什么区别，只是将SampleConsensusModelPlane变成SampleConsensusModelLine
+    while (inputPoints-&amp;gt;points.size() &amp;gt; 0.05 * rawPoints) {
+        pcl::SampleConsensusModelLine&amp;lt;pcl::PointXYZ&amp;gt;::Ptr modle_l(new pcl::SampleConsensusModelLine&amp;lt;pcl::PointXYZ&amp;gt;(inputPoints));
+        pcl::RandomSampleConsensus&amp;lt;pcl::PointXYZ&amp;gt; ransac(modle_l);
+        ransac.setDistanceThreshold(0.1);
+        ransac.computeModel();
+        ransac.getInliers(inliers);
+        pcl::copyPointCloud&amp;lt;pcl::PointXYZ&amp;gt;(*inputPoints, inliers, *out);
+
+        //析取
+        pcl::ExtractIndices&amp;lt;pcl::PointXYZ&amp;gt; eifilter(false);
+        pcl::PointIndices::Ptr inlier(new pcl::PointIndices);
+        inlier-&amp;gt;indices = inliers;
+        eifilter.setNegative(true);
+        eifilter.setInputCloud(inputPoints);
+        eifilter.setIndices(inlier);
+        eifilter.filter(*inputPoints);
+
+
+        std::cout &amp;lt;&amp;lt; &amp;quot;ok2.&amp;quot; &amp;lt;&amp;lt; std::endl;
+        std::string fileName = &amp;quot;./line1/SampleModelLine&amp;quot;, houzhui = &amp;quot;.pcd&amp;quot;;
+        pcl::PCDWriter w;
+        w.write&amp;lt;pcl::PointXYZ&amp;gt;(fileName + std::to_string(count) + houzhui, *out);
+        ++count;
+    }
+
+    return true;
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;因为用的是1.8版本的PCL，里面实现了好多很需要的函数，所以功能还是很强大，几乎你能想到的都有，只是因为是通用的，所以可能在精度准确度上没有那么高，需要开发者自己再做进一步调整&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>利用PCL对三维点云进行面提取</title>
