@@ -5,8 +5,58 @@
     <link>https://shiweiHou.github.io/pointcloud/</link>
     <description>Recent content in PointClouds on Hello world!</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Fri, 18 Nov 2016 13:19:35 +0800</lastBuildDate>
+    <lastBuildDate>Fri, 18 Nov 2016 13:41:18 +0800</lastBuildDate>
     <atom:link href="https://shiweiHou.github.io/pointcloud/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>pcl_boundary</title>
+      <link>https://shiweihou.github.io/pointcloud/pcl_boundary/</link>
+      <pubDate>Fri, 18 Nov 2016 13:41:18 +0800</pubDate>
+      
+      <guid>https://shiweihou.github.io/pointcloud/pcl_boundary/</guid>
+      <description>&lt;p&gt;PCL 里又找到一个牛逼的函数：BoundaryEstimation，用来发现三维点云的边界的。因为一直在做三维重建，一开始的想法是将三维点云投影到二维上，接着将二维的点云进行网格划分，根据落在网格内的点的数量设置为灰度值，这样我们就可以得到一个灰度图。接着就是利用图像处理中的方法，先进行二值化，然后用canny算子找边界，用hough变换找直线，最后再反投射到三维上。后来试了下，这个方法不仅复杂，而且进行两次三维到二维之间的变化，误差太大。后来在PCL里找到BoundaryEstimation这个类，能够自动的找到边界，很强大，但最好也是在二维下做，意思是先找到面，在面上找边界。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;void LasFunction::boundaryFind(void) {
+    pcl::PointCloud&amp;lt;pcl::PointXYZ&amp;gt;::Ptr cloud(new pcl::PointCloud&amp;lt;pcl::PointXYZ&amp;gt;);
+    cloud = readFile();
+    pcl::search::Search&amp;lt;pcl::PointXYZ&amp;gt;::Ptr tree = boost::shared_ptr&amp;lt;pcl::search::Search&amp;lt;pcl::PointXYZ&amp;gt; &amp;gt;(new pcl::search::KdTree&amp;lt;pcl::PointXYZ&amp;gt;);
+    // 计算法向量，因为边界点查找需要用到法向量
+    pcl::PointCloud&amp;lt;pcl::Normal&amp;gt;::Ptr normals(new pcl::PointCloud&amp;lt;pcl::Normal&amp;gt;);
+    pcl::NormalEstimation&amp;lt;pcl::PointXYZ, pcl::Normal&amp;gt; normal_estimator;
+    normal_estimator.setSearchMethod(tree);
+    normal_estimator.setInputCloud(cloud);
+    normal_estimator.setKSearch(30);
+    normal_estimator.compute(*normals);
+
+    pcl::PointCloud&amp;lt;pcl::Boundary&amp;gt; boundaries;
+    pcl::BoundaryEstimation&amp;lt;pcl::PointXYZ, pcl::Normal, pcl::Boundary&amp;gt; est;
+    est.setInputCloud(cloud);
+    est.setInputNormals(normals);
+    est.setSearchMethod(pcl::search::KdTree&amp;lt;pcl::PointXYZ&amp;gt;::Ptr(new pcl::search::KdTree&amp;lt;pcl::PointXYZ&amp;gt;));
+    //50效果比较好，这个数值的意思我的理解是根据点周围这么多个点来进行判断我们找到的点究竟是不是边界点
+    est.setKSearch(100);
+    est.compute(boundaries);
+    if (boundaries.points.empty()) std::cout &amp;lt;&amp;lt; &amp;quot;error&amp;quot; &amp;lt;&amp;lt; std::endl;
+    else {
+        pcl::PointCloud&amp;lt;pcl::PointXYZ&amp;gt;::Ptr boundaryPoints(new pcl::PointCloud&amp;lt;pcl::PointXYZ&amp;gt;);
+        for (int i = 0; i &amp;lt; cloud-&amp;gt;points.size(); ++i) {
+        //当初在这卡了好久，因为虽然找到了边界点，但无法直接输出，它里面是uint8_t类型的，如果是边界点，它保存1，如果不是，保存0.若想在计算机里显式的显示出来，需要进行强制类型转换，变成int型才可以
+            uint8_t  x = boundaries.points[i].boundary_point;
+            int a = static_cast&amp;lt;int&amp;gt;(x);
+            if (1 == a) boundaryPoints-&amp;gt;push_back(cloud-&amp;gt;points[i]);
+        }
+        std::cout &amp;lt;&amp;lt; boundaryPoints-&amp;gt;points.size() &amp;lt;&amp;lt; std::endl;
+        std::cout &amp;lt;&amp;lt; &amp;quot;boundary is ok.&amp;quot; &amp;lt;&amp;lt; std::endl;
+        radiusFilter(boundaryPoints);
+        pcl::io::savePCDFile(&amp;quot;./line9/boundaryPlane.pcd&amp;quot;, *boundaryPoints);
+    }
+
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;总之，这个类给了我很大的方便，PCL果然在一直进步，很牛逼的一个库，需要我继续学习下去&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>PCL SampleConsensusMode</title>
