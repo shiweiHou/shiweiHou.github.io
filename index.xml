@@ -5,8 +5,78 @@
     <link>https://shiweiHou.github.io/</link>
     <description>Recent content on Hello world!</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Fri, 25 Nov 2016 20:52:54 +0800</lastBuildDate>
+    <lastBuildDate>Tue, 29 Nov 2016 11:18:44 +0800</lastBuildDate>
     <atom:link href="https://shiweiHou.github.io/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>ex7.K-means Clustering and Principal Component Analysis</title>
+      <link>https://shiweihou.github.io/machinelearning/ex7/</link>
+      <pubDate>Tue, 29 Nov 2016 11:18:44 +0800</pubDate>
+      
+      <guid>https://shiweihou.github.io/machinelearning/ex7/</guid>
+      <description>
+
+&lt;p&gt;这节课主要讲了非监督学习的两个：K-means 和 Principal Component Analysis。K-means算法思想很简单，就是给你一堆数据，你需要在这无序的数据中将类似的数据聚合起来，分成K类，具体要分几类，可以通过 Elbow method （肘部法则）或者根据实际需求来确定。PCA算法通俗意义来讲，是降维操作。如果有个数据特征维数很大，例如100000维，其实在这么多的特种中，很多特征都是由相互联系的，通过PCA算法，就可以将原来维数很大数据特征，降低到我们容易进行处理的维数。&lt;/p&gt;
+
+&lt;p&gt;PCA有几个好处： 降低存储容量，通过降维，提高学习算法运行速度。特别的，通过降维到2D或者3D，我们可以显示的观察特征，利于处理。但是如果想要通过PCA去降维来避免学习算法的过拟合问题，是不推荐的，或者不可取的。&lt;/p&gt;
+
+&lt;h2 id=&#34;findclosestcentroids-m&#34;&gt;findClosestCentroids.m&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code&gt;m = size(X,1);
+for i = 1 : m
+    %二维数组，第i行用X(i,:)表示，不是X(i)
+    dis = sum((X(i,:) - centroids(1,:)).^2);
+    idx(i) = 1;
+    for k = 1 : K
+        dis2 = sum((X(i,:) - centroids(k,:)).^2);
+        if  dis &amp;gt;= dis2
+            dis = dis2;
+            idx(i) = k;
+        end
+    end
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;computecentroids-m&#34;&gt;computeCentroids.m&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code&gt;for k = 1 : K
+    centroid = zeros(1,n);
+    Ck = 0;
+    for i = 1 : m
+        if idx(i) == k
+            centroid = centroid + X(i,:);
+            Ck = Ck + 1;
+        end
+    end
+    centroid = centroid / Ck;
+    centroids(k,:) = centroid;
+end
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;kmeansinitcentroids-m&#34;&gt;kMeansInitCentroids.m&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code&gt;randidx = randperm(size(X,1));
+centroids = X(randidx(1:K),:);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;pca-m&#34;&gt;pca.m&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code&gt;eigenvector = X&#39;* X / m;
+[U,S,~] = svd(eigenvector);
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;projectdata-m&#34;&gt;projectData.m&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code&gt;U_reduce = U(:,1:K);
+Z = X * U_reduce;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;h2 id=&#34;recoverdata-m&#34;&gt;recoverData.m&lt;/h2&gt;
+
+&lt;pre&gt;&lt;code&gt;X_rec = Z * U(:,1:K)&#39;;
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
     
     <item>
       <title>ex6.Support Vector Machines</title>
@@ -1734,47 +1804,6 @@ void longToBinary(long number, string &amp;amp;s) {
     }
     return release[k];
 }
-&lt;/code&gt;&lt;/pre&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>LintCode 克隆二叉树</title>
-      <link>https://shiweihou.github.io/lintcode/2016-10-09-02/</link>
-      <pubDate>Sun, 09 Oct 2016 20:57:46 +0800</pubDate>
-      
-      <guid>https://shiweihou.github.io/lintcode/2016-10-09-02/</guid>
-      <description>&lt;p&gt;题目链接：&lt;a href=&#34;http://www.lintcode.com/zh-cn/problem/clone-binary-tree/&#34;&gt;LintCode 克隆二叉树&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;很简单，就是在对二叉树进行遍历的时候重新生成节点就可以了，前序、中序或者后序遍历都可以，我用的是前序遍历：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;/**
-* Definition of TreeNode:
-* class TreeNode {
-* public:
-*     int val;
-*     TreeNode *left, *right;
-*     TreeNode(int val) {
-*         this-&amp;gt;val = val;
-*         this-&amp;gt;left = this-&amp;gt;right = NULL;
-*     }
-* }
-*/
-class Solution {
-public:
-/**
- * @param root: The root of binary tree
- * @return root of new tree
- */
-TreeNode* cloneTree(TreeNode *root) {
-    // Write your code here
-    if (root == NULL) return NULL;
-    TreeNode *newRoot = new TreeNode(root-&amp;gt;val);
-    if (root-&amp;gt;left) newRoot-&amp;gt;left = cloneTree(root-&amp;gt;left);
-    if (root-&amp;gt;right) newRoot-&amp;gt;right = cloneTree(root-&amp;gt;right);
-    return newRoot;
-    }
-};
 &lt;/code&gt;&lt;/pre&gt;
 </description>
     </item>

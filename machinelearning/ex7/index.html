@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
 <head>
   <title>
-    ex6.Support Vector Machines // Hello world!
+    ex7.K-means Clustering and Principal Component Analysis // Hello world!
   </title>
 
   <link href="http://gmpg.org/xfn/11" rel="profile">
@@ -16,11 +16,11 @@
 <meta name="author" content="">
 <meta name="generator" content="Hugo 0.16" />
 
-  <meta property="og:title" content="ex6.Support Vector Machines" />
+  <meta property="og:title" content="ex7.K-means Clustering and Principal Component Analysis" />
 <meta property="og:description" content="" />
 <meta property="og:type" content="website" />
 <meta property="og:locale" content="en_US" />
-<meta property="og:url" content="https://shiweihou.github.io/machinelearning/ex6/" />
+<meta property="og:url" content="https://shiweihou.github.io/machinelearning/ex7/" />
 
 
   
@@ -113,10 +113,12 @@
 <ul>
 <li>
 <ul>
-<li><a href="#gaussian-kernel">Gaussian Kernel</a></li>
-<li><a href="#dataset3params-m">dataset3Params.m</a></li>
-<li><a href="#processemail-m">processEmail.m</a></li>
-<li><a href="#emailfeatures-m">emailFeatures.m</a></li>
+<li><a href="#findclosestcentroids-m">findClosestCentroids.m</a></li>
+<li><a href="#computecentroids-m">computeCentroids.m</a></li>
+<li><a href="#kmeansinitcentroids-m">kMeansInitCentroids.m</a></li>
+<li><a href="#pca-m">pca.m</a></li>
+<li><a href="#projectdata-m">projectData.m</a></li>
+<li><a href="#recoverdata-m">recoverData.m</a></li>
 </ul></li>
 </ul>
 </nav>
@@ -125,14 +127,14 @@
 	    
   		<section class="post">
             <h1 class="post-title">
-              <a href="/machinelearning/ex6/">ex6.Support Vector Machines</a>
+              <a href="/machinelearning/ex7/">ex7.K-means Clustering and Principal Component Analysis</a>
             </h1>
             <h3 class="post-subtitle">
             	
             </h3>
             
             	<span class="post-date">
-                	<span class="post-date-day"><sup>25</sup></span><span class="post-date-separator">/</span><span class="post-date-month">Nov</span> <span class="post-date-year">2016</span>
+                	<span class="post-date-day"><sup>29</sup></span><span class="post-date-separator">/</span><span class="post-date-month">Nov</span> <span class="post-date-year">2016</span>
             	</span>
             	
             
@@ -148,63 +150,65 @@
 
             
 
-<p>这节讲到了SVM，Andrew Ng大神主要简单介绍了下核函数和SVM一些参数的影响。因为Ng大牛介绍的比较简单，所以看完自己又去网上百度了下，系统了了解了下。拙见就不在这发了，大家有兴趣的可以自己去百度。其实SVM就是个分类器，利用特定的核函数将在原空间维度线性不可分问题映射到高维，使之变成线性可分。另外学习这节课的时候又对偏差和方差有点迷，在知乎上找到一篇答案，比较优秀，链接在此：<a href="https://www.zhihu.com/question/27068705">机器学习中的Bias(偏差)，Error(误差)，和Variance(方差)有什么区别和联系？</a></p>
+<p>这节课主要讲了非监督学习的两个：K-means 和 Principal Component Analysis。K-means算法思想很简单，就是给你一堆数据，你需要在这无序的数据中将类似的数据聚合起来，分成K类，具体要分几类，可以通过 Elbow method （肘部法则）或者根据实际需求来确定。PCA算法通俗意义来讲，是降维操作。如果有个数据特征维数很大，例如100000维，其实在这么多的特种中，很多特征都是由相互联系的，通过PCA算法，就可以将原来维数很大数据特征，降低到我们容易进行处理的维数。</p>
 
-<h2 id="gaussian-kernel">Gaussian Kernel</h2>
+<p>PCA有几个好处： 降低存储容量，通过降维，提高学习算法运行速度。特别的，通过降维到2D或者3D，我们可以显示的观察特征，利于处理。但是如果想要通过PCA去降维来避免学习算法的过拟合问题，是不推荐的，或者不可取的。</p>
 
-<pre><code>%很简单，就是按照公式计算高斯核内积，难度0
-sim = -sum( (x1 - x2).^2 ) /  2 / sigma^2;
-sim = exp(sim);
-</code></pre>
+<h2 id="findclosestcentroids-m">findClosestCentroids.m</h2>
 
-<h2 id="dataset3params-m">dataset3Params.m</h2>
-
-<pre><code>%选择出最好的一对 C sigma
-C_final = C;
-sigma_final = sigma;
-min_error = size(yval,1);
-% C 和 sigma 所有的可能
-para = [0.01 0.03 0.1 0.3 1 3 10 30];
-m = size(para,2);
-% 将 C 和 sigma 所有的可能都训练测试一遍，找到效果最好的那对
+<pre><code>m = size(X,1);
 for i = 1 : m
-    for j = 1 : m
-        C = para(i);
-        sigma = para(j);
-        model = svmTrain(X, y, C, @(x1, x2) gaussianKernel(x1, x2, sigma));
-        pre = svmPredict(model,Xval);
-        cur_error = mean(double(pre ~= yval));
-        if cur_error &lt; min_error
-            min_error = cur_error;
-            C_final = C;
-            sigma_final = sigma;
+    %二维数组，第i行用X(i,:)表示，不是X(i)
+    dis = sum((X(i,:) - centroids(1,:)).^2);
+    idx(i) = 1;
+    for k = 1 : K
+        dis2 = sum((X(i,:) - centroids(k,:)).^2);
+        if  dis &gt;= dis2
+            dis = dis2;
+            idx(i) = k;
         end
     end
 end
-C = C_final;
-sigma = sigma_final;
 </code></pre>
 
-<h2 id="processemail-m">processEmail.m</h2>
+<h2 id="computecentroids-m">computeCentroids.m</h2>
 
-<pre><code>%就是找到单词出现的下标位置，然后已列向量存储下来
-for i = 1 : length(vocabList)
-    if strcmp(str, vocabList{i}) == 1
-        word_indices = [word_indices ; i];
-        break;
+<pre><code>for k = 1 : K
+    centroid = zeros(1,n);
+    Ck = 0;
+    for i = 1 : m
+        if idx(i) == k
+            centroid = centroid + X(i,:);
+            Ck = Ck + 1;
+        end
     end
+    centroid = centroid / Ck;
+    centroids(k,:) = centroid;
 end
 </code></pre>
 
-<h2 id="emailfeatures-m">emailFeatures.m</h2>
+<h2 id="kmeansinitcentroids-m">kMeansInitCentroids.m</h2>
 
-<pre><code>%这个就更简单了，简单的说就是将所有出现的单词所在的下标位置，赋值1
-for i = 1 : size(word_indices,1)
-    x(word_indices(i)) = 1;
+<pre><code>randidx = randperm(size(X,1));
+centroids = X(randidx(1:K),:);
 </code></pre>
 
-<p>现在已经学习到第七周了，发现越高深的算法，其实实现起来越简单，因为现有的函数库都将其实质内容都包含隐藏起来了，你只需要实现相应的输入参数就可以了。说明发明一个算法是最难的，但学会用一个算法，就太简单了。
-另在原有的代码有一个小bug，就是没办法显示Example Dataset 2的边界线，是visualizeBoundary.m出了点问题，课程助教也给了解决方法，及时将原有的<code>contour(X1, X2, vals, [0 0], 'Color', 'b');</code>改为<code>contour(X1, X2, vals, [1 1], 'b');</code>就可以了。</p>
+<h2 id="pca-m">pca.m</h2>
+
+<pre><code>eigenvector = X'* X / m;
+[U,S,~] = svd(eigenvector);
+</code></pre>
+
+<h2 id="projectdata-m">projectData.m</h2>
+
+<pre><code>U_reduce = U(:,1:K);
+Z = X * U_reduce;
+</code></pre>
+
+<h2 id="recoverdata-m">recoverData.m</h2>
+
+<pre><code>X_rec = Z * U(:,1:K)';
+</code></pre>
 
 	
 			
@@ -215,16 +219,11 @@ for i = 1 : size(word_indices,1)
 				<div class="paging">
 					<span class="paging-label">More Reading</span>
 					
-					<div class="paging-newer">
-						<span class="dark-red">Newer</span><span class="decorative-marker">//</span>
-						<a class="paging-link" href="/machinelearning/ex7/">ex7.K-means Clustering and Principal Component Analysis</a>
-		            </div>
-		            
 
 					
 					<div class="paging-older">
 						<span class="dark-red">Older</span><span class="decorative-marker">//</span>
-			            <a class="paging-link" href="/pointcloud/pcl_boundary/">pcl_boundary</a>
+			            <a class="paging-link" href="/machinelearning/ex6/">ex6.Support Vector Machines</a>
 		            </div>
 		            
 	            </div>
