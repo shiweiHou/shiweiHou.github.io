@@ -5,8 +5,67 @@
     <link>https://shiweiHou.github.io/</link>
     <description>Recent content on Hello world!</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Sat, 03 Dec 2016 18:03:25 +0800</lastBuildDate>
+    <lastBuildDate>Tue, 13 Dec 2016 16:55:25 +0800</lastBuildDate>
     <atom:link href="https://shiweiHou.github.io/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>C&#43;&#43;按行读取文本字符串</title>
+      <link>https://shiweihou.github.io/cplusplus/C&#43;&#43;%E8%AF%BB%E5%8F%96%E6%96%87%E4%BB%B6%E5%AD%97%E7%AC%A6%E4%B8%B2/</link>
+      <pubDate>Tue, 13 Dec 2016 16:55:25 +0800</pubDate>
+      
+      <guid>https://shiweihou.github.io/cplusplus/C&#43;&#43;%E8%AF%BB%E5%8F%96%E6%96%87%E4%BB%B6%E5%AD%97%E7%AC%A6%E4%B8%B2/</guid>
+      <description>&lt;p&gt;我们有一个文本文件，文件信息都是按行存储的，并且每行都包含很多字符串，例如&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;you are my girl!
+This is number 123456!
+Do you like me? aha
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;类似于这样，我们有时候可能希望不仅仅读取文本里的字符串，还希望能够按行读取，因为有时候文本里的内容是相关的，即每行的信息大同小异，但每行间又会有点小区别，或者我们希望处理某特定一行的数字等等。这时我们希望可以每次读取一行，然后把每行的字符串都拆分出来，我们就可以按照下面的操作：
+std::fstream
+C++ 有一个头文件&lt;code&gt;&amp;lt;fstream&amp;gt;&lt;/code&gt;,里面有三个类成员 &lt;code&gt;fstream ifstream ofstream&lt;/code&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;ifstream：定义读取的文件，进行读操作，而无法进行写操作&lt;/li&gt;
+&lt;li&gt;ofstream：定义要写的文件，进行写操作，而无法进行读操作&lt;/li&gt;
+&lt;li&gt;fstream：定义读写文件，既可以进行读操作，也可以进行写操作&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;一行一行的读取文件内容：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;#include &amp;lt;fstream&amp;gt;
+
+std::string fileName = &amp;quot;line.ply&amp;quot;;
+std::ifstream input_file(fileName.c_str());
+std::string line;
+if (input_file.is_open()) {
+    while (getline(input_file, line)) {
+        cout &amp;lt;&amp;lt; line &amp;lt;&amp;lt; endl; // 文件每一行的数据都保存在line中
+    }
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;上式中&lt;code&gt;getline&lt;/code&gt;函数，就将每一行的内容都放入line中，直到读取到末尾。&lt;/p&gt;
+
+&lt;p&gt;那么现在我们得到每行的数据了，如何得到每行单独的字符串呢，这时候就要用到&lt;code&gt;sstream&lt;/code&gt;，它和&lt;code&gt;fstream&lt;/code&gt;类似，不过前者是对文件进行操作，是文件IO，后者是对string对象操作，就像string是一个IO流一样。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;istringstream：从string读取数据&lt;/li&gt;
+&lt;li&gt;ostringstream：向string写入数据&lt;/li&gt;
+&lt;li&gt;stringstream：对string既可以写，也可以读&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;对上面得到的一行数据进行操作：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;#include&amp;lt;sstream&amp;gt;
+std::istringstream text(line);
+std::string content;
+while (text &amp;gt;&amp;gt; content) {
+    do something with content.//这时我们就将一行的数据拆分成单个的字符串，就可以进行操作了
+}
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
     
     <item>
       <title>ex8.Anomaly Detection and Recommender Systems</title>
@@ -1677,43 +1736,6 @@ void longToBinary(long number, string &amp;amp;s) {
 &lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;};&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title> LintCode 逆波兰表达式求值</title>
-      <link>https://shiweihou.github.io/lintcode/2016-10-13-01/</link>
-      <pubDate>Thu, 13 Oct 2016 20:43:48 +0800</pubDate>
-      
-      <guid>https://shiweihou.github.io/lintcode/2016-10-13-01/</guid>
-      <description>&lt;p&gt;&lt;a href=&#34;http://www.lintcode.com/zh-cn/problem/evaluate-reverse-polish-notation/&#34;&gt;题目链接&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;题意很明确，其实就是四则运算的后缀求值，用栈来维护，中间过程中没有考虑栈元素不够或者除数为0的情况，但也AC了，说明输入的数据比较严格。&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;int evalRPN(vector&amp;lt;string&amp;gt;&amp;amp; tokens) {
-    // Write your code here
-    stack&amp;lt;int&amp;gt; s;
-    int ans;
-    if (tokens.empty()) return ans;
-    for (auto e : tokens) {
-        if (e != &amp;quot;+&amp;quot; &amp;amp;&amp;amp; e != &amp;quot;-&amp;quot; &amp;amp;&amp;amp; e != &amp;quot;*&amp;quot; &amp;amp;&amp;amp; e != &amp;quot;/&amp;quot;) {
-            int number = stoi(e);
-            s.push(number);
-            continue;
-        } 
-        int x = s.top();
-        s.pop();
-        int y = s.top();
-        s.pop();
-        if (e == &amp;quot;+&amp;quot;) s.push(x + y);
-        if (e == &amp;quot;-&amp;quot;) s.push(y - x);
-        if (e == &amp;quot;/&amp;quot;) s.push(y / x);
-        if (e == &amp;quot;*&amp;quot;) s.push(x * y);
-    }
-
-    return s.top();
-}
-&lt;/code&gt;&lt;/pre&gt;
 </description>
     </item>
     
