@@ -5,8 +5,22 @@
     <link>https://shiweiHou.github.io/machinelearning/</link>
     <description>Recent content in MachineLearnings on Hello world!</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Sat, 03 Dec 2016 18:03:25 +0800</lastBuildDate>
+    <lastBuildDate>Sat, 17 Dec 2016 15:03:25 +0800</lastBuildDate>
     <atom:link href="https://shiweiHou.github.io/machinelearning/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>ex9-10.The end</title>
+      <link>https://shiweihou.github.io/machinelearning/exend/</link>
+      <pubDate>Sat, 17 Dec 2016 15:03:25 +0800</pubDate>
+      
+      <guid>https://shiweihou.github.io/machinelearning/exend/</guid>
+      <description>&lt;p&gt;第九周和第十周没有再讲具体的算法了，而是介绍了一些机器学习变种的算法。第九周介绍了如何在非常非常大的数据下进行机器学习，以及流算法，第十周则介绍了流水线工作，类似于模块化，将一个大的机器学习任务分解成几个小部分，然后分析哪部分可以进行改进，哪部分不需要花费太多的人力物力物改进。&lt;/p&gt;
+
+&lt;p&gt;总之，感觉正学习的渐入佳境，突然就没了，总有一种意犹未尽的感觉。机器学习只是比较有兴趣，然而现在我用到的机会却不是很多，希望可以继续学习下去，获得更多的知识。&lt;/p&gt;
+
+&lt;p&gt;再次感谢Andrew Ng的无私奉献，还有Coursera平台提供了这次机会，再次感谢！&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>ex8.Anomaly Detection and Recommender Systems</title>
