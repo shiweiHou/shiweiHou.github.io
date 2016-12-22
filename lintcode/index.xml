@@ -5,8 +5,110 @@
     <link>https://shiweiHou.github.io/lintcode/</link>
     <description>Recent content in Lintcodes on Hello world!</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Mon, 31 Oct 2016 20:01:12 +0800</lastBuildDate>
+    <lastBuildDate>Thu, 22 Dec 2016 20:55:54 +0800</lastBuildDate>
     <atom:link href="https://shiweiHou.github.io/lintcode/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>LintCode 将表达式转换为逆波兰表达式</title>
+      <link>https://shiweihou.github.io/lintcode/2016-12-22-01/</link>
+      <pubDate>Thu, 22 Dec 2016 20:55:54 +0800</pubDate>
+      
+      <guid>https://shiweihou.github.io/lintcode/2016-12-22-01/</guid>
+      <description>&lt;p&gt;问题描述：
+    给定一个表达式字符串数组，返回该表达式的逆波兰表达式。&lt;/p&gt;
+
+&lt;p&gt;问题分析：首先要搞明白什么是逆波兰表达式，&lt;a href=&#34;https://zh.wikipedia.org/wiki/%E9%80%86%E6%B3%A2%E5%85%B0%E8%A1%A8%E7%A4%BA%E6%B3%95&#34;&gt;wiki&lt;/a&gt;上面有很详细的介绍，题目意思就是将我们平常习惯的数学表达式表示成计算机所能理解的式子。因为人类可以很自然的理解例如&lt;code&gt;1 + 2 * 3&lt;/code&gt;这样的式子，但计算机没有办法，计算机需要将其转换为&lt;code&gt;123*+&lt;/code&gt;这样的形式才可以。&lt;/p&gt;
+
+&lt;p&gt;前面有一道题是将逆波兰表达式转换为中缀表达式，这道题刚好反过来。其实如果我们首先先自己在草稿纸上自己将中缀表达式转为逆波兰表达式的过程演算一遍，就很自然的明白转换规则：假设我们有一个&lt;code&gt;vector ret&lt;/code&gt;用来专门存答案，有一个&lt;code&gt;stack opera&lt;/code&gt;用来存操作符（&lt;code&gt;+ - * / （&lt;/code&gt;） ），另字符串&lt;code&gt;ch&lt;/code&gt;为表达式&lt;code&gt;expression&lt;/code&gt;中的元素，规则如下：&lt;/p&gt;
+
+&lt;ol&gt;
+&lt;li&gt;假如&lt;code&gt;ch&lt;/code&gt;为数字，那么很自然的，将其放入&lt;code&gt;ret&lt;/code&gt;中&lt;/li&gt;
+&lt;li&gt;假如&lt;code&gt;ch&lt;/code&gt;为操作符，那么：
+
+&lt;br /&gt;&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;如果&lt;code&gt;ch == &amp;quot;(&amp;quot;&lt;/code&gt;,那么将&lt;code&gt;ch&lt;/code&gt;放入到&lt;code&gt;opera&lt;/code&gt;中；&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;如果&lt;code&gt;ch == &amp;quot;)&amp;quot;&lt;/code&gt;,那么将&lt;code&gt;opera&lt;/code&gt;中最顶层的&lt;code&gt;（&lt;/code&gt;上面的所有操作符放入&lt;code&gt;ret&lt;/code&gt;中&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;如果&lt;code&gt;ch
+是四则运算符&lt;/code&gt;,那么根据此时&lt;code&gt;opera&lt;/code&gt;中已有的字符的优先级，如果&lt;code&gt;ch&lt;/code&gt;大于此时&lt;code&gt;opera&lt;/code&gt;顶层操作符的优先级，那么&lt;code&gt;ch&lt;/code&gt;放入到&lt;code&gt;opera&lt;/code&gt;中，如果不是，那么将&lt;code&gt;opera&lt;/code&gt;中的运算符弹出放入&lt;code&gt;ret&lt;/code&gt;中，直到碰到第一个大于&lt;code&gt;ch&lt;/code&gt;的优先级的运算符或者碰到第一个&lt;code&gt;（&lt;/code&gt;或者走到头。&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;我们首先放进去一个字符@，表示优先级最低或者表示栈底
+代码如下：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;class Solution {
+public:
+    /**
+     * @param expression: A string array
+     * @return: The Reverse Polish notation of this expression
+     */
+    vector&amp;lt;string&amp;gt; convertToRPN(vector&amp;lt;string&amp;gt; &amp;amp;expression) {
+        // write your code here
+        vector&amp;lt;string&amp;gt; ret;
+        stack&amp;lt;string&amp;gt; opera;
+        int count = 0;
+        int pos = 0;
+        opera.push(&amp;quot;@&amp;quot;);
+        while (pos &amp;lt; expression.size()) {
+            string ch = expression[pos];
+            if (ch != &amp;quot;+&amp;quot; &amp;amp;&amp;amp; ch != &amp;quot;-&amp;quot; &amp;amp;&amp;amp; ch != &amp;quot;*&amp;quot; &amp;amp;&amp;amp; ch != &amp;quot;/&amp;quot; &amp;amp;&amp;amp; ch != &amp;quot;(&amp;quot; &amp;amp;&amp;amp; ch != &amp;quot;)&amp;quot;) {
+                ret.push_back(ch);
+                ++pos;
+                continue;
+            } else {
+                string cur_op = opera.top();
+                if (cur_op == &amp;quot;@&amp;quot; || ch == &amp;quot;(&amp;quot;) {
+                    opera.push(ch);
+                    ++pos;
+                    continue;
+                } else if (ch == &amp;quot;)&amp;quot;) {
+                    while (cur_op != &amp;quot;(&amp;quot;) {
+                        ret.push_back(cur_op);
+                        opera.pop();
+                        cur_op = opera.top();
+                    }
+                    opera.pop();
+                    ++pos;
+                    continue;
+                } else {
+                    if (cur_op == &amp;quot;(&amp;quot;) {
+                        opera.push(ch);
+                        ++pos;
+                        continue;
+                    }
+                    if (ch == &amp;quot;*&amp;quot; || ch == &amp;quot;/&amp;quot;) {
+                        while (cur_op == &amp;quot;*&amp;quot; || cur_op == &amp;quot;/&amp;quot;) {
+                            ret.push_back(cur_op);
+                            opera.pop();
+                            cur_op = opera.top();
+                        }
+                    } else while (cur_op != &amp;quot;@&amp;quot; &amp;amp;&amp;amp; cur_op != &amp;quot;(&amp;quot;) { // 加上cur_op != &amp;quot;(&amp;quot;是为对 ( ( 1 + 2) )这种连续两个以上括号的情况处理
+                        ret.push_back(cur_op);
+                        opera.pop();
+                        cur_op = opera.top();
+                    }
+                    opera.push(ch);
+                    ++pos;
+                    continue;
+                } 
+            }
+        }
+        string cur_op = opera.top();
+        while (cur_op != &amp;quot;@&amp;quot;) {
+            ret.push_back(cur_op);
+            opera.pop();
+            cur_op = opera.top();
+        }
+        return ret;
+    }
+};
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
     
     <item>
       <title>LintCode 分糖果</title>
@@ -928,16 +1030,6 @@ vector&amp;lt;int&amp;gt; flatten(vector&amp;lt;NestedInteger&amp;gt; &amp;amp;n
         return false;
     }
 &lt;/code&gt;&lt;/pre&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>first</title>
-      <link>https://shiweihou.github.io/lintcode/first/</link>
-      <pubDate>Mon, 03 Oct 2016 20:08:35 +0800</pubDate>
-      
-      <guid>https://shiweihou.github.io/lintcode/first/</guid>
-      <description>&lt;p&gt;lintcode&lt;/p&gt;
 </description>
     </item>
     
