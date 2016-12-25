@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+  <title>
+    lintcode 用栈模拟汉诺塔问题 // Hello world!
+  </title>
+
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+<meta name="description" content="">
+<meta name="keywords" content="">
+<meta name="author" content="">
+<meta name="generator" content="Hugo 0.16" />
+
+  <meta property="og:title" content="lintcode 用栈模拟汉诺塔问题" />
+<meta property="og:description" content="" />
+<meta property="og:type" content="website" />
+<meta property="og:locale" content="en_US" />
+<meta property="og:url" content="https://shiweihou.github.io/lintcode/2016-12-25-02/" />
+
+
+  
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.5.0/base-min.css">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.5.0/pure-min.css">
+  
+  
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.5.0/grids-responsive-min.css">
+  
+  
+
+  <link rel="stylesheet" href="https://shiweihou.github.io//css/redlounge.css">
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet">
+  <link href='//fonts.googleapis.com/css?family=Raleway:400,200,100,700,300,500,600,800' rel='stylesheet' type='text/css'>
+  <link href='//fonts.googleapis.com/css?family=Libre+Baskerville:400,700,400italic' rel='stylesheet' type='text/css'>
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.png">
+
+  
+  <link href="" rel="alternate" type="application/rss+xml" title="Hello world!" />
+
+    
+  
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.7/styles/tomorrow-night-bright.min.css">
+  
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.7/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+
+
+  
+
+  
+
+  
+
+  
+</head>
+
+<body>
+	
+
+	<div id="layout" class="pure-g">
+    <div class="sidebar pure-u-1 pure-u-md-1-4">
+  <div class="header">
+    
+
+	
+	  <img src="/img/1.jpg" class="sidebarphoto">
+	
+
+    <h1 class="brand-title">Matthew</h1>
+    <h2 class="brand-tagline">积跬步，至千里</h2>
+
+    <nav class="nav">
+      <ul class="nav-list">
+        <li class="nav-item"><span class="nav-item-separator">//</span><a href="https://shiweihou.github.io/">Home</a></li>
+        
+          <li class="nav-item"><span class="nav-item-separator">//</span><a href="/cplusplus/">C&#43;&#43;</a></li>
+        
+          <li class="nav-item"><span class="nav-item-separator">//</span><a href="/machinelearning/">Machine Learning</a></li>
+        
+          <li class="nav-item"><span class="nav-item-separator">//</span><a href="/pointcloud/">PointClouds</a></li>
+        
+          <li class="nav-item"><span class="nav-item-separator">//</span><a href="/algorithm/">algorithm</a></li>
+        
+          <li class="nav-item"><span class="nav-item-separator">//</span><a href="/lintcode/">lintcode</a></li>
+        
+      </ul>
+    </nav>
+
+    
+
+  </div>
+</div>
+
+	
+	
+
+    <div class="content pure-u-1 pure-u-md-3-4">
+		<a name="top"></a>
+		
+
+		
+			
+	    
+  		<section class="post">
+            <h1 class="post-title">
+              <a href="/lintcode/2016-12-25-02/">lintcode 用栈模拟汉诺塔问题</a>
+            </h1>
+            <h3 class="post-subtitle">
+            	
+            </h3>
+            
+            	<span class="post-date">
+                	<span class="post-date-day"><sup>25</sup></span><span class="post-date-separator">/</span><span class="post-date-month">Dec</span> <span class="post-date-year">2016</span>
+            	</span>
+            	
+            
+            	
+            
+
+			
+			
+
+			
+
+			
+
+            <p>我们知道汉诺塔问题是个经典的递归问题，思路就是有三根柱子 A B C，将N个按大小排好的碟子从A移动到C上，每次只移动一个并且只能将小的放在大的上面。将N-1个碟子利用柱子B从A放在B上，再将第N个碟子从A移动到C上，然后将剩下的N-1个碟子从B再移动到A上，重复这个过程，直到所有的碟子都移动完毕。根据Lintcode提供的接口，我们只需要补充完整就好了，在做的过程中也遇到了一些小问题，在代码里都注释了。</p>
+
+<pre><code>class Tower {
+public:
+    // create three towers (i from 0 to 2)
+    Tower(int i) {}
+
+    // Add a disk into this tower
+    void add(int d) {
+        if (!disks.empty() &amp;&amp; disks.top() &lt;= d) {
+            printf(&quot;Error placing disk %d&quot;, d);
+        } else {
+            disks.push(d);
+        }
+    }
+
+    // @param t a tower
+    // Move the top disk of this tower to the top of t.
+    void moveTopTo(Tower &amp;t) {
+        // Write your code here
+        //不明白加上这句if (disks.top() &gt; t.disks.top())为什么错误
+        //1是没有考虑到disks是private，不能直接由对象调用，2是没有判断t的disnks是不是空的，所以才出错
+        //if (disks.top() &gt; t.disks.top()) ;
+        stack&lt;int&gt; s = t.getDisks();
+        if (!s.empty() &amp;&amp; disks.top() &gt; s.top()) ;
+        t.add(disks.top());
+        disks.pop();
+
+    }
+
+    // @param n an integer
+    // @param destination a tower
+    // @param buffer a tower
+    // Move n Disks from this tower to destination by buffer tower
+    void moveDisks(int n, Tower &amp;destination, Tower &amp;buffer) {
+        // Write your code here
+        if (n == 0) return ;
+        else if (n == 1) moveTopTo(destination);
+        else {
+            moveDisks(n-1,buffer,destination);
+            moveTopTo(destination);
+            buffer.moveDisks(n-1,destination,*this);
+        }
+
+    }
+
+    stack&lt;int&gt; getDisks() {
+        return disks;
+    }
+
+private:
+    stack&lt;int&gt; disks;
+};
+/**
+ * Your Tower object will be instantiated and called as such:
+ * vector&lt;Tower&gt; towers;
+ * for (int i = 0; i &lt; 3; i++) towers.push_back(Tower(i));
+ * for (int i = n - 1; i &gt;= 0; i--) towers[0].add(i);
+ * towers[0].moveDisks(n, towers[2], towers[1]);
+ * print towers[0], towers[1], towers[2]
+*/
+</code></pre>
+
+	
+			
+
+			
+
+			
+				<div class="paging">
+					<span class="paging-label">More Reading</span>
+					
+					<div class="paging-newer">
+						<span class="dark-red">Newer</span><span class="decorative-marker">//</span>
+						<a class="paging-link" href="/lintcode/2016-12-25-03/">lintcode 表达树构造</a>
+		            </div>
+		            
+
+					
+					<div class="paging-older">
+						<span class="dark-red">Older</span><span class="decorative-marker">//</span>
+			            <a class="paging-link" href="/lintcode/2016-12-25-01/">lintcode 矩阵的之字型遍历</a>
+		            </div>
+		            
+	            </div>
+            
+          </section>
+          
+          	
+          
+        
+      <div class="footer">
+	<hr class="thin" />
+	<div class="pure-menu pure-menu-horizontal pure-menu-open">
+		<ul class="footer-menu">
+		
+		</ul>
+	</div>
+
+	<p>&copy; 2016. Matthew Hou All rights reserved.</p>
+</div>
+    </div>
+  </div>
+	
+
+	
+
+  
+</body>
+</html>

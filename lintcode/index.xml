@@ -5,8 +5,242 @@
     <link>https://shiweiHou.github.io/lintcode/</link>
     <description>Recent content in Lintcodes on Hello world!</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Thu, 22 Dec 2016 20:55:54 +0800</lastBuildDate>
+    <lastBuildDate>Sun, 25 Dec 2016 16:47:22 +0800</lastBuildDate>
     <atom:link href="https://shiweiHou.github.io/lintcode/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>lintcode 表达树构造</title>
+      <link>https://shiweihou.github.io/lintcode/2016-12-25-03/</link>
+      <pubDate>Sun, 25 Dec 2016 16:47:22 +0800</pubDate>
+      
+      <guid>https://shiweihou.github.io/lintcode/2016-12-25-03/</guid>
+      <description>&lt;p&gt;看到这个题目就感觉和前两天做的“逆波兰表达式”很像，想的方法就是先将表达式转化成逆波兰表达式，因为逆波兰表达式就是后缀表达式，维护一个栈，从头开始遍历后缀表达式：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;碰到数值，就生成个结点，然后将结点指针放入栈中&lt;/li&gt;
+&lt;li&gt;碰到操作数，就在栈中弹出两个指针作为该操作数的右左子树，接着将指向操作数的指针入栈&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;到最后栈中就只会剩下根节点了&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;/**
+ * Definition of ExpressionTreeNode:
+ * class ExpressionTreeNode {
+ * public:
+ *     string symbol;
+ *     ExpressionTreeNode *left, *right;
+ *     ExpressionTreeNode(string symbol) {
+ *         this-&amp;gt;symbol = symbol;
+ *         this-&amp;gt;left = this-&amp;gt;right = NULL;
+ *     }
+ * }
+ */
+
+class Solution {
+public:
+    /**
+     * @param expression: A string array
+     * @return: The root of expression tree
+     */
+    ExpressionTreeNode* build(vector&amp;lt;string&amp;gt; &amp;amp;expression) {
+        // write your code here
+        // 首先将表达式转换为逆波兰表达式，也就是表达树的后缀表示形式
+        vector&amp;lt;string&amp;gt; nibolan;
+        stack&amp;lt;string&amp;gt; operat;
+        operat.push(&amp;quot;@&amp;quot;);
+        int i = 0;
+        while ( i &amp;lt; expression.size()) {
+            string s = expression[i];
+            if (s != &amp;quot;+&amp;quot; &amp;amp;&amp;amp; s != &amp;quot;-&amp;quot; &amp;amp;&amp;amp; s != &amp;quot;*&amp;quot; &amp;amp;&amp;amp; s != &amp;quot;/&amp;quot; &amp;amp;&amp;amp; s != &amp;quot;(&amp;quot; &amp;amp;&amp;amp; s != &amp;quot;)&amp;quot;) {
+                nibolan.push_back(s);
+
+        } else if ( s == &amp;quot;(&amp;quot;) {
+            operat.push(s);
+
+        } else if ( s == &amp;quot;)&amp;quot;) {
+            string top = operat.top();
+            while (top != &amp;quot;@&amp;quot; &amp;amp;&amp;amp; top != &amp;quot;(&amp;quot;) {
+                nibolan.push_back(top);
+                operat.pop();
+                top = operat.top();
+            }
+            operat.pop();
+        } else if ( s == &amp;quot;*&amp;quot; || s == &amp;quot;/&amp;quot;) {
+            string top = operat.top();
+            while (top != &amp;quot;@&amp;quot; &amp;amp;&amp;amp; (top == &amp;quot;*&amp;quot; || top == &amp;quot;/&amp;quot;) ) {
+                nibolan.push_back(top);
+                operat.pop();
+                top = operat.top();
+            }
+            operat.push(s);
+        } else {
+           string top = operat.top();
+            while (top != &amp;quot;@&amp;quot; &amp;amp;&amp;amp; top != &amp;quot;(&amp;quot;) {
+                nibolan.push_back(top);
+                operat.pop();
+                top = operat.top();
+            }
+            operat.push(s); 
+        }
+        ++i;
+    }
+    string top = operat.top();
+    while (top != &amp;quot;@&amp;quot; ) {
+        nibolan.push_back(top);
+        operat.pop();
+        top = operat.top();
+    }
+    //从前往后，根据后缀表达式构建表达树,维护一个栈，栈中存放着树的指针，如果是操作符，就从栈中弹出两个指针作为它的右左子树，如果是数字，就直接入栈，最后栈中只会留下根指针
+    stack&amp;lt;ExpressionTreeNode*&amp;gt; st;
+    i = 0;
+    while (i &amp;lt; nibolan.size()) {
+        string s = nibolan[i];
+        ExpressionTreeNode * node = new ExpressionTreeNode (s);
+        if (s == &amp;quot;*&amp;quot; || s == &amp;quot;/&amp;quot; || s == &amp;quot;+&amp;quot; || s == &amp;quot;-&amp;quot;) {
+            ExpressionTreeNode* right = st.top();
+            st.pop();
+            ExpressionTreeNode* left = st.top();
+            st.pop();
+            node-&amp;gt;left = left;
+            node-&amp;gt;right = right;
+        }
+        st.push(node);
+        ++i;
+    }
+    if (st.empty()) return NULL;
+    return st.top();
+
+}
+};
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>lintcode 用栈模拟汉诺塔问题</title>
+      <link>https://shiweihou.github.io/lintcode/2016-12-25-02/</link>
+      <pubDate>Sun, 25 Dec 2016 16:41:24 +0800</pubDate>
+      
+      <guid>https://shiweihou.github.io/lintcode/2016-12-25-02/</guid>
+      <description>&lt;p&gt;我们知道汉诺塔问题是个经典的递归问题，思路就是有三根柱子 A B C，将N个按大小排好的碟子从A移动到C上，每次只移动一个并且只能将小的放在大的上面。将N-1个碟子利用柱子B从A放在B上，再将第N个碟子从A移动到C上，然后将剩下的N-1个碟子从B再移动到A上，重复这个过程，直到所有的碟子都移动完毕。根据Lintcode提供的接口，我们只需要补充完整就好了，在做的过程中也遇到了一些小问题，在代码里都注释了。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;class Tower {
+public:
+    // create three towers (i from 0 to 2)
+    Tower(int i) {}
+
+    // Add a disk into this tower
+    void add(int d) {
+        if (!disks.empty() &amp;amp;&amp;amp; disks.top() &amp;lt;= d) {
+            printf(&amp;quot;Error placing disk %d&amp;quot;, d);
+        } else {
+            disks.push(d);
+        }
+    }
+
+    // @param t a tower
+    // Move the top disk of this tower to the top of t.
+    void moveTopTo(Tower &amp;amp;t) {
+        // Write your code here
+        //不明白加上这句if (disks.top() &amp;gt; t.disks.top())为什么错误
+        //1是没有考虑到disks是private，不能直接由对象调用，2是没有判断t的disnks是不是空的，所以才出错
+        //if (disks.top() &amp;gt; t.disks.top()) ;
+        stack&amp;lt;int&amp;gt; s = t.getDisks();
+        if (!s.empty() &amp;amp;&amp;amp; disks.top() &amp;gt; s.top()) ;
+        t.add(disks.top());
+        disks.pop();
+
+    }
+
+    // @param n an integer
+    // @param destination a tower
+    // @param buffer a tower
+    // Move n Disks from this tower to destination by buffer tower
+    void moveDisks(int n, Tower &amp;amp;destination, Tower &amp;amp;buffer) {
+        // Write your code here
+        if (n == 0) return ;
+        else if (n == 1) moveTopTo(destination);
+        else {
+            moveDisks(n-1,buffer,destination);
+            moveTopTo(destination);
+            buffer.moveDisks(n-1,destination,*this);
+        }
+
+    }
+
+    stack&amp;lt;int&amp;gt; getDisks() {
+        return disks;
+    }
+
+private:
+    stack&amp;lt;int&amp;gt; disks;
+};
+/**
+ * Your Tower object will be instantiated and called as such:
+ * vector&amp;lt;Tower&amp;gt; towers;
+ * for (int i = 0; i &amp;lt; 3; i++) towers.push_back(Tower(i));
+ * for (int i = n - 1; i &amp;gt;= 0; i--) towers[0].add(i);
+ * towers[0].moveDisks(n, towers[2], towers[1]);
+ * print towers[0], towers[1], towers[2]
+*/
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>lintcode 矩阵的之字型遍历</title>
+      <link>https://shiweihou.github.io/lintcode/2016-12-25-01/</link>
+      <pubDate>Sun, 25 Dec 2016 16:33:35 +0800</pubDate>
+      
+      <guid>https://shiweihou.github.io/lintcode/2016-12-25-01/</guid>
+      <description>&lt;p&gt;题目要求：给一个矩阵，按照之字型进行遍历，&lt;a href=&#34;http://www.lintcode.com/zh-cn/problem/matrix-zigzag-traversal/&#34;&gt;题目链接&lt;/a&gt;
+思路：其实仔细想一想，就是先斜着往下遍历，再斜着往上遍历，就是这个过程，主要是判断好临界条件，是要往右走还是往下走
+代码：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;class Solution {
+public:
+    /**
+     * @param matrix: a matrix of integers
+     * @return: a vector of integers
+     */
+    vector&amp;lt;int&amp;gt; printZMatrix(vector&amp;lt;vector&amp;lt;int&amp;gt; &amp;gt; &amp;amp;matrix) {
+        // write your code here
+        int row = matrix.size();
+        int col = matrix[0].size();
+        vector&amp;lt;int&amp;gt; ret (row * col, 0);
+        int r = 0;
+        int c = 0;
+        int i = 0;
+        int all = row * col;
+        ret[i++] = matrix[0][0];
+        while (i &amp;lt; all) {
+            // 斜上走到顶
+            while (i &amp;lt; all &amp;amp;&amp;amp; r - 1 &amp;gt;= 0 &amp;amp;&amp;amp; c + 1 &amp;lt; col) {
+                ret[i++] = matrix[--r][++c];
+            }
+            // 横右走一步，不可横右走时竖下走一步
+            if (i &amp;lt; all &amp;amp;&amp;amp; c + 1 &amp;lt; col) {
+                ret[i++] = matrix[r][++c];
+            } else if (i &amp;lt; all &amp;amp;&amp;amp; r + 1 &amp;lt; row) {
+                ret[i++] = matrix[++r][c];
+            }
+            // 斜下走到底
+            while (i &amp;lt; all &amp;amp;&amp;amp; r + 1 &amp;lt; row &amp;amp;&amp;amp; c - 1 &amp;gt;= 0) {
+                ret[i++] = matrix[++r][--c];
+            }
+            // 竖下走一步，不可竖下时横右走一步
+            if (i &amp;lt; all &amp;amp;&amp;amp; r + 1 &amp;lt; row) {
+                ret[i++] = matrix[++r][c];
+            } else if (i &amp;lt; all &amp;amp;&amp;amp; c + 1 &amp;lt; col) {
+                ret[i++] = matrix[r][++c];
+            }
+        }
+        return ret;
+    }
+};
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
     
     <item>
       <title>LintCode 将表达式转换为逆波兰表达式</title>
@@ -48,62 +282,53 @@ public:
      */
     vector&amp;lt;string&amp;gt; convertToRPN(vector&amp;lt;string&amp;gt; &amp;amp;expression) {
         // write your code here
-        vector&amp;lt;string&amp;gt; ret;
-        stack&amp;lt;string&amp;gt; opera;
-        int count = 0;
-        int pos = 0;
-        opera.push(&amp;quot;@&amp;quot;);
-        while (pos &amp;lt; expression.size()) {
-            string ch = expression[pos];
-            if (ch != &amp;quot;+&amp;quot; &amp;amp;&amp;amp; ch != &amp;quot;-&amp;quot; &amp;amp;&amp;amp; ch != &amp;quot;*&amp;quot; &amp;amp;&amp;amp; ch != &amp;quot;/&amp;quot; &amp;amp;&amp;amp; ch != &amp;quot;(&amp;quot; &amp;amp;&amp;amp; ch != &amp;quot;)&amp;quot;) {
-                ret.push_back(ch);
-                ++pos;
-                continue;
+        vector&amp;lt;string&amp;gt; nibolan;
+        stack&amp;lt;string&amp;gt; operat;
+        operat.push(&amp;quot;@&amp;quot;);
+        int i = 0;
+        while ( i &amp;lt; expression.size()) {
+            string s = expression[i];
+            if (s != &amp;quot;+&amp;quot; &amp;amp;&amp;amp; s != &amp;quot;-&amp;quot; &amp;amp;&amp;amp; s != &amp;quot;*&amp;quot; &amp;amp;&amp;amp; s != &amp;quot;/&amp;quot; &amp;amp;&amp;amp; s != &amp;quot;(&amp;quot; &amp;amp;&amp;amp; s != &amp;quot;)&amp;quot;) {
+                nibolan.push_back(s);
+
+            } else if ( s == &amp;quot;(&amp;quot;) {
+                operat.push(s);
+
+            } else if ( s == &amp;quot;)&amp;quot;) {
+                string top = operat.top();
+                while (top != &amp;quot;@&amp;quot; &amp;amp;&amp;amp; top != &amp;quot;(&amp;quot;) {
+                    nibolan.push_back(top);
+                    operat.pop();
+                    top = operat.top();
+                }
+                operat.pop();
+            } else if ( s == &amp;quot;*&amp;quot; || s == &amp;quot;/&amp;quot;) {
+                string top = operat.top();
+                while (top != &amp;quot;@&amp;quot; &amp;amp;&amp;amp; (top == &amp;quot;*&amp;quot; || top == &amp;quot;/&amp;quot;) ) {
+                    nibolan.push_back(top);
+                    operat.pop();
+                    top = operat.top();
+                }
+                operat.push(s);
             } else {
-                string cur_op = opera.top();
-                if (cur_op == &amp;quot;@&amp;quot; || ch == &amp;quot;(&amp;quot;) {
-                    opera.push(ch);
-                    ++pos;
-                    continue;
-                } else if (ch == &amp;quot;)&amp;quot;) {
-                    while (cur_op != &amp;quot;(&amp;quot;) {
-                        ret.push_back(cur_op);
-                        opera.pop();
-                        cur_op = opera.top();
-                    }
-                    opera.pop();
-                    ++pos;
-                    continue;
-                } else {
-                    if (cur_op == &amp;quot;(&amp;quot;) {
-                        opera.push(ch);
-                        ++pos;
-                        continue;
-                    }
-                    if (ch == &amp;quot;*&amp;quot; || ch == &amp;quot;/&amp;quot;) {
-                        while (cur_op == &amp;quot;*&amp;quot; || cur_op == &amp;quot;/&amp;quot;) {
-                            ret.push_back(cur_op);
-                            opera.pop();
-                            cur_op = opera.top();
-                        }
-                    } else while (cur_op != &amp;quot;@&amp;quot; &amp;amp;&amp;amp; cur_op != &amp;quot;(&amp;quot;) { // 加上cur_op != &amp;quot;(&amp;quot;是为对 ( ( 1 + 2) )这种连续两个以上括号的情况处理
-                        ret.push_back(cur_op);
-                        opera.pop();
-                        cur_op = opera.top();
-                    }
-                    opera.push(ch);
-                    ++pos;
-                    continue;
-                } 
+               string top = operat.top();
+                while (top != &amp;quot;@&amp;quot; &amp;amp;&amp;amp; top != &amp;quot;(&amp;quot;) {
+                    nibolan.push_back(top);
+                    operat.pop();
+                    top = operat.top();
+                }
+                operat.push(s); 
             }
+            ++i;
         }
-        string cur_op = opera.top();
-        while (cur_op != &amp;quot;@&amp;quot;) {
-            ret.push_back(cur_op);
-            opera.pop();
-            cur_op = opera.top();
+        string top = operat.top();
+        while (top != &amp;quot;@&amp;quot; ) {
+            nibolan.push_back(top);
+            operat.pop();
+            top = operat.top();
         }
-        return ret;
+
+        return nibolan;
     }
 };
 &lt;/code&gt;&lt;/pre&gt;
@@ -968,67 +1193,6 @@ vector&amp;lt;int&amp;gt; flatten(vector&amp;lt;NestedInteger&amp;gt; &amp;amp;n
 
     return sum-v[0] &amp;lt; v[0];
 }
-&lt;/code&gt;&lt;/pre&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>LintCode-硬币排成线</title>
-      <link>https://shiweihou.github.io/lintcode/20161006/</link>
-      <pubDate>Thu, 06 Oct 2016 20:29:52 +0800</pubDate>
-      
-      <guid>https://shiweihou.github.io/lintcode/20161006/</guid>
-      <description>&lt;p&gt;题目描述：&lt;/p&gt;
-
-&lt;p&gt;有N个硬币排成一条线，两个参赛者轮流从右边依次拿走1个或2个硬币，直到没有硬币为止。拿到最后一个硬币的玩家获胜。请判定第一个玩家是输还是赢？&lt;/p&gt;
-
-&lt;p&gt;样例：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;&lt;p&gt;n = 1, 返回 true&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;n = 2, 返回 true&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;n = 3, 返回 false&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;n = 4, 返回 true&lt;/p&gt;&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;n = 5, 返回 true
-思路：&lt;/p&gt;&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;这道题是有关博弈论的初级题目。题目很简单，就是判断第一个人最后能否拿到最后一枚硬币。我们不能依赖于第二个玩家怎么拿，我们需要的答案是无论第二个玩家怎么拿，第一个玩家在现有的拿法下（每次拿一个或者两个）可以拿到最后一个硬币或者拿不到。很明显，当只剩下三个硬币的时候，无论第一个玩家怎么拿，最后一个硬币都有可能不是他的，也就是说第一个玩家没有机会获胜。因此，我们只需要判断当还剩下三个的时候，最后一个拿硬币的人是否是第一个人就可以了，很明显可以用递归来做：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;    bool firstWillWin(int n) {
-        // write your code here
-        if (n &amp;lt;= 0 || n == 3) return false;
-        else if (n &amp;lt;= 4) return true;
-        return firstWillWin(n-3);
-    }
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;同理，亦可以利用动态规划来做，因为第i个硬币是否为第一个人拿和第i-3个硬币是否是第一个人拿真假值相同：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;    bool firstWillWin(int n){
-        vector&amp;lt;bool&amp;gt; dp(n + 1, false);
-        dp[0] = false;
-        dp[1] = true;
-        dp[2] = true;
-        dp[3] = false;
-        for (int i = 4; i &amp;lt;= n; ++i) {
-            dp[i] = dp[i-3];
-        }
-        return dp[n];
-    }
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;一种更为简洁的数学方法，因为我们发现如果硬币的个数不是3的倍数，那么第一个人就可以拿到最后一个硬币：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;    bool firstWillWin(int n){
-        if (n &amp;lt;= 0) return false;
-        if (n % 3 == 1 || n % 3 == 2) return true;
-        return false;
-    }
 &lt;/code&gt;&lt;/pre&gt;
 </description>
     </item>

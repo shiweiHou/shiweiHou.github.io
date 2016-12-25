@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
 <head>
   <title>
-    LintCode 将表达式转换为逆波兰表达式 // Hello world!
+    lintcode 表达树构造 // Hello world!
   </title>
 
   <link href="http://gmpg.org/xfn/11" rel="profile">
@@ -16,11 +16,11 @@
 <meta name="author" content="">
 <meta name="generator" content="Hugo 0.16" />
 
-  <meta property="og:title" content="LintCode 将表达式转换为逆波兰表达式" />
+  <meta property="og:title" content="lintcode 表达树构造" />
 <meta property="og:description" content="" />
 <meta property="og:type" content="website" />
 <meta property="og:locale" content="en_US" />
-<meta property="og:url" content="https://shiweihou.github.io/lintcode/2016-12-22-01/" />
+<meta property="og:url" content="https://shiweihou.github.io/lintcode/2016-12-25-03/" />
 
 
   
@@ -110,14 +110,14 @@
 	    
   		<section class="post">
             <h1 class="post-title">
-              <a href="/lintcode/2016-12-22-01/">LintCode 将表达式转换为逆波兰表达式</a>
+              <a href="/lintcode/2016-12-25-03/">lintcode 表达树构造</a>
             </h1>
             <h3 class="post-subtitle">
             	
             </h3>
             
             	<span class="post-date">
-                	<span class="post-date-day"><sup>22</sup></span><span class="post-date-separator">/</span><span class="post-date-month">Dec</span> <span class="post-date-year">2016</span>
+                	<span class="post-date-day"><sup>25</sup></span><span class="post-date-separator">/</span><span class="post-date-month">Dec</span> <span class="post-date-year">2016</span>
             	</span>
             	
             
@@ -131,40 +131,36 @@
 
 			
 
-            <p>问题描述：
-    给定一个表达式字符串数组，返回该表达式的逆波兰表达式。</p>
-
-<p>问题分析：首先要搞明白什么是逆波兰表达式，<a href="https://zh.wikipedia.org/wiki/%E9%80%86%E6%B3%A2%E5%85%B0%E8%A1%A8%E7%A4%BA%E6%B3%95">wiki</a>上面有很详细的介绍，题目意思就是将我们平常习惯的数学表达式表示成计算机所能理解的式子。因为人类可以很自然的理解例如<code>1 + 2 * 3</code>这样的式子，但计算机没有办法，计算机需要将其转换为<code>123*+</code>这样的形式才可以。</p>
-
-<p>前面有一道题是将逆波兰表达式转换为中缀表达式，这道题刚好反过来。其实如果我们首先先自己在草稿纸上自己将中缀表达式转为逆波兰表达式的过程演算一遍，就很自然的明白转换规则：假设我们有一个<code>vector ret</code>用来专门存答案，有一个<code>stack opera</code>用来存操作符（<code>+ - * / （</code>） ），另字符串<code>ch</code>为表达式<code>expression</code>中的元素，规则如下：</p>
-
-<ol>
-<li>假如<code>ch</code>为数字，那么很自然的，将其放入<code>ret</code>中</li>
-<li>假如<code>ch</code>为操作符，那么：
-
-<br /></li>
-</ol>
+            <p>看到这个题目就感觉和前两天做的“逆波兰表达式”很像，想的方法就是先将表达式转化成逆波兰表达式，因为逆波兰表达式就是后缀表达式，维护一个栈，从头开始遍历后缀表达式：</p>
 
 <ul>
-<li><p>如果<code>ch == &quot;(&quot;</code>,那么将<code>ch</code>放入到<code>opera</code>中；</p></li>
+<li>碰到数值，就生成个结点，然后将结点指针放入栈中</li>
+<li>碰到操作数，就在栈中弹出两个指针作为该操作数的右左子树，接着将指向操作数的指针入栈</li>
 
-<li><p>如果<code>ch == &quot;)&quot;</code>,那么将<code>opera</code>中最顶层的<code>（</code>上面的所有操作符放入<code>ret</code>中</p></li>
+<li><p>到最后栈中就只会剩下根节点了</p>
 
-<li><p>如果<code>ch
-是四则运算符</code>,那么根据此时<code>opera</code>中已有的字符的优先级，如果<code>ch</code>大于此时<code>opera</code>顶层操作符的优先级，那么<code>ch</code>放入到<code>opera</code>中，如果不是，那么将<code>opera</code>中的运算符弹出放入<code>ret</code>中，直到碰到第一个大于<code>ch</code>的优先级的运算符或者碰到第一个<code>（</code>或者走到头。</p></li>
-</ul>
+<pre><code>/**
+ * Definition of ExpressionTreeNode:
+ * class ExpressionTreeNode {
+ * public:
+ *     string symbol;
+ *     ExpressionTreeNode *left, *right;
+ *     ExpressionTreeNode(string symbol) {
+ *         this-&gt;symbol = symbol;
+ *         this-&gt;left = this-&gt;right = NULL;
+ *     }
+ * }
+ */
 
-<p>我们首先放进去一个字符@，表示优先级最低或者表示栈底
-代码如下：</p>
-
-<pre><code>class Solution {
+class Solution {
 public:
     /**
      * @param expression: A string array
-     * @return: The Reverse Polish notation of this expression
+     * @return: The root of expression tree
      */
-    vector&lt;string&gt; convertToRPN(vector&lt;string&gt; &amp;expression) {
+    ExpressionTreeNode* build(vector&lt;string&gt; &amp;expression) {
         // write your code here
+        // 首先将表达式转换为逆波兰表达式，也就是表达树的后缀表示形式
         vector&lt;string&gt; nibolan;
         stack&lt;string&gt; operat;
         operat.push(&quot;@&quot;);
@@ -174,47 +170,66 @@ public:
             if (s != &quot;+&quot; &amp;&amp; s != &quot;-&quot; &amp;&amp; s != &quot;*&quot; &amp;&amp; s != &quot;/&quot; &amp;&amp; s != &quot;(&quot; &amp;&amp; s != &quot;)&quot;) {
                 nibolan.push_back(s);
 
-            } else if ( s == &quot;(&quot;) {
-                operat.push(s);
+        } else if ( s == &quot;(&quot;) {
+            operat.push(s);
 
-            } else if ( s == &quot;)&quot;) {
-                string top = operat.top();
-                while (top != &quot;@&quot; &amp;&amp; top != &quot;(&quot;) {
-                    nibolan.push_back(top);
-                    operat.pop();
-                    top = operat.top();
-                }
+        } else if ( s == &quot;)&quot;) {
+            string top = operat.top();
+            while (top != &quot;@&quot; &amp;&amp; top != &quot;(&quot;) {
+                nibolan.push_back(top);
                 operat.pop();
-            } else if ( s == &quot;*&quot; || s == &quot;/&quot;) {
-                string top = operat.top();
-                while (top != &quot;@&quot; &amp;&amp; (top == &quot;*&quot; || top == &quot;/&quot;) ) {
-                    nibolan.push_back(top);
-                    operat.pop();
-                    top = operat.top();
-                }
-                operat.push(s);
-            } else {
-               string top = operat.top();
-                while (top != &quot;@&quot; &amp;&amp; top != &quot;(&quot;) {
-                    nibolan.push_back(top);
-                    operat.pop();
-                    top = operat.top();
-                }
-                operat.push(s); 
+                top = operat.top();
             }
-            ++i;
-        }
-        string top = operat.top();
-        while (top != &quot;@&quot; ) {
-            nibolan.push_back(top);
             operat.pop();
-            top = operat.top();
+        } else if ( s == &quot;*&quot; || s == &quot;/&quot;) {
+            string top = operat.top();
+            while (top != &quot;@&quot; &amp;&amp; (top == &quot;*&quot; || top == &quot;/&quot;) ) {
+                nibolan.push_back(top);
+                operat.pop();
+                top = operat.top();
+            }
+            operat.push(s);
+        } else {
+           string top = operat.top();
+            while (top != &quot;@&quot; &amp;&amp; top != &quot;(&quot;) {
+                nibolan.push_back(top);
+                operat.pop();
+                top = operat.top();
+            }
+            operat.push(s); 
         }
-
-        return nibolan;
+        ++i;
     }
+    string top = operat.top();
+    while (top != &quot;@&quot; ) {
+        nibolan.push_back(top);
+        operat.pop();
+        top = operat.top();
+    }
+    //从前往后，根据后缀表达式构建表达树,维护一个栈，栈中存放着树的指针，如果是操作符，就从栈中弹出两个指针作为它的右左子树，如果是数字，就直接入栈，最后栈中只会留下根指针
+    stack&lt;ExpressionTreeNode*&gt; st;
+    i = 0;
+    while (i &lt; nibolan.size()) {
+        string s = nibolan[i];
+        ExpressionTreeNode * node = new ExpressionTreeNode (s);
+        if (s == &quot;*&quot; || s == &quot;/&quot; || s == &quot;+&quot; || s == &quot;-&quot;) {
+            ExpressionTreeNode* right = st.top();
+            st.pop();
+            ExpressionTreeNode* left = st.top();
+            st.pop();
+            node-&gt;left = left;
+            node-&gt;right = right;
+        }
+        st.push(node);
+        ++i;
+    }
+    if (st.empty()) return NULL;
+    return st.top();
+
+}
 };
-</code></pre>
+</code></pre></li>
+</ul>
 
 	
 			
@@ -225,16 +240,11 @@ public:
 				<div class="paging">
 					<span class="paging-label">More Reading</span>
 					
-					<div class="paging-newer">
-						<span class="dark-red">Newer</span><span class="decorative-marker">//</span>
-						<a class="paging-link" href="/lintcode/2016-12-25-01/">lintcode 矩阵的之字型遍历</a>
-		            </div>
-		            
 
 					
 					<div class="paging-older">
 						<span class="dark-red">Older</span><span class="decorative-marker">//</span>
-			            <a class="paging-link" href="/machinelearning/exend/">ex9-10.The end</a>
+			            <a class="paging-link" href="/lintcode/2016-12-25-02/">lintcode 用栈模拟汉诺塔问题</a>
 		            </div>
 		            
 	            </div>
