@@ -5,8 +5,34 @@
     <link>https://shiweiHou.github.io/algorithm/</link>
     <description>Recent content in Algorithms on Hello world!</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Wed, 15 Feb 2017 11:28:33 +0800</lastBuildDate>
+    <lastBuildDate>Wed, 15 Feb 2017 11:29:12 +0800</lastBuildDate>
     <atom:link href="https://shiweiHou.github.io/algorithm/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>网易2017秋招编程题7</title>
+      <link>https://shiweihou.github.io/algorithm/%E7%BD%91%E6%98%932017%E7%A7%8B%E6%8B%9B%E7%BC%96%E7%A8%8B%E9%A2%987/</link>
+      <pubDate>Wed, 15 Feb 2017 11:29:12 +0800</pubDate>
+      
+      <guid>https://shiweihou.github.io/algorithm/%E7%BD%91%E6%98%932017%E7%A7%8B%E6%8B%9B%E7%BC%96%E7%A8%8B%E9%A2%987/</guid>
+      <description>&lt;p&gt;计算糖果：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;#include &amp;lt;iostream&amp;gt;
+using namespace std;
+
+int main() {
+    int a, b, c, d;
+    int A, B, C;
+    cin &amp;gt;&amp;gt; a &amp;gt;&amp;gt; b &amp;gt;&amp;gt; c &amp;gt;&amp;gt; d;
+    A = (a + c) / 2;
+    B = A - a;
+    C = B - b;
+    if (A &amp;gt;= 0 &amp;amp;&amp;amp; B &amp;gt;= 0 &amp;amp;&amp;amp; C &amp;gt;=0 &amp;amp;&amp;amp; (A-B) == a &amp;amp;&amp;amp; (B-C) == b &amp;amp;&amp;amp; (A+B) == c &amp;amp;&amp;amp; (B+C) == d) cout &amp;lt;&amp;lt; A &amp;lt;&amp;lt; &amp;quot; &amp;quot; &amp;lt;&amp;lt; B &amp;lt;&amp;lt; &amp;quot; &amp;quot; &amp;lt;&amp;lt; C &amp;lt;&amp;lt; endl;
+    else cout &amp;lt;&amp;lt; &amp;quot;No&amp;quot; &amp;lt;&amp;lt; endl;
+    return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
     
     <item>
       <title>网易2017秋招编程题6</title>

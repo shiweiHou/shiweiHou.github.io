@@ -5,8 +5,34 @@
     <link>https://shiweiHou.github.io/</link>
     <description>Recent content on Hello world!</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Wed, 15 Feb 2017 11:28:33 +0800</lastBuildDate>
+    <lastBuildDate>Wed, 15 Feb 2017 11:29:12 +0800</lastBuildDate>
     <atom:link href="https://shiweiHou.github.io/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>网易2017秋招编程题7</title>
+      <link>https://shiweihou.github.io/algorithm/%E7%BD%91%E6%98%932017%E7%A7%8B%E6%8B%9B%E7%BC%96%E7%A8%8B%E9%A2%987/</link>
+      <pubDate>Wed, 15 Feb 2017 11:29:12 +0800</pubDate>
+      
+      <guid>https://shiweihou.github.io/algorithm/%E7%BD%91%E6%98%932017%E7%A7%8B%E6%8B%9B%E7%BC%96%E7%A8%8B%E9%A2%987/</guid>
+      <description>&lt;p&gt;计算糖果：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;#include &amp;lt;iostream&amp;gt;
+using namespace std;
+
+int main() {
+    int a, b, c, d;
+    int A, B, C;
+    cin &amp;gt;&amp;gt; a &amp;gt;&amp;gt; b &amp;gt;&amp;gt; c &amp;gt;&amp;gt; d;
+    A = (a + c) / 2;
+    B = A - a;
+    C = B - b;
+    if (A &amp;gt;= 0 &amp;amp;&amp;amp; B &amp;gt;= 0 &amp;amp;&amp;amp; C &amp;gt;=0 &amp;amp;&amp;amp; (A-B) == a &amp;amp;&amp;amp; (B-C) == b &amp;amp;&amp;amp; (A+B) == c &amp;amp;&amp;amp; (B+C) == d) cout &amp;lt;&amp;lt; A &amp;lt;&amp;lt; &amp;quot; &amp;quot; &amp;lt;&amp;lt; B &amp;lt;&amp;lt; &amp;quot; &amp;quot; &amp;lt;&amp;lt; C &amp;lt;&amp;lt; endl;
+    else cout &amp;lt;&amp;lt; &amp;quot;No&amp;quot; &amp;lt;&amp;lt; endl;
+    return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
     
     <item>
       <title>网易2017秋招编程题6</title>
@@ -897,74 +923,6 @@ Z = X * U_reduce;
 
 &lt;pre&gt;&lt;code&gt;X_rec = Z * U(:,1:K)&#39;;
 &lt;/code&gt;&lt;/pre&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>ex6.Support Vector Machines</title>
-      <link>https://shiweihou.github.io/machinelearning/ex6/</link>
-      <pubDate>Fri, 25 Nov 2016 20:52:54 +0800</pubDate>
-      
-      <guid>https://shiweihou.github.io/machinelearning/ex6/</guid>
-      <description>
-
-&lt;p&gt;这节讲到了SVM，Andrew Ng大神主要简单介绍了下核函数和SVM一些参数的影响。因为Ng大牛介绍的比较简单，所以看完自己又去网上百度了下，系统了了解了下。拙见就不在这发了，大家有兴趣的可以自己去百度。其实SVM就是个分类器，利用特定的核函数将在原空间维度线性不可分问题映射到高维，使之变成线性可分。另外学习这节课的时候又对偏差和方差有点迷，在知乎上找到一篇答案，比较优秀，链接在此：&lt;a href=&#34;https://www.zhihu.com/question/27068705&#34;&gt;机器学习中的Bias(偏差)，Error(误差)，和Variance(方差)有什么区别和联系？&lt;/a&gt;&lt;/p&gt;
-
-&lt;h2 id=&#34;gaussian-kernel&#34;&gt;Gaussian Kernel&lt;/h2&gt;
-
-&lt;pre&gt;&lt;code&gt;%很简单，就是按照公式计算高斯核内积，难度0
-sim = -sum( (x1 - x2).^2 ) /  2 / sigma^2;
-sim = exp(sim);
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h2 id=&#34;dataset3params-m&#34;&gt;dataset3Params.m&lt;/h2&gt;
-
-&lt;pre&gt;&lt;code&gt;%选择出最好的一对 C sigma
-C_final = C;
-sigma_final = sigma;
-min_error = size(yval,1);
-% C 和 sigma 所有的可能
-para = [0.01 0.03 0.1 0.3 1 3 10 30];
-m = size(para,2);
-% 将 C 和 sigma 所有的可能都训练测试一遍，找到效果最好的那对
-for i = 1 : m
-    for j = 1 : m
-        C = para(i);
-        sigma = para(j);
-        model = svmTrain(X, y, C, @(x1, x2) gaussianKernel(x1, x2, sigma));
-        pre = svmPredict(model,Xval);
-        cur_error = mean(double(pre ~= yval));
-        if cur_error &amp;lt; min_error
-            min_error = cur_error;
-            C_final = C;
-            sigma_final = sigma;
-        end
-    end
-end
-C = C_final;
-sigma = sigma_final;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h2 id=&#34;processemail-m&#34;&gt;processEmail.m&lt;/h2&gt;
-
-&lt;pre&gt;&lt;code&gt;%就是找到单词出现的下标位置，然后已列向量存储下来
-for i = 1 : length(vocabList)
-    if strcmp(str, vocabList{i}) == 1
-        word_indices = [word_indices ; i];
-        break;
-    end
-end
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;h2 id=&#34;emailfeatures-m&#34;&gt;emailFeatures.m&lt;/h2&gt;
-
-&lt;pre&gt;&lt;code&gt;%这个就更简单了，简单的说就是将所有出现的单词所在的下标位置，赋值1
-for i = 1 : size(word_indices,1)
-    x(word_indices(i)) = 1;
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;现在已经学习到第七周了，发现越高深的算法，其实实现起来越简单，因为现有的函数库都将其实质内容都包含隐藏起来了，你只需要实现相应的输入参数就可以了。说明发明一个算法是最难的，但学会用一个算法，就太简单了。
-另在原有的代码有一个小bug，就是没办法显示Example Dataset 2的边界线，是visualizeBoundary.m出了点问题，课程助教也给了解决方法，及时将原有的&lt;code&gt;contour(X1, X2, vals, [0 0], &#39;Color&#39;, &#39;b&#39;);&lt;/code&gt;改为&lt;code&gt;contour(X1, X2, vals, [1 1], &#39;b&#39;);&lt;/code&gt;就可以了。&lt;/p&gt;
 </description>
     </item>
     
