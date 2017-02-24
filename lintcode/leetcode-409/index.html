@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
 <head>
   <title>
-    ex6.Support Vector Machines // Hello world!
+    leetcode 409.Longest Palindrome // Hello world!
   </title>
 
   <link href="http://gmpg.org/xfn/11" rel="profile">
@@ -16,11 +16,11 @@
 <meta name="author" content="">
 <meta name="generator" content="Hugo 0.16" />
 
-  <meta property="og:title" content="ex6.Support Vector Machines" />
+  <meta property="og:title" content="leetcode 409.Longest Palindrome" />
 <meta property="og:description" content="" />
 <meta property="og:type" content="website" />
 <meta property="og:locale" content="en_US" />
-<meta property="og:url" content="https://shiweihou.github.io/machinelearning/ex6/" />
+<meta property="og:url" content="https://shiweihou.github.io/lintcode/leetcode-409/" />
 
 
   
@@ -107,32 +107,17 @@
 
 		
 			
-		    <div id="toc" class="pure-u-1 pure-u-md-1-4">
-				<small class="toc-label">Contents</small>
-		   	 	<nav id="TableOfContents">
-<ul>
-<li>
-<ul>
-<li><a href="#gaussian-kernel">Gaussian Kernel</a></li>
-<li><a href="#dataset3params-m">dataset3Params.m</a></li>
-<li><a href="#processemail-m">processEmail.m</a></li>
-<li><a href="#emailfeatures-m">emailFeatures.m</a></li>
-</ul></li>
-</ul>
-</nav>
-		    </div>
-		    
 	    
   		<section class="post">
             <h1 class="post-title">
-              <a href="/machinelearning/ex6/">ex6.Support Vector Machines</a>
+              <a href="/lintcode/leetcode-409/">leetcode 409.Longest Palindrome</a>
             </h1>
             <h3 class="post-subtitle">
             	
             </h3>
             
             	<span class="post-date">
-                	<span class="post-date-day"><sup>25</sup></span><span class="post-date-separator">/</span><span class="post-date-month">Nov</span> <span class="post-date-year">2016</span>
+                	<span class="post-date-day"><sup>24</sup></span><span class="post-date-separator">/</span><span class="post-date-month">Feb</span> <span class="post-date-year">2017</span>
             	</span>
             	
             
@@ -146,65 +131,40 @@
 
 			
 
-            
-
-<p>这节讲到了SVM，Andrew Ng大神主要简单介绍了下核函数和SVM一些参数的影响。因为Ng大牛介绍的比较简单，所以看完自己又去网上百度了下，系统了了解了下。拙见就不在这发了，大家有兴趣的可以自己去百度。其实SVM就是个分类器，利用特定的核函数将在原空间维度线性不可分问题映射到高维，使之变成线性可分。另外学习这节课的时候又对偏差和方差有点迷，在知乎上找到一篇答案，比较优秀，链接在此：<a href="https://www.zhihu.com/question/27068705">机器学习中的Bias(偏差)，Error(误差)，和Variance(方差)有什么区别和联系？</a></p>
-
-<h2 id="gaussian-kernel">Gaussian Kernel</h2>
-
-<pre><code>%很简单，就是按照公式计算高斯核内积，难度0
-sim = -sum( (x1 - x2).^2 ) /  2 / sigma^2;
-sim = exp(sim);
-</code></pre>
-
-<h2 id="dataset3params-m">dataset3Params.m</h2>
-
-<pre><code>%选择出最好的一对 C sigma
-C_final = C;
-sigma_final = sigma;
-min_error = size(yval,1);
-% C 和 sigma 所有的可能
-para = [0.01 0.03 0.1 0.3 1 3 10 30];
-m = size(para,2);
-% 将 C 和 sigma 所有的可能都训练测试一遍，找到效果最好的那对
-for i = 1 : m
-    for j = 1 : m
-        C = para(i);
-        sigma = para(j);
-        model = svmTrain(X, y, C, @(x1, x2) gaussianKernel(x1, x2, sigma));
-        pre = svmPredict(model,Xval);
-        cur_error = mean(double(pre ~= yval));
-        if cur_error &lt; min_error
-            min_error = cur_error;
-            C_final = C;
-            sigma_final = sigma;
-        end
-    end
-end
-C = C_final;
-sigma = sigma_final;
-</code></pre>
-
-<h2 id="processemail-m">processEmail.m</h2>
-
-<pre><code>%就是找到单词出现的下标位置，然后已列向量存储下来
-for i = 1 : length(vocabList)
-    if strcmp(str, vocabList{i}) == 1
-        word_indices = [word_indices ; i];
-        break;
-    end
-end
-</code></pre>
-
-<h2 id="emailfeatures-m">emailFeatures.m</h2>
-
-<pre><code>%这个就更简单了，简单的说就是将所有出现的单词所在的下标位置，赋值1
-for i = 1 : size(word_indices,1)
-    x(word_indices(i)) = 1;
-</code></pre>
-
-<p>现在已经学习到第七周了，发现越高深的算法，其实实现起来越简单，因为现有的函数库都将其实质内容都包含隐藏起来了，你只需要实现相应的输入参数就可以了。说明发明一个算法是最难的，但学会用一个算法，就太简单了。
-另在原有的代码有一个小bug，就是没办法显示Example Dataset 2的边界线，是visualizeBoundary.m出了点问题，课程助教也给了解决方法，及时将原有的<code>contour(X1, X2, vals, [0 0], 'Color', 'b');</code>改为<code>contour(X1, X2, vals, [1 1], 'b');</code>就可以了。</p>
+            <p>class Solution {
+    public:
+        int longestPalindrome(string s) {
+            vector<int> vc(60, 0);
+            int i = 0;
+            while (i &lt; s.size()) {
+                ++vc[s[i]-&lsquo;A&rsquo;];
+                ++i;
+            }
+            i = 0;
+            int len = 0;
+            while (i &lt; 60) {
+                if (vc[i] != 0 &amp;&amp; vc[i] % 2 == 0) {
+                    len += vc[i];
+                    vc[i] = 0;
+                }
+    // 一开始想错了，以为是奇数个的，只能用最多的那个奇数，其实所有出现次数大于1的奇数，都可以通过减1变成偶数个从而加入最长回文串内
+                if (vc[i] % 2 == 1 &amp;&amp; vc[i] &gt; 1) {
+                    len += vc[i] - 1;
+                    vc[i] = 1;
+                }
+                ++i;
+            }
+            i = 0; // 所有的遍历完之后，发现还有有的数还有一次机会，那就放到最中间去，len++，变成最长回文串
+            while (i &lt; 60) {
+                if (vc[i] != 0) {
+                    ++len;
+                    break;
+                }
+                ++i;
+            }
+            return len ;
+        }
+    };</p>
 
 	
 			
@@ -217,14 +177,14 @@ for i = 1 : size(word_indices,1)
 					
 					<div class="paging-newer">
 						<span class="dark-red">Newer</span><span class="decorative-marker">//</span>
-						<a class="paging-link" href="/machinelearning/ex7/">ex7.K-means Clustering and Principal Component Analysis</a>
+						<a class="paging-link" href="/lintcode/leetcode-401/">leetcode 401.Binary Watch</a>
 		            </div>
 		            
 
 					
 					<div class="paging-older">
 						<span class="dark-red">Older</span><span class="decorative-marker">//</span>
-			            <a class="paging-link" href="/pointcloud/pcl_boundary/">pcl_boundary</a>
+			            <a class="paging-link" href="/lintcode/leetcode-453/">leetcode 453.Minimum Moves to Equal Array Elements</a>
 		            </div>
 		            
 	            </div>

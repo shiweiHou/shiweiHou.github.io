@@ -5,8 +5,338 @@
     <link>https://shiweiHou.github.io/lintcode/</link>
     <description>Recent content in Lintcodes on Hello world!</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Sun, 25 Dec 2016 16:47:22 +0800</lastBuildDate>
+    <lastBuildDate>Fri, 24 Feb 2017 21:34:34 +0800</lastBuildDate>
     <atom:link href="https://shiweiHou.github.io/lintcode/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>leetcode 401.Binary Watch</title>
+      <link>https://shiweihou.github.io/lintcode/leetcode-401/</link>
+      <pubDate>Fri, 24 Feb 2017 21:34:34 +0800</pubDate>
+      
+      <guid>https://shiweihou.github.io/lintcode/leetcode-401/</guid>
+      <description>&lt;p&gt;class Solution {
+    public:
+        vector&lt;string&gt; readBinaryWatch(int num) {
+            int h[] = {1, 2, 4, 8};
+            int m[] = {1, 2, 4, 8, 16,32};
+            if (num &amp;gt; 10) num = 10;
+            vector&lt;string&gt; ret;
+            if (num == 0) { ret.push&lt;em&gt;back(&amp;ldquo;0:00&amp;rdquo;); return ret;}
+            // 限制条件老是写错，出了一大堆的bug，烦烦烦烦烦烦
+            for (int i = 0; i &amp;lt; 4 &amp;amp;&amp;amp; i &amp;lt;= num; ++i) {
+                int j = num - i;
+                if (j &amp;gt; 5) continue;
+                // i, j is all possible num
+                vector&lt;string&gt; hours;
+                vector&lt;string&gt; minutes;
+                // find hours
+                find&lt;/em&gt;(hours, h, 0, 0, 0, i);
+                // find minutes
+                find_2(minutes, m, 0, 0, 0, j);
+                if (hours.empty() &amp;amp;&amp;amp; !minutes.empty()){
+                    for(auto min : minutes) {
+                        ret.push_back(&amp;ldquo;0:&amp;rdquo; + min);
+                    }
+                } else if (!hours.empty() &amp;amp;&amp;amp; minutes.empty()){
+                    for (auto hour : hours) {
+                        ret.push_back(hour + &amp;ldquo;:00&amp;rdquo;);
+                    }
+                } else if (!hours.empty() &amp;amp;&amp;amp; !minutes.empty()) {
+                    for (auto hour : hours){
+                        for (auto min : minutes) {
+                            ret.push_back(hour + &amp;ldquo;:&amp;rdquo; + min);
+                        }
+                    }
+                }&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;            hours.clear();
+            minutes.clear();
+
+        }
+
+        return ret;
+    }
+    // cur 表示当前用了几个数，sum表示当前的和，pos表示搜索到的下标位置，all表示一共要选取几个数
+    void find_(vector&amp;lt;string&amp;gt; &amp;amp;vs, int h[], int cur, int sum, int pos, int all) {
+        if (pos &amp;gt;= 4 || cur &amp;gt; all) return;
+        sum += h[pos];
+        ++cur;
+        if (cur == all &amp;amp;&amp;amp; sum &amp;lt; 12) {
+            vs.push_back(to_string(sum));
+        }
+        if (sum &amp;gt;= 12) return;
+        find_(vs, h, cur, sum, pos + 1, all);
+        sum -= h[pos];
+        --cur;
+        find_(vs, h, cur, sum, pos + 1, all);
+    }
+    void find_2(vector&amp;lt;string&amp;gt; &amp;amp;vs, int h[], int cur, int sum, int pos, int all) {
+        if (pos &amp;gt;= 6 || cur &amp;gt; all) return;
+        sum += h[pos];
+        ++cur;
+        if (cur == all &amp;amp;&amp;amp; sum &amp;lt; 60) {
+            if (sum &amp;gt;= 10){
+               vs.push_back(to_string(sum)); 
+            } else {
+                vs.push_back(&amp;quot;0&amp;quot; + to_string(sum));
+            }
+        }
+        if (sum &amp;gt;= 60) return;
+        find_2(vs, h, cur, sum, pos + 1, all);
+        sum -= h[pos];
+        --cur;
+        find_2(vs, h, cur, sum, pos + 1, all);
+    }
+};
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>leetcode 409.Longest Palindrome</title>
+      <link>https://shiweihou.github.io/lintcode/leetcode-409/</link>
+      <pubDate>Fri, 24 Feb 2017 21:32:25 +0800</pubDate>
+      
+      <guid>https://shiweihou.github.io/lintcode/leetcode-409/</guid>
+      <description>&lt;p&gt;class Solution {
+    public:
+        int longestPalindrome(string s) {
+            vector&lt;int&gt; vc(60, 0);
+            int i = 0;
+            while (i &amp;lt; s.size()) {
+                ++vc[s[i]-&amp;lsquo;A&amp;rsquo;];
+                ++i;
+            }
+            i = 0;
+            int len = 0;
+            while (i &amp;lt; 60) {
+                if (vc[i] != 0 &amp;amp;&amp;amp; vc[i] % 2 == 0) {
+                    len += vc[i];
+                    vc[i] = 0;
+                }
+    // 一开始想错了，以为是奇数个的，只能用最多的那个奇数，其实所有出现次数大于1的奇数，都可以通过减1变成偶数个从而加入最长回文串内
+                if (vc[i] % 2 == 1 &amp;amp;&amp;amp; vc[i] &amp;gt; 1) {
+                    len += vc[i] - 1;
+                    vc[i] = 1;
+                }
+                ++i;
+            }
+            i = 0; // 所有的遍历完之后，发现还有有的数还有一次机会，那就放到最中间去，len++，变成最长回文串
+            while (i &amp;lt; 60) {
+                if (vc[i] != 0) {
+                    ++len;
+                    break;
+                }
+                ++i;
+            }
+            return len ;
+        }
+    };&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>leetcode 453.Minimum Moves to Equal Array Elements</title>
+      <link>https://shiweihou.github.io/lintcode/leetcode-453/</link>
+      <pubDate>Fri, 24 Feb 2017 21:28:46 +0800</pubDate>
+      
+      <guid>https://shiweihou.github.io/lintcode/leetcode-453/</guid>
+      <description>&lt;p&gt;class Solution {
+    public:
+        int minMoves(vector&lt;int&gt;&amp;amp; nums) {
+            // 假设经过M次移动后，所有的数为同一个值，为X，原先数组的和为SUM，最小值为minNum,则此时有公式
+            // sum + M * (n - 1) = X * n;
+            // 而 X 其实是等于最小的那个数加了M次 X = minNum + M
+            // 带入化简，得到 M = sum - minNum * n;
+            int sum = 0;
+            int minNum = nums[0];
+            int i = 0;
+            while (i &amp;lt; nums.size()) {
+                sum += nums[i];
+                minNum = min(minNum, nums[i]);
+                ++i;
+            }
+            return sum - minNum * nums.size();
+        }
+    };&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>leetcode 476.Number Complement</title>
+      <link>https://shiweihou.github.io/lintcode/leetcode-476/</link>
+      <pubDate>Fri, 24 Feb 2017 21:26:30 +0800</pubDate>
+      
+      <guid>https://shiweihou.github.io/lintcode/leetcode-476/</guid>
+      <description>&lt;p&gt;class Solution {
+    public:
+        int findComplement(int num) {
+            // 这个是最笨的一种方法，就是首先将num右移，查看num去除前缀0之后有效位有几位
+            // 然后再重新遍历一边num的末尾数字，根据有效位的个数控制右移几次，还利用了pow函数
+            // 网上有一种最简单的，其实上面的那种方法，也是根据后几位来求，假如后4位为有效位
+            // 那么我们如果能得到一个 后四位为0前面几位都为1的数，和num进行分别取反进行&amp;amp;操作就可以
+            // mask = ~0;
+            // while (mask &amp;amp; num) mask = mask &amp;lt;&amp;lt; 1;
+            // return ~num &amp;amp; ~mask
+            // 例如            num =  0000 0101
+            // 经过while循环， mask = 1111 1000
+            // ~num &amp;amp; ~mask = 0000 0010 = 2
+            int n = 0;
+            int num1 = num;
+            while (num1) {
+                ++n;
+                num1 = num1 &amp;gt;&amp;gt; 1;
+            }
+            int ret = 0, i = 0;
+            while(i &amp;lt; n) {
+                int a = num &amp;amp; 1;
+                ret += (a == 1? 0 : 1) * pow(2,i);
+                ++i;
+                num = num &amp;gt;&amp;gt; 1;
+            }
+            return ret;
+        }
+    };&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>leetcode 506.Relative Ranks</title>
+      <link>https://shiweihou.github.io/lintcode/leetcode-506/</link>
+      <pubDate>Fri, 24 Feb 2017 21:20:31 +0800</pubDate>
+      
+      <guid>https://shiweihou.github.io/lintcode/leetcode-506/</guid>
+      <description>&lt;p&gt;class Solution {
+    public:
+        vector&lt;string&gt; findRelativeRanks(vector&lt;int&gt;&amp;amp; nums) {
+            // 先求出最大值，然后遍历查询比当前数大的数有几个
+            // 多此一举了，不需要求最大值，直接遍历就行，还是想的多了
+            int max_num = nums[0];
+            int i = 1;
+            while (i &amp;lt; nums.size()) {
+                max_num = max(max_num, nums[i]);
+                ++i;
+            }
+            i = 0;
+            vector&lt;string&gt; ret;
+            while (i &amp;lt; nums.size()) {
+                nums[i] = max_num - nums[i];
+                ++i;
+            }
+            i = 0;
+            while (i &amp;lt; nums.size()) {
+                int count = order(nums, i);
+                if (count == 0) ret.push_back(&amp;ldquo;Gold Medal&amp;rdquo;);
+                else if (count == 1) ret.push_back(&amp;ldquo;Silver Medal&amp;rdquo;);
+                else if (count == 2) ret.push_back(&amp;ldquo;Bronze Medal&amp;rdquo;);
+                else ret.push_back(to_string(count + 1));
+                ++i;
+            }
+            return ret;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;    }
+    int order(vector&amp;lt;int&amp;gt;&amp;amp; nums, int pos) {
+        int count = 0;
+        int i = 0;
+        while (i &amp;lt; nums.size()) {
+            if (i != pos &amp;amp;&amp;amp; nums[pos] &amp;gt; nums[i]) ++count;
+            ++i;
+        }
+        return count;
+    }
+};
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>leetcode 12 &amp; 13 </title>
+      <link>https://shiweihou.github.io/lintcode/leetcode-12/</link>
+      <pubDate>Fri, 24 Feb 2017 21:16:03 +0800</pubDate>
+      
+      <guid>https://shiweihou.github.io/lintcode/leetcode-12/</guid>
+      <description>&lt;p&gt;数字转换为罗马数字：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;class Solution {
+public:
+    string intToRoman(int num) {
+        string M[] = {&amp;quot;&amp;quot;, &amp;quot;M&amp;quot;, &amp;quot;MM&amp;quot;, &amp;quot;MMM&amp;quot;};//0 1000 2000 3000
+        string C[] = {&amp;quot;&amp;quot;, &amp;quot;C&amp;quot;, &amp;quot;CC&amp;quot;, &amp;quot;CCC&amp;quot;, &amp;quot;CD&amp;quot;, &amp;quot;D&amp;quot;, &amp;quot;DC&amp;quot;, &amp;quot;DCC&amp;quot;, &amp;quot;DCCC&amp;quot;, &amp;quot;CM&amp;quot;};// 0 100 200 300 400 500 600 700 800 900
+        string X[] = {&amp;quot;&amp;quot;, &amp;quot;X&amp;quot;, &amp;quot;XX&amp;quot;, &amp;quot;XXX&amp;quot;, &amp;quot;XL&amp;quot;, &amp;quot;L&amp;quot;, &amp;quot;LX&amp;quot;, &amp;quot;LXX&amp;quot;, &amp;quot;LXXX&amp;quot;, &amp;quot;XC&amp;quot;};// 0 10 20 30 40 50 60 70 80 90
+        string I[] = {&amp;quot;&amp;quot;, &amp;quot;I&amp;quot;, &amp;quot;II&amp;quot;, &amp;quot;III&amp;quot;, &amp;quot;IV&amp;quot;, &amp;quot;V&amp;quot;, &amp;quot;VI&amp;quot;, &amp;quot;VII&amp;quot;, &amp;quot;VIII&amp;quot;, &amp;quot;IX&amp;quot;};// 0 1 2 3 4 5 6 7 8 9
+
+        return M[num / 1000] + C[num % 1000 / 100] + X[num % 100 / 10] + I[num % 10];
+    }
+};
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;罗马数字转换为数字：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;class Solution {
+public:
+    int romanToInt(string s) {
+        unordered_map&amp;lt;char, int&amp;gt; T = { { &#39;I&#39; , 1 },
+                                    { &#39;V&#39; , 5 },
+                                   { &#39;X&#39; , 10 },
+                                   { &#39;L&#39; , 50 },
+                                   { &#39;C&#39; , 100 },
+                                   { &#39;D&#39; , 500 },
+                                   { &#39;M&#39; , 1000 } };
+
+        int sum = T[s.back()];
+        for (int i = s.length() - 2; i &amp;gt;= 0; --i) 
+        {
+            // 根据罗马数字左减右加原则
+            if (T[s[i]] &amp;lt; T[s[i + 1]])
+            {
+                sum -= T[s[i]];
+            }
+            else
+            {
+                sum += T[s[i]];
+            }
+        }
+
+        return sum;
+    }
+};
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>leetcode 461.Hamming Distance</title>
+      <link>https://shiweihou.github.io/lintcode/leetcode-461/</link>
+      <pubDate>Fri, 24 Feb 2017 21:04:46 +0800</pubDate>
+      
+      <guid>https://shiweihou.github.io/lintcode/leetcode-461/</guid>
+      <description>&lt;p&gt;题目要求求出两个非负数之间二进制对应位不同值是多少，例如1对应二进制为 0 0 0 1（后四位），4对应二进制为 0 1 0 0，那么不同值就是2，从右往前看是第1位与第三位不同。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;class Solution {
+public:
+    int hammingDistance(int x, int y) {
+        int count = 0;
+        // 最朴素的一种做法，就是每次求得两个数的最后一个比特位，然后比较，然后两个数右移
+        while (x || y) { // 当x和y全部为0时才退出循环
+            int a = x &amp;amp; 1; // 找到x和y二进制最后一位的数到底时0还是1
+            int b = y &amp;amp; 1;
+            if (a != b) ++count;
+            x = x &amp;gt;&amp;gt; 1; // x右移一位
+            y = y &amp;gt;&amp;gt; 1; // y右移一位
+        }
+        // 还有一种更简单的做法，就是将x^y的值求出来，求结果中有多少个1，那么就是答案
+        // count = 0;
+        // int n = x ^ y;
+        // while (n) {
+        //    ++count;
+        //    n &amp;amp;= n - 1;
+        // }
+        return count;
+    }
+};
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
     
     <item>
       <title>lintcode 表达树构造</title>
@@ -775,423 +1105,6 @@ void longToBinary(long number, string &amp;amp;s) {
         }
     }
     return release[k];
-}
-&lt;/code&gt;&lt;/pre&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>LintCode 克隆二叉树</title>
-      <link>https://shiweihou.github.io/lintcode/2016-10-09-02/</link>
-      <pubDate>Sun, 09 Oct 2016 20:57:46 +0800</pubDate>
-      
-      <guid>https://shiweihou.github.io/lintcode/2016-10-09-02/</guid>
-      <description>&lt;p&gt;题目链接：&lt;a href=&#34;http://www.lintcode.com/zh-cn/problem/clone-binary-tree/&#34;&gt;LintCode 克隆二叉树&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;很简单，就是在对二叉树进行遍历的时候重新生成节点就可以了，前序、中序或者后序遍历都可以，我用的是前序遍历：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;/**
-* Definition of TreeNode:
-* class TreeNode {
-* public:
-*     int val;
-*     TreeNode *left, *right;
-*     TreeNode(int val) {
-*         this-&amp;gt;val = val;
-*         this-&amp;gt;left = this-&amp;gt;right = NULL;
-*     }
-* }
-*/
-class Solution {
-public:
-/**
- * @param root: The root of binary tree
- * @return root of new tree
- */
-TreeNode* cloneTree(TreeNode *root) {
-    // Write your code here
-    if (root == NULL) return NULL;
-    TreeNode *newRoot = new TreeNode(root-&amp;gt;val);
-    if (root-&amp;gt;left) newRoot-&amp;gt;left = cloneTree(root-&amp;gt;left);
-    if (root-&amp;gt;right) newRoot-&amp;gt;right = cloneTree(root-&amp;gt;right);
-    return newRoot;
-    }
-};
-&lt;/code&gt;&lt;/pre&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>LintCode 平面列表</title>
-      <link>https://shiweihou.github.io/lintcode/2016-10-09-01/</link>
-      <pubDate>Sun, 09 Oct 2016 20:43:08 +0800</pubDate>
-      
-      <guid>https://shiweihou.github.io/lintcode/2016-10-09-01/</guid>
-      <description>&lt;p&gt;不贴题目描述了，链接在这：&lt;a href=&#34;http://www.lintcode.com/zh-cn/problem/flatten-list/&#34;&gt;LintCode 平面列表&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;因为这个用递归就特别好做，只要一直递归层次就行，知道为空或者找到数字。递归的代码就不写了，很简单。题目希望我们可以用非递归的方法，一般像这种嵌套的查找，都可以用栈来实现，注意栈内元素是先进后出的，也就是说出来的元素顺序和原始列表中是相反的，因此需要做一次反转操作，代码如下：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;class Solution {
-public:
-// @param nestedList a list of NestedInteger
-// @return a list of integer
-vector&amp;lt;int&amp;gt; flatten(vector&amp;lt;NestedInteger&amp;gt; &amp;amp;nestedList) {
-    // Write your code here
-    vector&amp;lt;int&amp;gt; ret;
-    vector&amp;lt;int&amp;gt; tmpans;
-    if (nestedList.empty()) return ret;
-    int n = nestedList.size();
-    for (int i = 0; i &amp;lt; n; ++i) {
-        if (nestedList[i].isInteger()) ret.push_back(nestedList[i].getInteger());
-        else {
-            tmpans.clear();
-            NestedInteger tmp = nestedList[i];
-            stack&amp;lt;NestedInteger&amp;gt; st;
-            st.push(tmp);
-            while (st.empty() == false) {
-                tmp = st.top();
-                st.pop();
-                if (tmp.isInteger()) tmpans.push_back(tmp.getInteger());
-                else {
-                    vector&amp;lt;NestedInteger&amp;gt; vn = tmp.getList();
-                    for (int i = 0; i &amp;lt; vn.size(); ++i) st.push(vn[i]);
-                }
-            }
-            if (tmpans.empty() == false) {
-                reverse(tmpans.begin(), tmpans.end());
-                for (int i = 0; i &amp;lt; tmpans.size(); ++i) ret.push_back(tmpans[i]);
-            }
-        }
-    }
-
-    return ret;
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;很惊讶的是，我想用栈可以做，那我用队列也可以啊，而且队列是先进先出的，元素顺序是不变的，多好？然而结果出来大吃一惊，发现是有问题，同一个列表元素相对顺序没问题，但整体顺序出现了问题，用队列的代码如下：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;class Solution {
-public:
-// @param nestedList a list of NestedInteger
-// @return a list of integer
-vector&amp;lt;int&amp;gt; flatten(vector&amp;lt;NestedInteger&amp;gt; &amp;amp;nestedList) {
-    // Write your code here
-    vector&amp;lt;int&amp;gt; ret;
-    vector&amp;lt;int&amp;gt; tmpans;
-    if (nestedList.empty()) return ret;
-    int n = nestedList.size();
-    for (int i = 0; i &amp;lt; n; ++i) {
-        if (nestedList[i].isInteger()) ret.push_back(nestedList[i].getInteger());
-        else {
-            tmpans.clear();
-            NestedInteger tmp = nestedList[i];
-            queue&amp;lt;NestedInteger&amp;gt; qt;
-            qt.push(tmp);
-            while (qt.empty() == false) {
-                tmp = qt.front();
-                qt.pop();
-                if (tmp.isInteger()) ret.push_back(tmp.getInteger());
-                else {
-                    vector&amp;lt;NestedInteger&amp;gt; vn = tmp.getList();
-                    for (int i = 0; i &amp;lt; vn.size(); ++i) qt.push(vn[i]);
-                }
-            }
-        }
-    }
-
-    return ret;
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;例如对于输入数据&lt;code&gt;[[1,1],2,[1,1]]&lt;/code&gt;,我得到的结果是&lt;code&gt;[2,1,1,1,1]&lt;/code&gt;,本来应该是&lt;code&gt;[1,1,2,1,1]&lt;/code&gt;,但是我用其它数据测试的时候，例如&lt;code&gt;[1,2,[1,1]]&lt;/code&gt;,我的结果和答案是一致的，再比如&lt;code&gt;[[1,2],3,[1,1]]&lt;/code&gt;,我的答案是&lt;code&gt;[3,1,2,1,1]&lt;/code&gt;,而正确答案为&lt;code&gt;[1,2,3,1,1]&lt;/code&gt;,好像就是如果第一个元素是列表的话，就会出错，我没有想明白为什么。&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>LintCode 和大于S的最小子数组</title>
-      <link>https://shiweihou.github.io/lintcode/2016-10-07-02/</link>
-      <pubDate>Fri, 07 Oct 2016 20:41:56 +0800</pubDate>
-      
-      <guid>https://shiweihou.github.io/lintcode/2016-10-07-02/</guid>
-      <description>&lt;p&gt;题目：&lt;/p&gt;
-
-&lt;p&gt;给定一个由 n 个整数组成的数组和一个正整数 s ，请找出该数组中满足其和 ≥ s 的最小长度子数组。如果无解，则返回 -1。&lt;/p&gt;
-
-&lt;p&gt;样例：&lt;/p&gt;
-
-&lt;p&gt;给定数组 [2,3,1,2,4,3] 和 s = 7, 子数组 [4,3] 是该条件下的最小长度子数组。&lt;/p&gt;
-
-&lt;p&gt;思路：&lt;/p&gt;
-
-&lt;p&gt;LintCode上面挑战是O(n)时间复杂度，我想O（n*n）不知道可不可以过，于是就试了下，发现还是不行，73%的test通过。对于一个数组，然后要求O（n）时间复杂度的，一般都是通过两根指针，要么一个从头向尾和一个从尾向头，要么一个快指针，一个慢指针。我一开始用第一种方法，后来写出来发现还是O（n*n)的时间复杂度，于是改用快慢指针。因为s是正整数，所以我们可以不考虑负数的情况，利用快慢指针来求答案：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;int minimumSize(vector&amp;lt;int&amp;gt; &amp;amp;nums, int s) {
-    // write your code here
-    if (nums.empty()) return -1;
-
-    int n = nums.size();
-    int sum = 0;
-    int minLength = n + 1;
-    int fast = 0;
-    int slow = 0;
-
-    while (fast &amp;lt; n) {
-        while (fast &amp;lt; n &amp;amp;&amp;amp; sum &amp;lt; s) { //首先找到从slow开始一直和大于s的fast为止
-            sum += nums[fast];
-            ++fast;
-        }           //退出循环后，fast指向第一次和大于s的后面那个位置，即区间为[slow, fast)
-        if (sum &amp;gt;= s &amp;amp;&amp;amp; minLength &amp;gt; fast - slow) minLength = fast - slow ;
-        while (sum &amp;gt;= s) {
-            if (sum &amp;gt;= s &amp;amp;&amp;amp; minLength &amp;gt; fast - slow ) minLength = fast - slow;
-            sum -= nums[slow];  // 开始增加slow，减去前面的值，因为要求是连续的，所以直接减去即可
-            ++slow;
-
-        }
-    }
-
-    if (minLength == n + 1) return -1;
-    return minLength;
-}
-&lt;/code&gt;&lt;/pre&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>LintCode 和为零的子矩阵</title>
-      <link>https://shiweihou.github.io/lintcode/2016-10-07-01/</link>
-      <pubDate>Fri, 07 Oct 2016 18:37:40 +0800</pubDate>
-      
-      <guid>https://shiweihou.github.io/lintcode/2016-10-07-01/</guid>
-      <description>&lt;p&gt;题目：&lt;/p&gt;
-
-&lt;p&gt;给定一个整数矩阵，请找出一个子矩阵，使得其数字之和等于0.输出答案时，请返回左上数字和右下数字的坐标。&lt;/p&gt;
-
-&lt;p&gt;样例：&lt;/p&gt;
-
-&lt;p&gt;给定矩阵&lt;code&gt;[[1, 5, 7],[3, 7, 8],[4, -8, 9],]&lt;/code&gt;, 返回&lt;code&gt;[(1,1), (2,2)]&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;思路：&lt;/p&gt;
-
-&lt;p&gt;一开始是想着暴搜看看能不能过，发现果然不能，只过了82%的test，还是可以的了~~~&lt;/p&gt;
-
-&lt;p&gt;后来就想了个思路，既然是求和为0的矩阵，那么必然存在有两个矩阵一大一小，大小矩阵和是相等的，那么大矩阵和小矩阵的差别的那一块矩阵，就是和为0的矩阵。所以我们只要找到那两个矩阵和相等的一大一小的矩阵就可以了。其差值就是要求的答案。&lt;/p&gt;
-
-&lt;p&gt;求矩阵和的时候是有个递推公式的，对于位于（i，j）处的矩阵和，其递推公式为 sum[i][j] = sum[i-1][j] + sum[i][j-1] + matrix[i][j],大家画一下图，很简单就出来了。&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;vector&amp;lt;vector&amp;lt;int&amp;gt;&amp;gt; submatrixSum(vector&amp;lt;vector&amp;lt;int&amp;gt;&amp;gt;&amp;amp; matrix) {
-    // Write your code here
-    vector&amp;lt;vector&amp;lt;int&amp;gt; &amp;gt; ret;
-    if (matrix.empty()) return ret;
-    ret.resize(2);
-    ret[0].resize(2);
-    ret[1].resize(2);
-
-    int row = matrix.size();
-    int col = matrix[0].size();
-
-    vector&amp;lt;vector&amp;lt;int&amp;gt; &amp;gt; sum(row+1, vector&amp;lt;int&amp;gt;(col+1, 0));
-
-    for (int j = 0; j &amp;lt;= col; ++j) sum[0][j] = 0;
-    for (int i = 0; i &amp;lt;= row; ++i) sum[i][0] = 0;
-
-    for (int i = 0; i &amp;lt; row; ++i) {
-        for (int j = 0; j &amp;lt; col; ++j) {
-            sum[i+1][j+1] = matrix[i][j] + sum[i][j+1] + sum[i+1][j] - sum[i][j];
-        }
-    }
-
-    for (int i = 0; i &amp;lt; row; ++i) {
-        for (int k = i + 1; k &amp;lt;= row; ++k) {
-            map&amp;lt;int, int&amp;gt; m;
-            for (int j = 0; j &amp;lt;= col; ++j) {
-                // 计算两个矩阵的差，如果差已经在map里面，说明这两个矩阵差相等的这两个矩阵之间就是那个矩阵和为0的子矩阵
-                int diff = sum[k][j] - sum[i][j];
-                if (m.find(diff) != m.end()) {
-                    int l = m[diff];
-                    ret[0][0] = i;
-                    ret[0][1] = l;
-                    ret[1][0] = k - 1;
-                    ret[1][1] = j - 1;
-                    return ret;
-                } else m[diff] = j;
-            }
-        }
-    }
-
-    return ret;
-}
-&lt;/code&gt;&lt;/pre&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>LintCode 连续子数组求和</title>
-      <link>https://shiweihou.github.io/lintcode/20161006-4/</link>
-      <pubDate>Thu, 06 Oct 2016 21:16:05 +0800</pubDate>
-      
-      <guid>https://shiweihou.github.io/lintcode/20161006-4/</guid>
-      <description>&lt;p&gt;题目描述：&lt;/p&gt;
-
-&lt;p&gt;给定一个整数数组，请找出一个连续子数组，使得该子数组的和最大。输出答案时，请分别返回第一个数字和最后一个数字的下标。（如果两个相同的答案，请返回其中任意一个）&lt;/p&gt;
-
-&lt;p&gt;样例：&lt;/p&gt;
-
-&lt;p&gt;给定&lt;code&gt;[-3, 1, 3, -3, 4]&lt;/code&gt;,返回&lt;code&gt;[1, 4]&lt;/code&gt;&lt;/p&gt;
-
-&lt;p&gt;思路：&lt;/p&gt;
-
-&lt;p&gt;最大连续子数组问题，只要在求最大连续子数组和的过程中，记录最大值更改时的下标start和end就可以。利用动态规划来求最大子数组，因为要求是连续的，设dp[i]为第i个位置子数组的最大值。第i个位置的数要不要放进去，就要看如果第i个位置放进去，与dp[i-1]的和是否大于A[i],如果大于，就放进去，否则不放。时间复杂度O(n),代码如下：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;vector&amp;lt;int&amp;gt; continuousSubarraySum(vector&amp;lt;int&amp;gt;&amp;amp; A) {
-    // Write your code here
-    vector&amp;lt;int&amp;gt; ret;
-    if (A.empty()) return ret;
-    int n = A.size();
-    vector&amp;lt;int&amp;gt; cur(n,0);
-    int maxSum = A[0];
-    cur[0] = A[0];
-    int curStart = 0;
-    int start = 0;
-    int end = 0;
-    for (int i = 1; i &amp;lt; n; ++i) {
-        if (cur[i-1] + A[i] &amp;gt; A[i]) { // 放进去，curs s e均不作更改
-            cur[i] = cur[i-1] + A[i];
-        } else {
-            cur[i] = A[i];
-            curStart = i;
-        }
-        if (cur[i] &amp;gt; maxSum) {
-            maxSum = cur[i];
-            start = curStart;
-            end   = i;
-        }
-    }
-
-    ret.push_back(start);
-    ret.push_back(end);
-    return ret;
-}
-&lt;/code&gt;&lt;/pre&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>LintCode 排序矩阵中的从小到大第k个数</title>
-      <link>https://shiweihou.github.io/lintcode/20161006-3/</link>
-      <pubDate>Thu, 06 Oct 2016 21:08:04 +0800</pubDate>
-      
-      <guid>https://shiweihou.github.io/lintcode/20161006-3/</guid>
-      <description>&lt;p&gt;题目要求：&lt;/p&gt;
-
-&lt;p&gt;在一个排序矩阵中找从小到大的第 k 个整数。排序矩阵的定义为：每一行递增，每一列也递增。&lt;/p&gt;
-
-&lt;p&gt;样例：&lt;/p&gt;
-
-&lt;p&gt;给定 K = 4 和一个排序矩阵：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;[
- [1,5,7],
- [3,7,8],
- [4,8,9],
-]
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;返回答案 5&lt;/p&gt;
-
-&lt;p&gt;思路：&lt;/p&gt;
-
-&lt;p&gt;一开始想错了，以为第i行的数字一定比第i+1行的数字要小，其实题目只要求每一行是递增，每一列数字是递增的，但并没有要求第i行的最后一个数字一定比第i+1行的倒数第二个数字小。我一开始是这样认为的，然后写好提交，发现居然过了73%的test，好神奇~~&lt;/p&gt;
-
-&lt;p&gt;后来发现需要利用堆来做，利用STL里的堆模板，很容易写出来，代码如下：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;int kthSmallest(vector&amp;lt;vector&amp;lt;int&amp;gt; &amp;gt; &amp;amp;matrix, int k) {
-    // write your code here
-    int row = matrix.size();
-    if (row == 0 || k == 0) return 0;
-    int col = matrix[0].size();
-
-    priority_queue&amp;lt;pair&amp;lt;int, pair&amp;lt;int, int&amp;gt;&amp;gt;, vector&amp;lt;pair&amp;lt;int, pair&amp;lt;int, int&amp;gt; &amp;gt;&amp;gt;, greater&amp;lt;pair&amp;lt;int, pair&amp;lt;int, int&amp;gt;&amp;gt; &amp;gt;&amp;gt; dui; //构建最小堆
-    map&amp;lt;pair&amp;lt;int, int&amp;gt;, bool&amp;gt; visited;
-
-    dui.push(make_pair(matrix[0][0], make_pair(0,0)));
-    visited[make_pair(0,0)] = true;
-
-    while (k--) {
-        pair&amp;lt;int, pair&amp;lt;int, int&amp;gt; &amp;gt; cur = dui.top();
-        dui.pop();
-
-        if (k == 0) return cur.first;
-
-        int x = cur.second.first + 1; // down
-        int y = cur.second.second;
-        if (x &amp;lt; row &amp;amp;&amp;amp; visited[make_pair(x,y)] == false) {
-            dui.push(make_pair(matrix[x][y], make_pair(x,y)));
-            visited[make_pair(x,y)] = true;
-        }
-        --x;
-        ++y;//right-&amp;gt;
-
-        if (y &amp;lt; col &amp;amp;&amp;amp; visited[make_pair(x,y)] == false) {
-            dui.push(make_pair(matrix[x][y], make_pair(x,y)));
-            visited[make_pair(x,y)] = true;
-        }
-    }
-}
-&lt;/code&gt;&lt;/pre&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>LintCode 硬币排成线||</title>
-      <link>https://shiweihou.github.io/lintcode/20161006-2/</link>
-      <pubDate>Thu, 06 Oct 2016 20:46:56 +0800</pubDate>
-      
-      <guid>https://shiweihou.github.io/lintcode/20161006-2/</guid>
-      <description>&lt;p&gt;题目描述：&lt;/p&gt;
-
-&lt;p&gt;有 n 个不同价值的硬币排成一条线。两个参赛者轮流从左边依次拿走 1 或 2 个硬币，直到没有硬币为止。计算两个人分别拿到的硬币总价值，价值高的人获胜。&lt;/p&gt;
-
-&lt;p&gt;请判定 第一个玩家 是输还是赢？&lt;/p&gt;
-
-&lt;p&gt;样例：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;给定数组 A = [1,2,2],返回true&lt;/li&gt;
-&lt;li&gt;给定数组 A = [1,2,4],返回false&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;思路：&lt;/p&gt;
-
-&lt;p&gt;这道题看上去和前面那道硬币排线题很像，只不过第一个玩家赢的条件从是否能拿到最后一枚硬币变成第一个玩家拿到的硬币价值总和是否大于第二个玩家拿到的硬币价值总和。典型的博弈论题目，每个人都尽量在保证自己获得最大价值的情况下让对方获得最小价值。设第一个玩家为player1，第二个玩家为player2，v[i]为player1从硬币i到end所能拿到的最大价值。我们从后往前推：
-对于硬币i和硬币i+1，player1有两种情况可以选择：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;拿走硬币i，获得的价值为values[i]: 在player1拿走硬币i的情况下，那么player2有两种可以选择，一是拿走硬币i+1，那么此时player1拿走硬币i获得的价值就为 v1 = values[i] + v[i+2];二是拿走硬币i和硬币i+1,那么此时player1拿走硬币i获得的价值为 v2 = values[i] + v[i+3]。当然在博弈原则下，player2肯定是想让player1获得的价值最小，所以player1在拿走硬币i获得的最大价值为 choose1 = values[i] + min(v[i+2], v[i+3]).&lt;/li&gt;
-&lt;li&gt;拿走硬币i和硬币i+1，获得的价值为values[i+1] + values[i]: 同上所述，player2同样有两种选择，一是拿走硬币i+2和硬币i+3，此时player1所能获得的最大价值为 v3 = values[i] + values[i+1] + v[i+4];二是拿走硬币i+2，此时player1所能获得的最大价值为 v4 = values[i] + values[i+1] + v[i+3]。同样基于博弈，player2肯定想让player1获得的最大价值最小，所以player1在拿走硬币i和硬币i+1的情况下获得的最大价值为 choose2 = values[i] + values[i+1] + min(v[i+3], v[i+4]).&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;所以，player1在两种选择下，要选择一个最大的价值 v[i] = max(choose1, choose2).
-代码如下，注意越界情况，所以我定义v的数组时多定义了两个，并且设置为0：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;bool firstWillWin(vector&amp;lt;int&amp;gt; &amp;amp;values) {
-    // write your code here
-    if (values.empty()) return false;
-
-    int len = values.size();
-    if (len &amp;lt;= 2) return true;
-    vector&amp;lt;int&amp;gt; v(len+2,0);
-    v[len-1] = values[len-1];
-    v[len-2] = values[len-1] + values[len-2];
-    int sum = values[len-1] + values[len-2];
-    for (int i = len - 3; i &amp;gt;= 0; --i) {
-        sum += values[i];
-        int choose1, choose2;
-        choose1 = values[i] + min(v[i+2], v[i+3]);
-        choose2 = values[i] + values[i+1] + min(v[i+4],v[i+3]);
-        v[i] = max(choose1, choose2);
-    }
-
-    return sum-v[0] &amp;lt; v[0];
 }
 &lt;/code&gt;&lt;/pre&gt;
 </description>
