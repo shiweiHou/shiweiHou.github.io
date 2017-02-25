@@ -5,8 +5,118 @@
     <link>https://shiweiHou.github.io/</link>
     <description>Recent content on Hello world!</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Fri, 24 Feb 2017 21:34:34 +0800</lastBuildDate>
+    <lastBuildDate>Sat, 25 Feb 2017 19:20:31 +0800</lastBuildDate>
     <atom:link href="https://shiweiHou.github.io/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>leetcode 467.Unique Substrings in Wraparound String</title>
+      <link>https://shiweihou.github.io/lintcode/leetcode-467/</link>
+      <pubDate>Sat, 25 Feb 2017 19:20:31 +0800</pubDate>
+      
+      <guid>https://shiweihou.github.io/lintcode/leetcode-467/</guid>
+      <description>&lt;p&gt;class Solution {
+    public:
+        int findSubstringInWraproundString(string p) {
+            // 一开始想法是，构建一个哈希表，&lt;string, int&gt;类型，发现不行，原因是string有可能很长而且每次都要进行查找操作，效率很低
+            // 其实最主要的是WA了，也没有找出原因
+            // 后来就想到，因为题目里要求每个字符串如果出现N次的话，只算1次，而且必须是挨着的。所以如果字符串 abcdefg 出现了，那么
+            // abcde 就没必要计算了，因为前一个字符串包含后一个。设一个大小为26位的数组，每个数组存的是以当前下标 + &amp;lsquo;a&amp;rsquo; 的字符在p
+            // 中出现的最大长度，最后将所有的加起来就行了，时间复杂度为O(N)
+            vector&lt;int&gt; letters(26, 0);
+            int len = 0;
+            for (int i = 0; i &amp;lt; p.size(); ++i) {
+                int cur = p[i] - &amp;lsquo;a&amp;rsquo;; // 当前字符是哪一个
+                // 已当前字符为开始的最大顺序长度，没有就为1，因为本身也算1个
+                if (i &amp;gt; 0 &amp;amp;&amp;amp; p[i - 1] != (cur + 25) % 26 + &amp;lsquo;a&amp;rsquo;) len = 1;
+                else ++len;
+                if (len &amp;gt; letters[cur]) letters[cur] = len;
+            }
+            int ret = 0;
+            for (auto i : letters) ret += i;
+            return ret;
+        }
+    };&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>leetcode 468. Validate ip address</title>
+      <link>https://shiweihou.github.io/lintcode/leetcode-468/</link>
+      <pubDate>Sat, 25 Feb 2017 15:31:07 +0800</pubDate>
+      
+      <guid>https://shiweihou.github.io/lintcode/leetcode-468/</guid>
+      <description>&lt;p&gt;// 这道题学到的就是getline函数不仅可以读取输入的一整行字符串，也可以将已有的字符串
+    // 转换为stringstream流，这样利用getline函数就可以每次读几个字符直到碰到指定字符，然后跳过该指定字符继续
+    // 往后读。C++11里对getline函数有两个原型，一个是
+    // 1. istream&amp;amp; getline (istream&amp;amp;  is, string&amp;amp; str, char delim);另一个是
+    // 2. istream&amp;amp; getline (istream&amp;amp;  is, string&amp;amp; str);
+    // 2是我们最常用的，就是从键盘输入一串字符，getline一直在stream流内读，直到碰到&amp;rsquo;\n&amp;rsquo;
+    // 而1则是截取特定字符串，也是从前往后读，直到碰到字符 delim 为止
+    class Solution {
+    public:
+        const string validIPv6Chars = &amp;ldquo;0123456789abcdefABCDEF&amp;rdquo;;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;    bool isValidIPv4Block(string&amp;amp; block) {
+        int num = 0;
+        if (block.size() &amp;gt; 0 &amp;amp;&amp;amp; block.size() &amp;lt;= 3) {
+            for (int i = 0; i &amp;lt; block.size(); i++) {
+                char c = block[i];
+                // special case: if c is a leading zero and there are characters left
+                // 用于规避出现前导0的情况
+                if (!isalnum(c) || (i == 0 &amp;amp;&amp;amp; c == &#39;0&#39; &amp;amp;&amp;amp; block.size() &amp;gt; 1))
+                return false;
+                else {
+                    num *= 10;
+                    num += c - &#39;0&#39;;
+                }
+            }
+            return num &amp;lt;= 255;
+        }
+        return false;
+    }
+
+    bool isValidIPv6Block(string&amp;amp; block) {
+        if (block.size() &amp;gt; 0 &amp;amp;&amp;amp; block.size() &amp;lt;= 4) {
+            for (int i = 0; i &amp;lt; block.size(); i++) {
+                char c = block[i];
+                if (validIPv6Chars.find(c) == string::npos)
+                    return false;
+            }
+            return true;
+        }
+        return false;
+    }
+
+    string validIPAddress(string IP) {
+
+        string ans[3] = {&amp;quot;IPv4&amp;quot;, &amp;quot;IPv6&amp;quot;, &amp;quot;Neither&amp;quot;};
+        // 将string变成stringstream流，这样就可以利用getline函数，每一次将.字符之前的字符保存下来，放进block内
+        stringstream ss(IP);
+        string block;
+        // ipv4 candidate
+        if (IP.substr(0, 4).find(&#39;.&#39;) != string::npos) {
+            for (int i = 0; i &amp;lt; 4; i++) {
+            if (!getline(ss, block, &#39;.&#39;) || !isValidIPv4Block(block))
+                return ans[2];
+            }
+            // 用于判断stringstream流是否走到了尽头，即是否完全处理了IP
+            return ss.eof() ? ans[0] : ans[2];
+        }
+        // ipv6 candidate
+        else if (IP.substr(0, 5).find(&#39;:&#39;) != string::npos) {
+            for (int i = 0; i &amp;lt; 8; i++) {
+            if (!getline(ss, block, &#39;:&#39;) || !isValidIPv6Block(block))
+                return ans[2];
+            }
+            return ss.eof() ? ans[1] : ans[2];
+        }
+
+        return ans[2];
+    }
+};
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
     
     <item>
       <title>leetcode 401.Binary Watch</title>
@@ -558,184 +668,6 @@ int main() {
     return 0;
 }
 &lt;/code&gt;&lt;/pre&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>网易2017秋招编程题1</title>
-      <link>https://shiweihou.github.io/algorithm/%E7%BD%91%E6%98%932017%E7%A7%8B%E6%8B%9B%E7%BC%96%E7%A8%8B%E9%A2%981/</link>
-      <pubDate>Wed, 15 Feb 2017 10:13:38 +0800</pubDate>
-      
-      <guid>https://shiweihou.github.io/algorithm/%E7%BD%91%E6%98%932017%E7%A7%8B%E6%8B%9B%E7%BC%96%E7%A8%8B%E9%A2%981/</guid>
-      <description>&lt;p&gt;牛课网上做的：
-回文序列：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;#include &amp;lt;iostream&amp;gt;
-#include &amp;lt;deque&amp;gt;
-using namespace std;
-
-bool is_hui_wen(deque&amp;lt;int&amp;gt; &amp;amp;dq) { // 判断是不是回文序列
-    if (dq.empty()) return true;
-    deque&amp;lt;int&amp;gt;::iterator beg = dq.begin();
-    deque&amp;lt;int&amp;gt;::iterator en  = dq.end();
-    --en;
-    while ( beg &amp;lt; en) {
-        if (*beg != *en) return false;
-        ++beg;
-        --en;
-    }
-    return true;
-}
-
-int min_change(deque&amp;lt;int&amp;gt; &amp;amp;dq) {
-    int t = 0;
-    while (!is_hui_wen(dq)) {// 如果不是，继续进行处理
-        int b1 = *(dq.begin());
-        dq.pop_front();
-        int c1 = *(--dq.end());
-        dq.pop_back();
-        if (b1 == c1) continue; // 相等说明这个序列前后数字相同，略过，查看剩下的序列
-        if (dq.empty() == false) { // 如果序列中还有其它元素
-            if (b1 &amp;gt; c1) { // 前面的大，说明后面的需要两个数相加
-                dq.push_front(b1);
-                int c2 = *(--dq.end());
-                c1 += c2;
-                dq.pop_back();
-                dq.push_back(c1);
-            } else if (b1 &amp;lt; c1) { // 否则，前面的两个数相加
-                dq.push_back(c1);
-                int b2 = *(dq.begin());
-                b1 += b2;
-                dq.pop_front();
-                dq.push_front(b1);
-            }
-        }
-        ++t;
-    }
-    return t;
-}
-
-int main() {
-    int n;
-    cin &amp;gt;&amp;gt; n;
-    deque&amp;lt;int&amp;gt; dq; // 利用双向队列来做，比较方便
-    for (int i = 0; i &amp;lt; n; ++i) {
-        int num;
-        cin &amp;gt;&amp;gt; num;
-        dq.push_back(num);
-    }
-    cout &amp;lt;&amp;lt; min_change(dq) &amp;lt;&amp;lt; endl;
-    return 0;
-}
-&lt;/code&gt;&lt;/pre&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>lintcode 表达树构造</title>
-      <link>https://shiweihou.github.io/lintcode/2016-12-25-03/</link>
-      <pubDate>Sun, 25 Dec 2016 16:47:22 +0800</pubDate>
-      
-      <guid>https://shiweihou.github.io/lintcode/2016-12-25-03/</guid>
-      <description>&lt;p&gt;看到这个题目就感觉和前两天做的“逆波兰表达式”很像，想的方法就是先将表达式转化成逆波兰表达式，因为逆波兰表达式就是后缀表达式，维护一个栈，从头开始遍历后缀表达式：&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;碰到数值，就生成个结点，然后将结点指针放入栈中&lt;/li&gt;
-&lt;li&gt;碰到操作数，就在栈中弹出两个指针作为该操作数的右左子树，接着将指向操作数的指针入栈&lt;/li&gt;
-
-&lt;li&gt;&lt;p&gt;到最后栈中就只会剩下根节点了&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;/**
- * Definition of ExpressionTreeNode:
- * class ExpressionTreeNode {
- * public:
- *     string symbol;
- *     ExpressionTreeNode *left, *right;
- *     ExpressionTreeNode(string symbol) {
- *         this-&amp;gt;symbol = symbol;
- *         this-&amp;gt;left = this-&amp;gt;right = NULL;
- *     }
- * }
- */
-
-class Solution {
-public:
-    /**
-     * @param expression: A string array
-     * @return: The root of expression tree
-     */
-    ExpressionTreeNode* build(vector&amp;lt;string&amp;gt; &amp;amp;expression) {
-        // write your code here
-        // 首先将表达式转换为逆波兰表达式，也就是表达树的后缀表示形式
-        vector&amp;lt;string&amp;gt; nibolan;
-        stack&amp;lt;string&amp;gt; operat;
-        operat.push(&amp;quot;@&amp;quot;);
-        int i = 0;
-        while ( i &amp;lt; expression.size()) {
-            string s = expression[i];
-            if (s != &amp;quot;+&amp;quot; &amp;amp;&amp;amp; s != &amp;quot;-&amp;quot; &amp;amp;&amp;amp; s != &amp;quot;*&amp;quot; &amp;amp;&amp;amp; s != &amp;quot;/&amp;quot; &amp;amp;&amp;amp; s != &amp;quot;(&amp;quot; &amp;amp;&amp;amp; s != &amp;quot;)&amp;quot;) {
-                nibolan.push_back(s);
-
-        } else if ( s == &amp;quot;(&amp;quot;) {
-            operat.push(s);
-
-        } else if ( s == &amp;quot;)&amp;quot;) {
-            string top = operat.top();
-            while (top != &amp;quot;@&amp;quot; &amp;amp;&amp;amp; top != &amp;quot;(&amp;quot;) {
-                nibolan.push_back(top);
-                operat.pop();
-                top = operat.top();
-            }
-            operat.pop();
-        } else if ( s == &amp;quot;*&amp;quot; || s == &amp;quot;/&amp;quot;) {
-            string top = operat.top();
-            while (top != &amp;quot;@&amp;quot; &amp;amp;&amp;amp; (top == &amp;quot;*&amp;quot; || top == &amp;quot;/&amp;quot;) ) {
-                nibolan.push_back(top);
-                operat.pop();
-                top = operat.top();
-            }
-            operat.push(s);
-        } else {
-           string top = operat.top();
-            while (top != &amp;quot;@&amp;quot; &amp;amp;&amp;amp; top != &amp;quot;(&amp;quot;) {
-                nibolan.push_back(top);
-                operat.pop();
-                top = operat.top();
-            }
-            operat.push(s); 
-        }
-        ++i;
-    }
-    string top = operat.top();
-    while (top != &amp;quot;@&amp;quot; ) {
-        nibolan.push_back(top);
-        operat.pop();
-        top = operat.top();
-    }
-    //从前往后，根据后缀表达式构建表达树,维护一个栈，栈中存放着树的指针，如果是操作符，就从栈中弹出两个指针作为它的右左子树，如果是数字，就直接入栈，最后栈中只会留下根指针
-    stack&amp;lt;ExpressionTreeNode*&amp;gt; st;
-    i = 0;
-    while (i &amp;lt; nibolan.size()) {
-        string s = nibolan[i];
-        ExpressionTreeNode * node = new ExpressionTreeNode (s);
-        if (s == &amp;quot;*&amp;quot; || s == &amp;quot;/&amp;quot; || s == &amp;quot;+&amp;quot; || s == &amp;quot;-&amp;quot;) {
-            ExpressionTreeNode* right = st.top();
-            st.pop();
-            ExpressionTreeNode* left = st.top();
-            st.pop();
-            node-&amp;gt;left = left;
-            node-&amp;gt;right = right;
-        }
-        st.push(node);
-        ++i;
-    }
-    if (st.empty()) return NULL;
-    return st.top();
-
-}
-};
-&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
-&lt;/ul&gt;
 </description>
     </item>
     

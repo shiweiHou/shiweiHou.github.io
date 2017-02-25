@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
 <head>
   <title>
-    leetcode 401.Binary Watch // Hello world!
+    leetcode 468. Validate ip address // Hello world!
   </title>
 
   <link href="http://gmpg.org/xfn/11" rel="profile">
@@ -16,11 +16,11 @@
 <meta name="author" content="">
 <meta name="generator" content="Hugo 0.16" />
 
-  <meta property="og:title" content="leetcode 401.Binary Watch" />
+  <meta property="og:title" content="leetcode 468. Validate ip address" />
 <meta property="og:description" content="" />
 <meta property="og:type" content="website" />
 <meta property="og:locale" content="en_US" />
-<meta property="og:url" content="https://shiweihou.github.io/lintcode/leetcode-401/" />
+<meta property="og:url" content="https://shiweihou.github.io/lintcode/leetcode-468/" />
 
 
   
@@ -110,14 +110,14 @@
 	    
   		<section class="post">
             <h1 class="post-title">
-              <a href="/lintcode/leetcode-401/">leetcode 401.Binary Watch</a>
+              <a href="/lintcode/leetcode-468/">leetcode 468. Validate ip address</a>
             </h1>
             <h3 class="post-subtitle">
             	
             </h3>
             
             	<span class="post-date">
-                	<span class="post-date-day"><sup>24</sup></span><span class="post-date-separator">/</span><span class="post-date-month">Feb</span> <span class="post-date-year">2017</span>
+                	<span class="post-date-day"><sup>25</sup></span><span class="post-date-separator">/</span><span class="post-date-month">Feb</span> <span class="post-date-year">2017</span>
             	</span>
             	
             
@@ -131,78 +131,73 @@
 
 			
 
-            <p>class Solution {
+            <p>// 这道题学到的就是getline函数不仅可以读取输入的一整行字符串，也可以将已有的字符串
+    // 转换为stringstream流，这样利用getline函数就可以每次读几个字符直到碰到指定字符，然后跳过该指定字符继续
+    // 往后读。C++11里对getline函数有两个原型，一个是
+    // 1. istream&amp; getline (istream&amp;  is, string&amp; str, char delim);另一个是
+    // 2. istream&amp; getline (istream&amp;  is, string&amp; str);
+    // 2是我们最常用的，就是从键盘输入一串字符，getline一直在stream流内读，直到碰到&rsquo;\n&rsquo;
+    // 而1则是截取特定字符串，也是从前往后读，直到碰到字符 delim 为止
+    class Solution {
     public:
-        vector<string> readBinaryWatch(int num) {
-            int h[] = {1, 2, 4, 8};
-            int m[] = {1, 2, 4, 8, 16,32};
-            if (num &gt; 10) num = 10;
-            vector<string> ret;
-            if (num == 0) { ret.push<em>back(&ldquo;0:00&rdquo;); return ret;}
-            // 限制条件老是写错，出了一大堆的bug，烦烦烦烦烦烦
-            for (int i = 0; i &lt; 4 &amp;&amp; i &lt;= num; ++i) {
-                int j = num - i;
-                if (j &gt; 5) continue;
-                // i, j is all possible num
-                vector<string> hours;
-                vector<string> minutes;
-                // find hours
-                find</em>(hours, h, 0, 0, 0, i);
-                // find minutes
-                find_2(minutes, m, 0, 0, 0, j);
-                if (hours.empty() &amp;&amp; !minutes.empty()){
-                    for(auto min : minutes) {
-                        ret.push_back(&ldquo;0:&rdquo; + min);
-                    }
-                } else if (!hours.empty() &amp;&amp; minutes.empty()){
-                    for (auto hour : hours) {
-                        ret.push_back(hour + &ldquo;:00&rdquo;);
-                    }
-                } else if (!hours.empty() &amp;&amp; !minutes.empty()) {
-                    for (auto hour : hours){
-                        for (auto min : minutes) {
-                            ret.push_back(hour + &ldquo;:&rdquo; + min);
-                        }
-                    }
-                }</p>
+        const string validIPv6Chars = &ldquo;0123456789abcdefABCDEF&rdquo;;</p>
 
-<pre><code>            hours.clear();
-            minutes.clear();
-
-        }
-
-        return ret;
-    }
-    // cur 表示当前用了几个数，sum表示当前的和，pos表示搜索到的下标位置，all表示一共要选取几个数
-    void find_(vector&lt;string&gt; &amp;vs, int h[], int cur, int sum, int pos, int all) {
-        if (pos &gt;= 4 || cur &gt; all) return;
-        sum += h[pos];
-        ++cur;
-        if (cur == all &amp;&amp; sum &lt; 12) {
-            vs.push_back(to_string(sum));
-        }
-        if (sum &gt;= 12) return;
-        find_(vs, h, cur, sum, pos + 1, all);
-        sum -= h[pos];
-        --cur;
-        find_(vs, h, cur, sum, pos + 1, all);
-    }
-    void find_2(vector&lt;string&gt; &amp;vs, int h[], int cur, int sum, int pos, int all) {
-        if (pos &gt;= 6 || cur &gt; all) return;
-        sum += h[pos];
-        ++cur;
-        if (cur == all &amp;&amp; sum &lt; 60) {
-            if (sum &gt;= 10){
-               vs.push_back(to_string(sum)); 
-            } else {
-                vs.push_back(&quot;0&quot; + to_string(sum));
+<pre><code>    bool isValidIPv4Block(string&amp; block) {
+        int num = 0;
+        if (block.size() &gt; 0 &amp;&amp; block.size() &lt;= 3) {
+            for (int i = 0; i &lt; block.size(); i++) {
+                char c = block[i];
+                // special case: if c is a leading zero and there are characters left
+                // 用于规避出现前导0的情况
+                if (!isalnum(c) || (i == 0 &amp;&amp; c == '0' &amp;&amp; block.size() &gt; 1))
+                return false;
+                else {
+                    num *= 10;
+                    num += c - '0';
+                }
             }
+            return num &lt;= 255;
         }
-        if (sum &gt;= 60) return;
-        find_2(vs, h, cur, sum, pos + 1, all);
-        sum -= h[pos];
-        --cur;
-        find_2(vs, h, cur, sum, pos + 1, all);
+        return false;
+    }
+
+    bool isValidIPv6Block(string&amp; block) {
+        if (block.size() &gt; 0 &amp;&amp; block.size() &lt;= 4) {
+            for (int i = 0; i &lt; block.size(); i++) {
+                char c = block[i];
+                if (validIPv6Chars.find(c) == string::npos)
+                    return false;
+            }
+            return true;
+        }
+        return false;
+    }
+
+    string validIPAddress(string IP) {
+
+        string ans[3] = {&quot;IPv4&quot;, &quot;IPv6&quot;, &quot;Neither&quot;};
+        // 将string变成stringstream流，这样就可以利用getline函数，每一次将.字符之前的字符保存下来，放进block内
+        stringstream ss(IP);
+        string block;
+        // ipv4 candidate
+        if (IP.substr(0, 4).find('.') != string::npos) {
+            for (int i = 0; i &lt; 4; i++) {
+            if (!getline(ss, block, '.') || !isValidIPv4Block(block))
+                return ans[2];
+            }
+            // 用于判断stringstream流是否走到了尽头，即是否完全处理了IP
+            return ss.eof() ? ans[0] : ans[2];
+        }
+        // ipv6 candidate
+        else if (IP.substr(0, 5).find(':') != string::npos) {
+            for (int i = 0; i &lt; 8; i++) {
+            if (!getline(ss, block, ':') || !isValidIPv6Block(block))
+                return ans[2];
+            }
+            return ss.eof() ? ans[1] : ans[2];
+        }
+
+        return ans[2];
     }
 };
 </code></pre>
@@ -218,14 +213,14 @@
 					
 					<div class="paging-newer">
 						<span class="dark-red">Newer</span><span class="decorative-marker">//</span>
-						<a class="paging-link" href="/lintcode/leetcode-468/">leetcode 468. Validate ip address</a>
+						<a class="paging-link" href="/lintcode/leetcode-467/">leetcode 467.Unique Substrings in Wraparound String</a>
 		            </div>
 		            
 
 					
 					<div class="paging-older">
 						<span class="dark-red">Older</span><span class="decorative-marker">//</span>
-			            <a class="paging-link" href="/lintcode/leetcode-409/">leetcode 409.Longest Palindrome</a>
+			            <a class="paging-link" href="/lintcode/leetcode-401/">leetcode 401.Binary Watch</a>
 		            </div>
 		            
 	            </div>
