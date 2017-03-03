@@ -5,8 +5,78 @@
     <link>https://shiweiHou.github.io/</link>
     <description>Recent content on Hello world!</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Sat, 25 Feb 2017 19:20:31 +0800</lastBuildDate>
+    <lastBuildDate>Fri, 03 Mar 2017 19:13:13 +0800</lastBuildDate>
     <atom:link href="https://shiweiHou.github.io/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>leetcode-405.Convert a Number to Hexadecimal</title>
+      <link>https://shiweihou.github.io/lintcode/leetcode405/</link>
+      <pubDate>Fri, 03 Mar 2017 19:13:13 +0800</pubDate>
+      
+      <guid>https://shiweihou.github.io/lintcode/leetcode405/</guid>
+      <description>&lt;p&gt;class Solution {
+    public:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;    string toHex(int num) {
+        string ret;
+        if (num == 0) ret = &amp;quot;0&amp;quot;;
+        else if (num &amp;gt; 0) {
+            ret = toHex1(num);
+        }
+        else {
+            // 得到一个 1 0000 0000 0000 0000 0000 0000 0000 0000的数
+            unsigned long long n = (unsigned long long ) pow(2,32) - 1;
+            // n就变成了无符号位的，二进制后32位与原来的负数一样的数
+            n = n &amp;amp; num;
+            ret = toHex1(num);
+        }
+        return ret.size() &amp;gt; 8?ret.substr(ret.size() - 8) : ret;
+    }
+    string toHex1(unsigned long long num) {
+        string ret;
+        string hex[] = {&amp;quot;0&amp;quot;,&amp;quot;1&amp;quot;,&amp;quot;2&amp;quot;,&amp;quot;3&amp;quot;,&amp;quot;4&amp;quot;,&amp;quot;5&amp;quot;,&amp;quot;6&amp;quot;,&amp;quot;7&amp;quot;,&amp;quot;8&amp;quot;,&amp;quot;9&amp;quot;,&amp;quot;a&amp;quot;,&amp;quot;b&amp;quot;,&amp;quot;c&amp;quot;,&amp;quot;d&amp;quot;,&amp;quot;e&amp;quot;,&amp;quot;f&amp;quot;};
+        while (num) {
+            int pos = num % 16;
+            num /= 16;
+            ret += hex[pos];
+        }
+        reverse(ret.begin(), ret.end());
+        return ret;
+    }
+};
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>leetcode70. Climbing Stars</title>
+      <link>https://shiweihou.github.io/lintcode/leetcode70/</link>
+      <pubDate>Fri, 03 Mar 2017 19:09:33 +0800</pubDate>
+      
+      <guid>https://shiweihou.github.io/lintcode/leetcode70/</guid>
+      <description>&lt;p&gt;class Solution {
+    public:
+        int climbStairs(int n) {
+            if (n &amp;lt;= 2) return n;
+            // one 表示还有最后一步要走， two表示还有最后两步要走，我们从第3个台阶开始算，那么走到第三个台阶
+            // 如果是从第二个台阶也就是还有最后一步要走的时候，我们一共有两种办法：1 1 1 和 2 1
+            // 如果是从第一个台阶也就是还有最后二步要走的时候，我们一共只有一种办法: 1 2,所以初始化为 2 1
+            int one_last = 2;
+            int two_last = 1;
+            int all = 0;
+            for (int i = 3; i &amp;lt;= n; ++i) {
+                // 当我们走到第i个台阶的时候，从前面得到的结果，也就是第i-1 和 i-2 个台阶上走，一共有 one_last + two_last 种方法
+                // 当我们走过第i个台阶要准备走第i+1个台阶的时候，那么走到第i个台阶的方法就是前面得到all，这时候只需走一步就可以走到
+                // 第i+1个台阶，走到第i+1-2个台阶的方法，就是前面的one_last数值，所以要更新 two_last  和 one_last
+                all = one_last + two_last;
+                two_last = one_last;
+                one_last = all;
+            }
+            return all;
+        }
+    };&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>leetcode 467.Unique Substrings in Wraparound String</title>
@@ -577,94 +647,6 @@ int main() {
     int x, y;
     cin &amp;gt;&amp;gt; x &amp;gt;&amp;gt; y;
     cout &amp;lt;&amp;lt; rev(rev(x) + rev(y)) &amp;lt;&amp;lt; endl;
-    return 0;
-}
-&lt;/code&gt;&lt;/pre&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>网易2017秋招编程题3</title>
-      <link>https://shiweihou.github.io/algorithm/%E7%BD%91%E6%98%932017%E7%A7%8B%E6%8B%9B%E7%BC%96%E7%A8%8B%E9%A2%983/</link>
-      <pubDate>Wed, 15 Feb 2017 10:53:04 +0800</pubDate>
-      
-      <guid>https://shiweihou.github.io/algorithm/%E7%BD%91%E6%98%932017%E7%A7%8B%E6%8B%9B%E7%BC%96%E7%A8%8B%E9%A2%983/</guid>
-      <description>&lt;p&gt;跳石板：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;#include &amp;lt;iostream&amp;gt;
-#include &amp;lt;vector&amp;gt;
-#include &amp;lt;algorithm&amp;gt;
-using namespace std;
-
-void find_yue_shu(int num, vector&amp;lt;int&amp;gt; &amp;amp;yue_shu) {
-    for (int i = 2; i &amp;lt;= sqrt(num); ++i) {
-        if (num % i == 0) {
-            yue_shu.push_back(i);
-            if (num / i != i) yue_shu.push_back(num / i);
-        }
-    }
-
-}
-
-int fuc(int N, int M) {
-    if (N == M) return 0;
-    vector&amp;lt;int&amp;gt; dp(M+1, -1);
-    dp[N] = 0;
-    for (int i = N; i &amp;lt;= M; ++i) {
-        if (dp[i] == -1) continue; // 说明该点无法到达
-        vector&amp;lt;int&amp;gt; yue_shu;
-        find_yue_shu(i, yue_shu);
-        for (int j = 0; j &amp;lt; yue_shu.size(); ++j) {
-            int pos = yue_shu[j] + i; // 根据这个约数能到达的台阶位置
-            if (pos &amp;lt;= M &amp;amp;&amp;amp; dp[pos] != -1) { // 这个位置小于M，并且该位置已经可以到达了，就要进行比较,否则直接+1
-                dp[pos] = min(dp[pos] , dp[i] + 1);
-            } else if (pos &amp;lt;= M) {
-                dp[pos] = dp[i] + 1;
-            }
-        }
-    }
-
-    if (dp[M] == -1) return -1;
-    return dp[M];
-}
-
-int main() {
-    int N, M;
-    cin &amp;gt;&amp;gt; N &amp;gt;&amp;gt; M;
-    cout &amp;lt;&amp;lt; fuc(N, M) &amp;lt;&amp;lt; endl;
-    return 0;
-}
-&lt;/code&gt;&lt;/pre&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>网易2017秋招编程题2</title>
-      <link>https://shiweihou.github.io/algorithm/%E7%BD%91%E6%98%932017%E7%A7%8B%E6%8B%9B%E7%BC%96%E7%A8%8B%E9%A2%982/</link>
-      <pubDate>Wed, 15 Feb 2017 10:30:52 +0800</pubDate>
-      
-      <guid>https://shiweihou.github.io/algorithm/%E7%BD%91%E6%98%932017%E7%A7%8B%E6%8B%9B%E7%BC%96%E7%A8%8B%E9%A2%982/</guid>
-      <description>&lt;p&gt;优雅的点：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;#include &amp;lt;iostream&amp;gt;
-#include &amp;lt;algorithm&amp;gt;
-using namespace std;
-
-int main() {
-    int rr;
-    cin &amp;gt;&amp;gt; rr;
-    int r = (int)sqrt(rr);
-    int sum = 0;
-
-    for (int i = r; i &amp;gt;= 0; --i) {
-        // 只计算第一象限的点
-        int j = (int)sqrt(rr - i * i);
-        if (i * i + j * j == rr) ++sum;
-    }
-    sum *= 4;
-    // 如果半径本身就是整数点，那么相当于重复计算了四个轴的四个点，需要减去4
-    if (r * r == rr) sum -= 4;
-    cout &amp;lt;&amp;lt; sum &amp;lt;&amp;lt; endl;
     return 0;
 }
 &lt;/code&gt;&lt;/pre&gt;

@@ -5,8 +5,78 @@
     <link>https://shiweiHou.github.io/lintcode/</link>
     <description>Recent content in Lintcodes on Hello world!</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Sat, 25 Feb 2017 19:20:31 +0800</lastBuildDate>
+    <lastBuildDate>Fri, 03 Mar 2017 19:13:13 +0800</lastBuildDate>
     <atom:link href="https://shiweiHou.github.io/lintcode/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>leetcode-405.Convert a Number to Hexadecimal</title>
+      <link>https://shiweihou.github.io/lintcode/leetcode405/</link>
+      <pubDate>Fri, 03 Mar 2017 19:13:13 +0800</pubDate>
+      
+      <guid>https://shiweihou.github.io/lintcode/leetcode405/</guid>
+      <description>&lt;p&gt;class Solution {
+    public:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;    string toHex(int num) {
+        string ret;
+        if (num == 0) ret = &amp;quot;0&amp;quot;;
+        else if (num &amp;gt; 0) {
+            ret = toHex1(num);
+        }
+        else {
+            // 得到一个 1 0000 0000 0000 0000 0000 0000 0000 0000的数
+            unsigned long long n = (unsigned long long ) pow(2,32) - 1;
+            // n就变成了无符号位的，二进制后32位与原来的负数一样的数
+            n = n &amp;amp; num;
+            ret = toHex1(num);
+        }
+        return ret.size() &amp;gt; 8?ret.substr(ret.size() - 8) : ret;
+    }
+    string toHex1(unsigned long long num) {
+        string ret;
+        string hex[] = {&amp;quot;0&amp;quot;,&amp;quot;1&amp;quot;,&amp;quot;2&amp;quot;,&amp;quot;3&amp;quot;,&amp;quot;4&amp;quot;,&amp;quot;5&amp;quot;,&amp;quot;6&amp;quot;,&amp;quot;7&amp;quot;,&amp;quot;8&amp;quot;,&amp;quot;9&amp;quot;,&amp;quot;a&amp;quot;,&amp;quot;b&amp;quot;,&amp;quot;c&amp;quot;,&amp;quot;d&amp;quot;,&amp;quot;e&amp;quot;,&amp;quot;f&amp;quot;};
+        while (num) {
+            int pos = num % 16;
+            num /= 16;
+            ret += hex[pos];
+        }
+        reverse(ret.begin(), ret.end());
+        return ret;
+    }
+};
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>leetcode70. Climbing Stars</title>
+      <link>https://shiweihou.github.io/lintcode/leetcode70/</link>
+      <pubDate>Fri, 03 Mar 2017 19:09:33 +0800</pubDate>
+      
+      <guid>https://shiweihou.github.io/lintcode/leetcode70/</guid>
+      <description>&lt;p&gt;class Solution {
+    public:
+        int climbStairs(int n) {
+            if (n &amp;lt;= 2) return n;
+            // one 表示还有最后一步要走， two表示还有最后两步要走，我们从第3个台阶开始算，那么走到第三个台阶
+            // 如果是从第二个台阶也就是还有最后一步要走的时候，我们一共有两种办法：1 1 1 和 2 1
+            // 如果是从第一个台阶也就是还有最后二步要走的时候，我们一共只有一种办法: 1 2,所以初始化为 2 1
+            int one_last = 2;
+            int two_last = 1;
+            int all = 0;
+            for (int i = 3; i &amp;lt;= n; ++i) {
+                // 当我们走到第i个台阶的时候，从前面得到的结果，也就是第i-1 和 i-2 个台阶上走，一共有 one_last + two_last 种方法
+                // 当我们走过第i个台阶要准备走第i+1个台阶的时候，那么走到第i个台阶的方法就是前面得到all，这时候只需走一步就可以走到
+                // 第i+1个台阶，走到第i+1-2个台阶的方法，就是前面的one_last数值，所以要更新 two_last  和 one_last
+                all = one_last + two_last;
+                two_last = one_last;
+                one_last = all;
+            }
+            return all;
+        }
+    };&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>leetcode 467.Unique Substrings in Wraparound String</title>
@@ -772,168 +842,6 @@ public:
     }
 };
 &lt;/code&gt;&lt;/pre&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>LintCode 分糖果</title>
-      <link>https://shiweihou.github.io/lintcode/2016-10-31-01/</link>
-      <pubDate>Mon, 31 Oct 2016 20:01:12 +0800</pubDate>
-      
-      <guid>https://shiweihou.github.io/lintcode/2016-10-31-01/</guid>
-      <description>&lt;p&gt;题目链接：&lt;a href=&#34;http://www.lintcode.com/zh-cn/problem/candy/&#34;&gt;分糖果&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;思路：&lt;/p&gt;
-
-&lt;p&gt;一开始想的先排序，然后从低到高遍历，定义一个rat和pre，rat保存当前需要加的糖果数，pre为上一个rating，如果当前ratings[i] == pre， 就将rat置为1，不是就将rat++。。。。。后来发现不是这么做的，因为测试数据怎么都过不了。&lt;/p&gt;
-
-&lt;p&gt;首先，不能排序！不能改变原有的顺序！题目的意思应该理解为“ 当前rating如果比其左右都高的话，其糖果个数不应该小于其左右的糖果个数”。 所以需要遍历两次，&lt;/p&gt;
-
-&lt;ul&gt;
-&lt;li&gt;首先从左到右遍历一次，保证当右边的rating大于其左边的rating值时，糖果个数不小于左边的糖果值&lt;/li&gt;
-&lt;li&gt;然后从右往左再遍历一次，保证当左边的rating大于其右边的rating值时，糖果个数不小于右边的糖果值&lt;/li&gt;
-&lt;/ul&gt;
-
-&lt;p&gt;最后所有的加起来就可以了&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;class Solution {
-public:
-    /**
-     * @param ratings Children&#39;s ratings
-     * @return the minimum candies you must give
-     */
-    int candy(vector&amp;lt;int&amp;gt;&amp;amp; ratings) {
-        // Write your code here
-        int sum = 0;
-        int len = ratings.size();
-        int *num = new int[len];
-
-        num[0] = 1;
-        // 从左往右
-        for (int i = 1; i &amp;lt; len; ++i) {
-            num[i] = ratings[i] &amp;gt; ratings[i-1] ? num[i-1] + 1 : 1;
-        }
-        //从右往左
-        for (int i = len - 1; i &amp;gt; 0; --i) {
-            num[i - 1] = ratings[i] &amp;lt; ratings[i-1] ? max(num[i] + 1, num[i - 1]) : num[i - 1];
-        }
-        for (int i = 0; i &amp;lt; len; ++i) sum += num[i];
-
-        delete []num;
-        return sum;
-    }
-};
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;，&lt;/p&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>LintCode 二进制表示</title>
-      <link>https://shiweihou.github.io/lintcode/2016-10-13-02/</link>
-      <pubDate>Thu, 13 Oct 2016 20:46:54 +0800</pubDate>
-      
-      <guid>https://shiweihou.github.io/lintcode/2016-10-13-02/</guid>
-      <description>&lt;p&gt;&lt;a href=&#34;http://www.lintcode.com/zh-cn/problem/binary-representation/&#34;&gt;题目链接&lt;/a&gt;&lt;/p&gt;
-
-&lt;p&gt;说是困难题，其实很简单的，就是将字符串中整数部分和小数部分分别提取出来，然后根据整数化二进制和小数划二进制的形式来求。唯一有问题的就是字符串中的小数部分化成小数时，如果按照传统的一个个来做的话，在计算机中表示很奇怪，例如对于&lt;code&gt;4096.6435546875&lt;/code&gt;，小数部分按照6*10（-1） + 4*10（-2）&amp;hellip;这样求的话，在计算机中实际表示为&lt;code&gt;0.64355468750000011&lt;/code&gt;，所以很奇怪，估计是和计算机中浮点型的存储方式有关，所以后来就直接用C++自带的库函数&lt;code&gt;atof()&lt;/code&gt;函数来转换，这样就ok了。&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;class Solution {
-public:
-/**
- *@param n: Given a decimal number that is passed in as a string
- *@return: A string
- */
-string binaryRepresentation(string n) {
-    // wirte your code here
-    string ret;
-    if (n.empty()) return 0;
-    int len = n.size();
-    int i = 0;
-    while (i &amp;lt; len &amp;amp;&amp;amp; n[i] != &#39;.&#39;) ++i;
-    int j = 0;
-    bool flag = true;
-    if (n[0] == &#39;-&#39;) {
-        flag = false;
-        ++j;
-        ret += &amp;quot;1&amp;quot;;
-    }
-
-    long number = 0;
-    while (j &amp;lt; i) {
-        number = number * 10 + (n[j] - &#39;0&#39;);
-        ++j;
-    }
-    longToBinary(number, ret);
-
-    if (i == len) return ret;
-    ret += &amp;quot;.&amp;quot;;
-
-
-    double number1 = 0.0;
-    ++i;
-    int count = -1;
-    while (i &amp;lt; len) {
-        number1 += (n[i] - &#39;0&#39;) * (double)pow(10, count);
-        ++i;
-        --count;
-    }
-
-    bool yes = true;
-    // 自己计算的不行，还得靠库函数
-    double decPart = atof(n.substr(n.find(&amp;quot;.&amp;quot;), n.size() - n.find(&amp;quot;.&amp;quot;)).c_str());
-    number1 = decPart;
-    yes = digitToBinary(number1, ret);
-
-    int len1 = ret.size();
-    if (ret[len1-1] == &#39;.&#39;) ret = ret.substr(0,len1-1);
-    if (yes) return ret;
-    ret = &amp;quot;ERROR&amp;quot;;
-    return ret;
-}
-
-bool digitToBinary(double number, string &amp;amp;s) {
-    int time = 0;
-    double number1 = 1.0;
-    double number2 = 0.0;
-    while (time &amp;lt;= 32) {
-        if (number == number1) 
-            break;
-        if (number == number2) 
-            break;
-        number *= 2;
-        if (number &amp;gt;= 1) {
-            number -= 1.0;
-            s += to_string(1);
-        } else s += to_string(0);
-
-        ++time;
-    }
-
-    if (time &amp;lt;= 32) return true;
-    return false;
-}
-void longToBinary(long number, string &amp;amp;s) {
-    vector&amp;lt;int&amp;gt; vb;
-    while (number != 0) {
-        vb.push_back(number % 2) ;
-        number /= 2;
-    }
-    if (vb.empty()) {
-        s += to_string(0);
-        return;
-    }
-    reverse(vb.begin(), vb.end());
-    for (auto e : vb) {
-        s += to_string(e);
-    }
-
-    return ;
-}
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;};&lt;/p&gt;
 </description>
     </item>
     
