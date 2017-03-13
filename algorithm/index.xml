@@ -5,8 +5,53 @@
     <link>https://shiweiHou.github.io/algorithm/</link>
     <description>Recent content in Algorithms on Hello world!</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Wed, 15 Feb 2017 11:29:12 +0800</lastBuildDate>
+    <lastBuildDate>Wed, 08 Mar 2017 16:41:08 +0800</lastBuildDate>
     <atom:link href="https://shiweiHou.github.io/algorithm/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>牛客模拟题1：序列和</title>
+      <link>https://shiweihou.github.io/algorithm/nowcoder1/</link>
+      <pubDate>Wed, 08 Mar 2017 16:41:08 +0800</pubDate>
+      
+      <guid>https://shiweihou.github.io/algorithm/nowcoder1/</guid>
+      <description>&lt;p&gt;/* 题目需要找出一段长度大于等于L的连续非负整数，使得其和等于N。L要尽可能小。
+     * 考虑是连续非负整数，所以其和我们能用中位数来表示，分两种情况：
+     * 情况一，长度为奇数的情况：
+     * 此时中位数一定是整数，N = 中位数 x L 
+     * 情况二，长度为偶数的情况：
+     * 此时中位数肯定是xx.5的形式，N = xx.5 * L 
+     * 所以我们从长度L开始枚举，至100为止，分奇偶讨论。*/
+    #include &lt;iostream&gt;
+    using namespace std;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;int main() {
+    long n, L;
+    cin &amp;gt;&amp;gt; n &amp;gt;&amp;gt; L;
+    long i, begin, end;
+    for ( i = L; i &amp;lt;= 100; ++i) {
+        if (i % 2 == 1 &amp;amp;&amp;amp; n % i == 0) {
+            long mid = n / i;
+            begin = mid - (i - 1) / 2;
+            end = mid + (i - 1) / 2;
+            if (begin &amp;gt;= 0) break;
+        }
+        if (i % 2 == 0 &amp;amp;&amp;amp; (double) n / i - n / i == 0.5f) {
+            long mid = n / i;
+            begin = mid - i / 2 + 1;
+            end = mid + i / 2;
+            if (begin &amp;gt;= 0) break;
+        }
+    }
+    if (i &amp;lt;= 100) {
+        while (begin &amp;lt; end) {cout &amp;lt;&amp;lt; begin &amp;lt;&amp;lt; &amp;quot; &amp;quot; ; ++begin;}
+        cout &amp;lt;&amp;lt; end &amp;lt;&amp;lt; endl;
+    }
+    else cout &amp;lt;&amp;lt; &amp;quot;No&amp;quot; &amp;lt;&amp;lt; endl;
+    return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
     
     <item>
       <title>网易2017秋招编程题7</title>

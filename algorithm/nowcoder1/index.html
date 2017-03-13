@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
 <head>
   <title>
-    leetcode-405.Convert a Number to Hexadecimal // Hello world!
+    牛客模拟题1：序列和 // Hello world!
   </title>
 
   <link href="http://gmpg.org/xfn/11" rel="profile">
@@ -16,11 +16,11 @@
 <meta name="author" content="">
 <meta name="generator" content="Hugo 0.16" />
 
-  <meta property="og:title" content="leetcode-405.Convert a Number to Hexadecimal" />
+  <meta property="og:title" content="牛客模拟题1：序列和" />
 <meta property="og:description" content="" />
 <meta property="og:type" content="website" />
 <meta property="og:locale" content="en_US" />
-<meta property="og:url" content="https://shiweihou.github.io/lintcode/leetcode405/" />
+<meta property="og:url" content="https://shiweihou.github.io/algorithm/nowcoder1/" />
 
 
   
@@ -110,14 +110,14 @@
 	    
   		<section class="post">
             <h1 class="post-title">
-              <a href="/lintcode/leetcode405/">leetcode-405.Convert a Number to Hexadecimal</a>
+              <a href="/algorithm/nowcoder1/">牛客模拟题1：序列和</a>
             </h1>
             <h3 class="post-subtitle">
             	
             </h3>
             
             	<span class="post-date">
-                	<span class="post-date-day"><sup>3</sup></span><span class="post-date-separator">/</span><span class="post-date-month">Mar</span> <span class="post-date-year">2017</span>
+                	<span class="post-date-day"><sup>8</sup></span><span class="post-date-separator">/</span><span class="post-date-month">Mar</span> <span class="post-date-year">2017</span>
             	</span>
             	
             
@@ -131,36 +131,41 @@
 
 			
 
-            <p>class Solution {
-    public:</p>
+            <p>/* 题目需要找出一段长度大于等于L的连续非负整数，使得其和等于N。L要尽可能小。
+     * 考虑是连续非负整数，所以其和我们能用中位数来表示，分两种情况：
+     * 情况一，长度为奇数的情况：
+     * 此时中位数一定是整数，N = 中位数 x L 
+     * 情况二，长度为偶数的情况：
+     * 此时中位数肯定是xx.5的形式，N = xx.5 * L 
+     * 所以我们从长度L开始枚举，至100为止，分奇偶讨论。*/
+    #include <iostream>
+    using namespace std;</p>
 
-<pre><code>    string toHex(int num) {
-        string ret;
-        if (num == 0) ret = &quot;0&quot;;
-        else if (num &gt; 0) {
-            ret = toHex1(num);
+<pre><code>int main() {
+    long n, L;
+    cin &gt;&gt; n &gt;&gt; L;
+    long i, begin, end;
+    for ( i = L; i &lt;= 100; ++i) {
+        if (i % 2 == 1 &amp;&amp; n % i == 0) {
+            long mid = n / i;
+            begin = mid - (i - 1) / 2;
+            end = mid + (i - 1) / 2;
+            if (begin &gt;= 0) break;
         }
-        else {
-            // 得到一个 1 0000 0000 0000 0000 0000 0000 0000 0000的数
-            unsigned long long n = (unsigned long long ) pow(2,32) - 1;
-            // n就变成了无符号位的，二进制后32位与原来的负数一样的数
-            n = n &amp; num;
-            ret = toHex1(num);
+        if (i % 2 == 0 &amp;&amp; (double) n / i - n / i == 0.5f) {
+            long mid = n / i;
+            begin = mid - i / 2 + 1;
+            end = mid + i / 2;
+            if (begin &gt;= 0) break;
         }
-        return ret.size() &gt; 8?ret.substr(ret.size() - 8) : ret;
     }
-    string toHex1(unsigned long long num) {
-        string ret;
-        string hex[] = {&quot;0&quot;,&quot;1&quot;,&quot;2&quot;,&quot;3&quot;,&quot;4&quot;,&quot;5&quot;,&quot;6&quot;,&quot;7&quot;,&quot;8&quot;,&quot;9&quot;,&quot;a&quot;,&quot;b&quot;,&quot;c&quot;,&quot;d&quot;,&quot;e&quot;,&quot;f&quot;};
-        while (num) {
-            int pos = num % 16;
-            num /= 16;
-            ret += hex[pos];
-        }
-        reverse(ret.begin(), ret.end());
-        return ret;
+    if (i &lt;= 100) {
+        while (begin &lt; end) {cout &lt;&lt; begin &lt;&lt; &quot; &quot; ; ++begin;}
+        cout &lt;&lt; end &lt;&lt; endl;
     }
-};
+    else cout &lt;&lt; &quot;No&quot; &lt;&lt; endl;
+    return 0;
+}
 </code></pre>
 
 	
@@ -174,14 +179,14 @@
 					
 					<div class="paging-newer">
 						<span class="dark-red">Newer</span><span class="decorative-marker">//</span>
-						<a class="paging-link" href="/algorithm/nowcoder1/">牛客模拟题1：序列和</a>
+						<a class="paging-link" href="/cplusplus/2017-3-13/">栈、堆、内存分布、函数压栈、虚拟内存</a>
 		            </div>
 		            
 
 					
 					<div class="paging-older">
 						<span class="dark-red">Older</span><span class="decorative-marker">//</span>
-			            <a class="paging-link" href="/lintcode/leetcode70/">leetcode70. Climbing Stars</a>
+			            <a class="paging-link" href="/lintcode/leetcode405/">leetcode-405.Convert a Number to Hexadecimal</a>
 		            </div>
 		            
 	            </div>

@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+  <title>
+    栈、堆、内存分布、函数压栈、虚拟内存 // Hello world!
+  </title>
+
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+<meta name="description" content="">
+<meta name="keywords" content="">
+<meta name="author" content="">
+<meta name="generator" content="Hugo 0.16" />
+
+  <meta property="og:title" content="栈、堆、内存分布、函数压栈、虚拟内存" />
+<meta property="og:description" content="" />
+<meta property="og:type" content="website" />
+<meta property="og:locale" content="en_US" />
+<meta property="og:url" content="https://shiweihou.github.io/cplusplus/2017-3-13/" />
+
+
+  
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.5.0/base-min.css">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.5.0/pure-min.css">
+  
+  
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.5.0/grids-responsive-min.css">
+  
+  
+
+  <link rel="stylesheet" href="https://shiweihou.github.io//css/redlounge.css">
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet">
+  <link href='//fonts.googleapis.com/css?family=Raleway:400,200,100,700,300,500,600,800' rel='stylesheet' type='text/css'>
+  <link href='//fonts.googleapis.com/css?family=Libre+Baskerville:400,700,400italic' rel='stylesheet' type='text/css'>
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.png">
+
+  
+  <link href="" rel="alternate" type="application/rss+xml" title="Hello world!" />
+
+    
+  
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.7/styles/tomorrow-night-bright.min.css">
+  
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.7/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+
+
+  
+
+  
+
+  
+
+  
+</head>
+
+<body>
+	
+
+	<div id="layout" class="pure-g">
+    <div class="sidebar pure-u-1 pure-u-md-1-4">
+  <div class="header">
+    
+
+	
+	  <img src="/img/1.jpg" class="sidebarphoto">
+	
+
+    <h1 class="brand-title">Matthew</h1>
+    <h2 class="brand-tagline">积跬步，至千里</h2>
+
+    <nav class="nav">
+      <ul class="nav-list">
+        <li class="nav-item"><span class="nav-item-separator">//</span><a href="https://shiweihou.github.io/">Home</a></li>
+        
+          <li class="nav-item"><span class="nav-item-separator">//</span><a href="/cplusplus/">C&#43;&#43;</a></li>
+        
+          <li class="nav-item"><span class="nav-item-separator">//</span><a href="/lintcode/">刷题</a></li>
+        
+          <li class="nav-item"><span class="nav-item-separator">//</span><a href="/machinelearning/">机器学习</a></li>
+        
+          <li class="nav-item"><span class="nav-item-separator">//</span><a href="/pointcloud/">点云</a></li>
+        
+          <li class="nav-item"><span class="nav-item-separator">//</span><a href="/algorithm/">编程</a></li>
+        
+      </ul>
+    </nav>
+
+    
+
+  </div>
+</div>
+
+	
+	
+
+    <div class="content pure-u-1 pure-u-md-3-4">
+		<a name="top"></a>
+		
+
+		
+			
+	    
+  		<section class="post">
+            <h1 class="post-title">
+              <a href="/cplusplus/2017-3-13/">栈、堆、内存分布、函数压栈、虚拟内存</a>
+            </h1>
+            <h3 class="post-subtitle">
+            	
+            </h3>
+            
+            	<span class="post-date">
+                	<span class="post-date-day"><sup>13</sup></span><span class="post-date-separator">/</span><span class="post-date-month">Mar</span> <span class="post-date-year">2017</span>
+            	</span>
+            	
+            
+            	
+            
+
+			
+			
+
+			
+
+			
+
+            <p>今天腾讯实习一面，被虐的好惨，问了有关用户程序内存分布问题、函数压栈问题，这些都没来得及复习，所以问了一个不会一个，问了一个不会一个，很尴尬，赶紧找资料总结复习一下。</p>
+
+<p>首先是<strong>用户程序内存分布</strong>问题，用户程序内存分布其实就是C++中内存管理问题，只不过一开始问这个问题的时候没有想到，所以GG。一个由C/C++编译的程序内存占有以下几个部分：</p>
+
+<ul>
+<li>栈区：由编译器自动分布释放，存放函数的参数值、局部变量等</li>
+<li>堆区：一般由程序员分配释放，如果程序员不释放，程序结束时有可能被操作系统回收，动态分配内存</li>
+<li>全局区：也被称作静态区，全局变量和静态变量的存储是放在一起的，初始化的全局变量和静态变量在一块区域，未初始化的全局变量和未初始化的静态变量在相邻的另一块区域，程序结束后由系统释放</li>
+<li>文字常量区：常量字符串就是存放在这里的，程序结束后由系统释放</li>
+<li>程序代码区：就是存放程序的二进制代码位置</li>
+</ul>
+
+<p>讲完内存分布，再着重讲讲<strong>栈和堆的区别</strong>：</p>
+
+<p>栈和堆的<strong>生长方向是相反</strong>的，即栈地址是由高地址向低地址方向生长，而堆则是由低地址向高地址方向生长，它们俩的生长方向是相对的（也是相反，但相反的说法没有相对容易理解）。为什么要这么设计呢，“这个问题与虚拟地址空间的分配规则有关，每一个可执行C程序，从低地址到高地址依次是：text，data，bss，堆，栈，环境参数变量；其中堆和栈之间有很大的地址空间空闲着，在需要分配空间的时候，堆向上涨，栈往下涨。”</p>
+
+<p><strong>这样设计可以使得堆和栈能够充分利用空闲的地址空间</strong>。如果栈向上涨的话，我们就必须得指定栈和堆的一个严格分界线，但这个分界线怎么确定呢？平均分？但是有的程序使用的堆空间比较多，而有的程序使用的栈空间比较多。所以就可能出现这种情况：一个程序因为栈溢出而崩溃的时候，其实它还有大量闲置的堆空间呢，但是我们却无法使用这些闲置的堆空间。所以呢，最好的办法就是让堆和栈一个向上涨，一个向下涨，这样它们就可以最大程度地共用这块剩余的地址空间，达到利用率的最大化！！</p>
+
+<p>我们在运行程序的时候，或者写代码的时候，会碰到“堆栈溢出”的问题，为什么会发生这种问题呢？这个问题很大程度上发生是由于数组越界，因为我们访问了不存在的或者未经初始化未经分配的内存块，我们会覆盖掉前面已经生成的栈顶的老元素，并把其中的值当作地址执行该地址内的命令，由于该地址可能没有元素或者未初始化或者不能被访问，就会出现错误，这就是堆栈溢出。</p>
+
+<p>下面是一个例子程序，很清楚介绍了各个内存分布情况：</p>
+
+<pre><code>int a = 0; //全局初始化区
+
+char *p1; //全局未初始化区
+
+main()
+
+{
+
+int b; //栈
+
+char s[] = &quot;abc&quot;; //栈
+
+char *p2; //栈
+
+char *p3 = &quot;123456&quot;; //123456在常量区，p3在栈上。
+
+static int c =0； //全局（静态）初始化区
+
+p1 = (char *)malloc(10);
+
+p2 = (char *)malloc(20);
+
+//分配得来得10和20字节的区域就在堆区。
+
+strcpy(p1, &quot;123456&quot;); //123456放在常量区，编译器可能会将它与p3所指向的&quot;123456&quot;优化成一个地方。
+
+}
+</code></pre>
+
+<p><strong>函数调用过程中到底是怎么进行压入和传出的</strong></p>
+
+<p>首先，我们先了解三个寄存器：</p>
+
+<ul>
+<li>ESP，栈指针寄存器(extended stack pointer),其内存放着一个指针，该指针永远指向系统栈的最上面一个栈帧的栈顶</li>
+<li>EBP，基址指针寄存器(extended base pointer),其内存放着一个指针，该指针永远指向系统栈最上面一个栈帧的底部</li>
+<li>EIP，指令寄存器（extended instruction pointer),其内存放着一个指针，该指针永远指向下一条待执行的指令地址</li>
+</ul>
+
+<p>ESP和EBP之间的内存空间称之为当前栈帧，EBP标识了当前栈帧的底部，ESP标识了当前栈帧的顶部（具体图解可以到<a href="https://www.zhihu.com/question/22444939">https://www.zhihu.com/question/22444939</a>上面查看。</p>
+
+<p>函数调用大概分为以下几个步骤：</p>
+
+<ul>
+<li>函数参数入栈，按照参数的声明顺序从右往左依次压入系统栈中</li>
+<li>返回地址入栈，将当前代码区调用指令的下一条指令地址压入栈中，供函数返回时继续执行</li>
+<li>代码器跳转，处理器从当前代码区跳转到被调用函数的入口处</li>
+<li>当前栈帧调整，保存当前栈帧的状态值，已备后面恢复该栈时使用，EBP入栈；将当前栈帧切换为新栈帧，ESP值装入EBP中，更新栈帧底部；将EBP减去所需空间的大小，更新ESP，给新栈帧分配空间（因为栈是从高地址往低地址生长的，所以从内存空间上来讲，EBP &gt; ESP)</li>
+</ul>
+
+<p>函数入栈过程：首先，将调用者函数的EBP入栈，然后将调用者函数的栈顶指针ESP赋值给被调用者函数的EBP作为被调用函数的栈底，然后，被调用者函数的返回地址入栈，函数参数从右往左入栈，根据实际占用的空间，用新的EBP的值减去空间，更新ESP。</p>
+
+<p>因为每次调用新的函数，旧的函数EBP就会入栈，在栈中访问函数参数，都是通过ebp加上偏移量来访问，因为旧的函数参数肯定位于当前栈帧的上方，即高地址；访问局部变量，通过EBP减去偏移量来访问，因为局部变量都是存在当前栈帧的，也只有当前栈帧的局部变量可以通过EBP直接访问，EBP是栈底，栈从高地址往地址生长，需要减去偏移量。</p>
+
+<p><strong>虚拟内存：</strong>
+虚拟内存是计算机系统内存管理的一种技术。它使得应用程序认为它拥有连续的可用的内存（一个连续完整的地址空间），而实际上，它通常是被分隔成多个物理内存碎片，还有部分暂时存储在外部磁盘存储器上，在需要时进行数据交换。与没有使用虚拟内存技术的系统相比，使用这种技术的系统使得大型程序的编写变得更容易，对真正的物理内存（例如RAM）的使用也更有效率。</p>
+
+<p>注意：虚拟内存不只是“用磁盘空间来扩展物理内存”的意思——这只是扩充内存级别以使其包含硬盘驱动器而已。把内存扩展到磁盘只是使用虚拟内存技术的一个结果，它的作用也可以通<strong>过覆盖或者把处于不活动状态的程序以及它们的数据全部交换到磁盘上</strong>等方式来实现。对虚拟内存的定义是基于对地址空间的重定义的，即把地址空间定义为“连续的虚拟内存地址”，以借此“欺骗”程序，使它们以为自己正在使用一大块的“连续”地址。</p>
+
+<p>虚拟内存存在的优点是，需要的时候才真正分配内存。那么程序必须决定何时才提交内存。如果访问没有提交内存的数据结构，系统会产生访问违规的错误。提交的最好方法是，当你程序需要访问虚拟内存的数据结构时，假设它已经是分配内存的，然后异常处理可能出现的错误。对于访问违规的错误，就提交这个地址的内存。</p>
+
+<p>一般来说，如果所需内存大小大于1M，用虚拟内存比较好</p>
+
+<p>2的32次方是4GB，表示范围从 0X0000 0000 ~ 0XFFFF FFFF</p>
+
+<p><strong>内存寻址</strong></p>
+
+<p>计算机管理内存的基本方式有两种：段式管理和页式管理</p>
+
+<ul>
+<li><p>cpu段式管理：段式管理的基本原理是指把一个程序分成若干个段（segment）进行存储，每个段都是一个逻辑实体（logical entity）。一个用户作业或进程所包含的段对应一个二维线形虚拟空间，程序通过分段(segmentation)划分为多个模块，故可以对程序的各个模块分别编写和编译。段式管理程序以段为单位分配内存，然后通过地址影射机构把段式虚拟地址转换为虚拟地址。</p></li>
+
+<li><p>cpu页式管理： 页式管理的基本原理将各进程的虚拟空间划分成若干个长度相等的页(一般为4K)，页式管理把内存空间按页的大小划分成片或者页面（page frame），然后把页式虚拟地址与内存地址建立一一对应页表，并用相应的硬件地址变换机构，来解决离散地址变换问题。</p></li>
+
+<li><p>逻辑地址：包含在机器语言指令中用来指定一个操作数或一条指令的地址，每个逻辑地址都由一个段和偏移量组成，表示为[段标识符：段内偏移量]。例如，在C/C++程序中我们使用指针对变量地址操作，该地址就是逻辑地址（准确的应该说是逻辑地址的段内偏移量）。对应上述段式管理，逻辑地址是段式管理转换前的程序地址。</p></li>
+
+<li><p>线性地址：也称为虚拟地址，它是一个32位无符号整数，故可以用来表达高达4GB的地址。线性地址同逻辑地址一样也是不真实的地址。对应上述页式管理，线性地址是页式管理转换前的地址。</p></li>
+
+<li><p>物理地址：用于内存芯片级内存单元寻址，与处理器和CPU连接的地址总线相对应。一般情况下，我们说的计算机内存条中的内存就是它（虽然不准确）。</p></li>
+</ul>
+
+<p>有了上述的基本概念后，很显然，CPU将一个虚拟内存空间中的地址转换为物理地址，需要进行两步：首先将给定一个逻辑地址，CPU要利用其段式内存管理单元，先将每个逻辑地址转换成一个线程地址，再利用其页式内存管理单元，转换为最终物理地址。这就是我们所知道的段页式管理，这样两次转换的好处可以克服段式管理和页式管理的缺点。</p>
+
+<p>Windows对于内存的管理，采取的是分页机制，每个进程都占有一定的虚拟地址空间，在这个机制下，这个空间一部分被映射到物理内存，一部分映射到虚拟内存（存在于硬盘上的一个或多个空间），还有一部分则可能什么也没有映射。同时，在CPU中，会设置一个“分页标志位”，如果CPU在运行指令时发现这个分页标志被设置，则会根据页目录和页表中的对应关系，将指令中的虚拟地址转换为实际的物理地址。</p>
+
+	
+			
+
+			
+
+			
+				<div class="paging">
+					<span class="paging-label">More Reading</span>
+					
+					<div class="paging-newer">
+						<span class="dark-red">Newer</span><span class="decorative-marker">//</span>
+						<a class="paging-link" href="/cplusplus/2017-3-13-02/">C&#43;&#43;基本知识总结</a>
+		            </div>
+		            
+
+					
+					<div class="paging-older">
+						<span class="dark-red">Older</span><span class="decorative-marker">//</span>
+			            <a class="paging-link" href="/algorithm/nowcoder1/">牛客模拟题1：序列和</a>
+		            </div>
+		            
+	            </div>
+            
+          </section>
+          
+          	
+          
+        
+      <div class="footer">
+	<hr class="thin" />
+	<div class="pure-menu pure-menu-horizontal pure-menu-open">
+		<ul class="footer-menu">
+		
+		</ul>
+	</div>
+
+	<p>&copy; 2017. Matthew Hou All rights reserved.</p>
+</div>
+    </div>
+  </div>
+	
+
+	
+
+  
+</body>
+</html>

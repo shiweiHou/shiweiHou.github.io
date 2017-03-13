@@ -5,8 +5,521 @@
     <link>https://shiweiHou.github.io/</link>
     <description>Recent content on Hello world!</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Fri, 03 Mar 2017 19:13:13 +0800</lastBuildDate>
+    <lastBuildDate>Mon, 13 Mar 2017 16:43:45 +0800</lastBuildDate>
     <atom:link href="https://shiweiHou.github.io/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>C&#43;&#43;基本知识总结</title>
+      <link>https://shiweihou.github.io/cplusplus/2017-3-13-02/</link>
+      <pubDate>Mon, 13 Mar 2017 16:43:45 +0800</pubDate>
+      
+      <guid>https://shiweihou.github.io/cplusplus/2017-3-13-02/</guid>
+      <description>&lt;p&gt;&lt;strong&gt;什么是C++11&lt;/strong&gt;：C++11是11年正式推出的C++的一个新标准，包括了以前C++标准的内容，扩展了C++标准程序库，即STL。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;C++11的新特性：&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;初始化列表：一般用作与构造函数，用于初始化结构体或者数组。最常用的就是STL vector利用大括号来进行初始化。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Auto关键字：主要用于模板编程，用于推导变量或者对象的类型，交给系统实现，而不需要用户显示的定义类型，它将会根据已有的变量或者实例化的对象来进行类型推导。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Decltype和auto相反，用于获取一个变量或者对象的类型&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;基于范围的for循环：for语句将允许简单的范围迭代，如果用来迭代的类型已知，可直接用已知类型，更通常的是和auto关键字一起使用，这样省去了繁琐的语句。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Lambda表达式：更像是临时函数(谓词函数),例如最经常使用的sort函数第三个参数，就是lambda表达式。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Nullptr，空指针：解决NULL二义性问题，因为在C中NULL和0可以相互转换，而C++不推荐这样做，所以用nullptr表示空指针，无法和整数相互转换，也无法做比较。但0仍可表示空指针常数。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;多线程编程：C++11标准库提供类别thread进行线程编写&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;智能指针：智能指针是类别而非一般的指针，最常用的就是shared_ptr指针，它会计数到底有多少指针指向原本对象，如果计数为0时，就销毁该对象。&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;C++11 模板特化和偏特化&lt;/strong&gt;：C++11中的模板特化不同于模板的实例化，模板参数在某种特定类型下的具体实现成为模板的特化。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;C++11 的封装 继承 多态 组合：&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;封装(encapsulation)：封装就是将抽象得到的数据和行为（或功能）相结合，形成一个有机的整体，也就是将数据与操作数据的源代码进行有机的结合，形成“类”，其中数据和函数都是类的成员。封装的目的是增强安全性和简化编程，使用者不必了解具体的实现细节，而只是要通过 外部接口，一特定的访问权限来使用类的成员。通过封装使一部分成员充当类与外部的接口，而将其他的成员隐蔽起来，这样就达到了对成员访问权限的合理控制，使不同类之间的相互影响减少到最低限度，进而增强数据的安全性和简化程序的编写工作。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;继承：继承是面向对象软件技术当中的一个概念。如果一个类B继承自另一个类A，就把这个B称为A的子类，而把A称为B的父类。继承可以使得子类具有父类的各种属性和方法，而不需要再次编写相同的代码。在令子类继承父类的同时，可以重新定义某些属性，并重写某些方法，即覆盖父类的原有属性和方法，使其获得与父类不同的功能。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;多态（Polymorphisn）：多态性是允许你将父对象设置成为和一个或更多的他的子对象相等的技术，赋值之后，父对象就可以根据当前赋值给它的子对象的特性以不同的方式运作。简单的说：允许将子类类型的指针赋值给父类类型的指针。多态性在C++中都是通过虚函数（Virtual Function）实现的。虚函数就是允许被其子类重新定义的成员函数。而子类重新定义父类虚函数的做法，称为“覆盖”或者称为“重写”（override）。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;组合：组合是类之间的组合，意思是一个类可以作为另一个类的数据成员，整体类和部分类之间相互不关心对方的具体实现细节，只保留接口功能。&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;重载和重写、重定义：&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;方法的重写Overriding和重载Overloading是多态性的不同表现。&lt;/p&gt;
+
+&lt;p&gt;重写Overriding是&lt;strong&gt;父类与子类之间&lt;/strong&gt;多态性的一种表现，重载Overloading是一个&lt;strong&gt;类中多态性&lt;/strong&gt;的一种表现。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;重载（overload）
+指函数名相同，但是它的参数表列个数或顺序，类型不同。但是不能靠返回类型来判断。特点是：&lt;strong&gt;相同的作用域，函数名字相同，参数不同，返回类值不同，可以用const修饰&lt;/strong&gt;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;重写（也称为覆盖 override）&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;是指派生类重新定义基类的虚函数，特征是：&lt;/p&gt;
+
+&lt;p&gt;（1）不在同一个作用域（分别位于派生类与基类&lt;/p&gt;
+
+&lt;p&gt;（2）函数名字相同；&lt;/p&gt;
+
+&lt;p&gt;（3）参数相同；&lt;/p&gt;
+
+&lt;p&gt;（4）基类函数必须有 virtual 关键字，不能有 static&lt;/p&gt;
+
+&lt;p&gt;（5）返回值相同（或是协变），否则报错&lt;/p&gt;
+
+&lt;p&gt;（6）重写函数的访问修饰符可以不同。尽管 virtual 是 private 的，派生类中重写改写为 public,protected 也是可以的&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;重定义（也成隐藏）&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;（1）不在同一个作用域（分别位于派生类与基类）&lt;/p&gt;
+
+&lt;p&gt;（2）函数名字相同；&lt;/p&gt;
+
+&lt;p&gt;（3）返回值可以不同；&lt;/p&gt;
+
+&lt;p&gt;（4）参数不同，此时，不论有无 virtual 关键字，基类的函数将被隐藏（注意别与重载以及覆盖混淆）&lt;/p&gt;
+
+&lt;p&gt;（5）参数相同，但是基类函数没有 virtual关键字。此时，基类的函数被隐藏（注意别与覆盖混淆） 。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;组合和继承的区别联系：&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;首先它们都是实现系统功能重用，代码复用的最常用的有效的设计技巧，都是在设计模式中的基础结构。相信大家已了解的，类继承允许我们根据自己的实现来覆盖重写父类的实现细节，父类的实现对于子类是可见的，所以我们一般称之为白盒复用。对象持有（其实就是组合）要求建立一个号的接口，但是整体类和部分类之间不会去关心各自的实现细节，即它们之间的实现细节是不可见的，故成为黑盒复用。组合就是可以将一个类作为另外一个类的数据成员。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;继承是在编译时刻静态定义的，即是静态复用，在编译后子类和父类的关系就已经确定了。而组合这是运用于复杂的设计，它们之间的关系是在运行时候才确定的，即在对对象没有创建运行前，整体类是不会知道自己将持有特定接口下的那个实现类。在扩展方面组合比集成更具有广泛性。 继承中父类定义了子类的部分实现，而子类中又会重写这些实现，修改父类的实现，设计模式中认为这是一种破坏了父类的封装性的表现。这个结构导致结果是父类实现的任何变化，必然导致子类的改变。然而组合这不会出现这种现象。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;对象的组合还有一个优点就是有助于保持每个类被封装，并被集中在单个任务上（类设计的单一原则）。这样类的层次结构不会扩大，一般不会出现不可控的庞然大类。而累的继承就可能出来这些问题，所以一般编码规范都要求类的层次结构不要超过3层。组合是大型系统软件实现即插即用时的首选方式。&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;C++虚函数、虚函数表&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;C++虚函数允许在派生类中重新定义于基类同名的函数，可以通过基类指针或引用来访问基类和派生类中的同名函数，和前面说的动态绑定实现多态一样，即如果有个基类和几个子类，那么调用基类和子类中的某个同名函数，在用基类指针调用的时候，只需要在调用前将基类指针绑定到某个子类对象上就可以调用该子类的函数了。虚函数在执行期间被构造，虚函数不能重载为内联函数&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;虚函数表&lt;/strong&gt;，就是每一个类的虚函数地址表。虚函数按照声明的顺序放在虚函数表内，如果子类有覆盖基类的虚函数，那么子类对象的虚函数表中，相应的子类函数将覆盖基类的虚函数。否则，虚函数表内，&lt;strong&gt;基类虚函数在前，子类虚函数在后&lt;/strong&gt;。如果有多重继承时，子类对其每一个基类都建立一个虚函数表。&lt;/p&gt;
+
+&lt;p&gt;对C++ 了解的人都应该知道虚函数（Virtual Function）是通过一张&lt;strong&gt;虚函数表&lt;/strong&gt;（Virtual Table）来实现的。简称为V-Table。在这个表中，主是要一个类的虚函数的地址表，这张表解决了继承、覆盖的问题，保证其容真实反应实际的函数。这样，在有虚函数的类的&lt;strong&gt;实例&lt;/strong&gt;中这个表被分配在了这个实例的内存中，所以，当我们用父类的指针来操作一个子类的时候，这张虚函数表就显得由为重要了，它就像一个地图一样，指明了实际所应该调用的函数。&lt;/p&gt;
+
+&lt;p&gt;这里我们着重看一下这张虚函数表。C++的编译器应该是保证虚函数表的指针存在于&lt;strong&gt;对象实例中最前面的位置&lt;/strong&gt;（这是为了保证取到虚函数表的有最高的性能——如果有多层继承或是多重继承的情况下）。 这意味着我们通过&lt;strong&gt;对象实例的地址&lt;/strong&gt;得到这张虚函数表，然后就可以遍历其中函数指针，并调用相应的函数。如果是多继承的情况下，子类将会对&lt;strong&gt;每一个父类都生成一个虚函数指针，生成一个虚函数表，并且是按照父类的继承声明顺序依次生成虚函数表&lt;/strong&gt;，如果子类有重新声明父类的虚函数，将会覆盖父类的虚函数，如果没有，则会放在父类虚函数后面。这样做就是为了解决不同的父类类型的指针指向同一个子类实例，而能够调用到实际的函数。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;C++泛型编程：&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;C++泛型编程是基于模板实现的，而C++模板采用的是&lt;strong&gt;代码膨胀技术&lt;/strong&gt;。对于指定的类型，C++编译器会专门生成一个专门用来存放指定类型的列表数据结构，因此无论你要指定什么类型，C++编译器就为你生成相应的列表数据结构，如果程序有大量的数据类型要放进去，代码就会高度膨胀。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;为什么用模板类，为什么用泛型&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;通过泛型可以定义类型安全的数据结构（类型安全），而无须使用实际的数据类型（可扩展）。这能够显著提高性能并得到更高质量的代码（高性能），因为您可以重用数据处理算法，而无须复制类型特定的代码（可重用）。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;C++四种类型转换：&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;static_cast: 最常用的类型转换符，在正常情况下的类型转换，例如把int转换为float：int i，float f， f = static_cat&lt;float&gt;(i);&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;const_cast:用于去除const属性，将const类型的指针变为非const类型的指针&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;dynamic_cast:该操作符用于运行时检查类型转换是否安全，但只在多态类型时合法，即该类至少有一个虚函数。用于父类和子类之间的类型转换检查。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;reinterpret_cast ：重新解释类型，但没有进行二进制的转换。可以用于不同类型之间的转换&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;malloc函数和new的区别：&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;首先，New是一个操作符，可以自动的分配内存大小，可以构建构造函数，delete也是一个操作法符，为即将释放的内存调用一个或多个析构函数&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;Malloc是库函数，无法自动创建内存大小，需要人为的去分配，free也是库函数，将释放内存，但不消除建立时所创建的那个指针，即不会删除指针本身。&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;malloc calloc realloc new&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;malloc 函数： &lt;code&gt;void *malloc(unsigned int size)&lt;/code&gt;
+在内存的动态分配区域中分配一个长度为size的连续空间，如果分配成功，则返回所分配内存空间的首地址，否则返回NULL，申请的内存不会进行初始化。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;calloc 函数： &lt;code&gt;void *calloc(unsigned int num, unsigned int size)&lt;/code&gt;
+按照所给的数据个数和数据类型所占字节数，分配一个 num * size 连续的空间。
+calloc申请内存空间后，会自动初始化内存空间为 0，但是malloc不会进行初始化，其内存空间存储的是一些随机数据。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;realloc 函数： &lt;code&gt;void *realloc(void *ptr, unsigned int size)&lt;/code&gt;
+动态分配一个长度为size的内存空间，并把内存空间的首地址赋值给ptr，把ptr内存空间调整为size。
+申请的内存空间不会进行初始化。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;new是动态分配内存的运算符，自动计算需要分配的空间，在分配类类型的内存空间时，同时调用类的构造函数，对内存空间进行初始化，即完成类的初始化工作。动态分配自定义类型是否自动初始化取决于变量定义的位置，类静态成员变量会被自动初始化为0，类内变量随机值。&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;内联函数和宏定义区别联系：&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;内联函数在运行时可调试，而宏定义不可以;&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;编译器会对内联函数的参数类型做安全检查或自动类型转换（同普通函数），而宏定义则不会；&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;内联函数可以访问类的成员变量，宏定义则不能；&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;在类中声明同时定义的成员函数，自动转化为内联函数。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;内联函数是直接将代码拷贝进去，不存在地址这一说法，宏定义则是替换&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;const常量与宏定义常量的区别联系：&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;编译器处理方式不同&lt;br /&gt;
+1）define宏是在预处理阶段展开。  2）const常量是编译运行阶段使用。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;类型和安全检查不同
+　　1）define宏没有类型，不做任何类型检查，仅仅是展开。
+　　2）const常量有具体的类型，在编译阶段会执行类型检查。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;存储方式不同
+　　1）define宏仅仅是展开，有多少地方使用，就展开多少次，不会分配内存。（宏定义不分配内存，变量定义分配内存。）
+　　2）const常量会在内存中分配(可以是堆中也可以是栈中)。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;const  可以节省空间，避免不必要的内存分配。 例如：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;#define PI 3.14159 //常量宏  
+const doulbe Pi=3.14159; //此时并未将Pi放入ROM中 ......  
+double i=Pi; //此时为Pi分配内存，以后不再分配！  
+double I=PI; //编译期间进行宏替换，分配内存  
+double j=Pi; //没有内存分配  
+double J=PI; //再进行宏替换，又一次分配内存！  
+&lt;/code&gt;&lt;/pre&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;const定义常量从汇编的角度来看，只是给出了对应的内存地址，而不是象#define一样给出的是立即数，所以，const定义的常量在程序运行过程中只有一份拷贝（因为是全局的只读变量，存在静态区），而 #define定义的常量在内存中有若干个拷贝。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;提高了效率。 编译器通常不为普通const常量分配存储空间，而是将它们保存在符号表中，这使得它成为一个编译期间的常量，没有了存储与读内存的操作，使得它的效率也很高。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;宏替换只作替换，不做计算，不做表达式求解; 宏预编译时就替换了，程序运行时，并不分配内存。&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;const的作用&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;定义常量&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;可以进行类型检查&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;可以用于保护被修饰的对象&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;可以进行参数修改&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;可以通过声明函数是否为const进行函数重载&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;提高效率，节省空间（因为编译器会将const常量保存在符号表内，而不是放在存储空间上，节省了存储与读内存的操作）&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;static关键字作用&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;在C语言中，关键字static有三个明显的作用：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;在函数体内，一个被声明为静态的变量在这一函数被调用过程中维持上一次的值不变，即只初始化一次（该变量存放在静态变量区，而不是栈区）。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;在模块内（但在函数体外），一个被声明为静态的变量可以被模块内所用函数访问，但不能被模块外访问。（注：模块可以理解为文件）&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;在模块内，一个被声明为静态的函数只可被这一模块内的其它函数调用。那就是，这个函数被限制在声明它的模块的本地范围内使用。&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;【补充】《C和指针》中说static有两层含义：指明存储属性；改变链接属性。&lt;/p&gt;
+
+&lt;p&gt;具体解释：（1）全局变量（包括函数）加上static关键字后，链接属性变为internal，也就是将他们限定在了本作用域内；（2）局部变量加上static关键字后，存储属性变为静态存储，不存储在栈区，下一次将保持上一次的尾值。&lt;/p&gt;
+
+&lt;p&gt;除此之外，C++中还有新用法：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;在类中的static成员变量意味着它为该类的所有实例所共享，也就是说当某个类的实例修改了该静态成员变量，其修改值为该类的其它所有实例所见；&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;在类中的static成员函数属于整个类所拥有，这个函数不接收this指针，因而只能访问类的static成员变量(当然，可以通过传递一个对象来访问其成员)。&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;volati关键字&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;volatile关键字是一种类型修饰符，用它声明的类型变量表示可以被某些编译器未知的因素更改，比如：操作系统、硬件或者其它线程等。遇到这个关键字声明的变量，编译器对访问该变量的代码就不再进行优化，从而可以提供对特殊地址的稳定访问。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;当要求使用volatile 声明的变量的值的时候，系统总是重新从它所在的内存读取数据，即使它前面的指令刚刚从该处读取过数据。而且读取的数据立刻被保存。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;volatile 指出 i是随时可能发生变化的，每次使用它的时候必须从i的地址中读取，因而编译器生成的汇编代码会重新从i的地址读取数据放在b中。而优化做法是，由于编译器发现两次从i读数据的代码之间的代码没有对i进行过操作，它会自动把上次读的数据放在b中。而不是重新从i里面读。这样一来，如果i是一个寄存器变量或者表示一个端口数据就容易出错，所以说volatile可以保证对特殊地址的稳定访问。&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;全局变量、局部变量、静态全局变量、静态局部变量的区别&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;从作用域看：&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;全局变量具有全局作用域。全局变量只需在一个源文件中定义，就可以作用于所有的源文件。当然，其他不包含全局变量定义的源文件需要用extern 关键字再次声明这个全局变量。&lt;/p&gt;
+
+&lt;p&gt;静态局部变量具有局部作用域，它只被初始化一次，自从第一次被初始化直到程序运行结束都一直存在，它和全局变量的区别在于全局变量对所有的函数都是可见的，而静态局部变量只对定义自己的函数体始终可见。&lt;/p&gt;
+
+&lt;p&gt;局部变量也只有局部作用域，它是自动对象（auto），它在程序运行期间不是一直存在，而是只在函数执行期间存在，函数的一次调用执行结束后，变量被撤销，其所占用的内存也被收回。&lt;/p&gt;
+
+&lt;p&gt;静态全局变量也具有全局作用域，它与全局变量的区别在于如果程序包含多个文件的话，它作用于定义它的文件里，不能作用到其它文件里，即被static关键字修饰过的变量具有文件作用域。这样即使两个不同的源文件都定义了相同名字的静态全局变量，它们也是不同的变量。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;从分配内存空间看：&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;全局变量，静态局部变量，静态全局变量都在静态存储区分配空间，而局部变量在栈里分配空间&lt;/p&gt;
+
+&lt;p&gt;静态函数 ：在函数的返回类型前加上static关键字,函数即被定义为静态函数。静态函数与普通函数不同，它只能在声明它的文件当中可见，不能被其它文件使用。&lt;/p&gt;
+
+&lt;p&gt;如果在一个源文件中定义的函数，只能被本文件中的函数调用，而不能被同一程序其它文件中的函数调用，这种函数也称为内部函数。定义一个内部函数，只需在函数类型前再加一个“static”关键字即可。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;类的静态成员、非静态成员、静态成员函数&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;一、静态成员的特点：&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;（1）static数据成员在类的内部声明，但只能在类的外部定义，在类的外部不能指定static，在类的定义时候进行初始化;&lt;/p&gt;
+
+&lt;p&gt;（2）static数据成员只能在类的外部进行初始化（特例：当整型const static数据成员被常量表达式初始化时，就可以在类的内部进行初始化，但还需要在外部进行定义）。&lt;/p&gt;
+
+&lt;p&gt;（3） static数据成员可以是该成员所属的类类型，而非static数据成员只能自身类的引用或者指针。&lt;/p&gt;
+
+&lt;p&gt;（4）static数据成员可以用作类成员函数的默认实参。&lt;/p&gt;
+
+&lt;p&gt;（5）static数据成员的值可以改变。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;二、静态成员和非静态成员的区别：&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;（1） 静态变量使用 static 修饰符进行声明，在类被实例化时创建，通过类和对象都可以进行访问；&lt;/p&gt;
+
+&lt;p&gt;（2）不带有 static 修饰符声明的变量称做非静态变量，在对象被实例化时创建，通过对象访问；&lt;/p&gt;
+
+&lt;p&gt;（3） 一个类的所有实例的同一静态变量都是同一个值，同一个类的不同实例的同一非静态变量可以是不同的值。&lt;/p&gt;
+
+&lt;p&gt;（4） 静态函数的实现里不能使用非静态成员，如非静态变量、非静态函数等。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;三、静态成员函数的特点：&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;（1） static 成员函数没有 this 形参，它可以访问所属类的 static 成员，但不能访问非 static 成员。&lt;/p&gt;
+
+&lt;p&gt;（2）static成员函数既可以在类的内部定义，也可以在类的外部定义，在外部定义时，不能重复指定static保留字。&lt;/p&gt;
+
+&lt;p&gt;（3）static成员函数不能声明为虚函数，不能实现动态绑定&lt;/p&gt;
+
+&lt;p&gt;（4）static 成员函数不能声明为const，因为const是针对this是不是const而言的&lt;/p&gt;
+
+&lt;p&gt;（5）构造函数、析构函数不能为静态函数。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;C++类、struct字节对齐&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;在类中，如果什么都没有，则类占用1个字节，因为编译器需要给类一个实际空间用来存储类，一旦类中有其它成员，则这1个字节就不在计算之内。&lt;strong&gt;先找有没有虚函数&lt;/strong&gt;，有的话就需要建立虚函数表，&lt;strong&gt;一个指针占四个字节&lt;/strong&gt;；static成员变量属于类域，不算入计算中；成员函数不占内存；然后接着就是内存对齐了&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;普通类成员函数内存对齐：字节对齐便于cpu的快速访问，以结构体内最宽的那个数据成员为整数倍。在系统默认的对齐方式下：&lt;strong&gt;每个成员相对于这个结构体变量地址的偏移量正好是&lt;code&gt;该成员类型所占字节的整数倍&lt;/code&gt;，也就是说该变量的起始地址必须为它所占字节的整数倍开始，且整个结构体最终占用字节数为成员类型中最大占用字节数的整数倍。&lt;/strong&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;&lt;strong&gt;引用和指针的区别：&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;相同点：&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;都是地址的概念；&lt;/p&gt;
+
+&lt;p&gt;指针指向一块内存，它的内容是所指内存的地址；而引用则是某块内存的别名。&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;不同点：&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;指针是一个实体，而引用仅是个别名；&lt;/p&gt;
+
+&lt;p&gt;引用只能在定义时被初始化一次而且必须被初始化，之后不可变；指针可变；引用“从一而终”，指针可以“见异思迁”；&lt;/p&gt;
+
+&lt;p&gt;引用不能为空，指针可以为空；&lt;/p&gt;
+
+&lt;p&gt;“sizeof 引用”得到的是所指向的变量(对象)的大小，而“sizeof 指针”得到的是指针本身的大小；&lt;/p&gt;
+
+&lt;p&gt;指针和引用的自增(++)运算意义不一样；&lt;/p&gt;
+
+&lt;p&gt;引用是类型安全的，而指针不是 (引用比指针多了类型检查）&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;析构函数中抛出异常时概括性总结&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;（1） C++中析构函数的执行不应该抛出异常；&lt;/p&gt;
+
+&lt;p&gt;（2） 假如析构函数中抛出了异常，那么系统将变得非常危险，也许很长时间什么错误也不会发生；但也许系统有时就会莫名奇妙地崩溃而退出了，而且什么迹象也没有；&lt;/p&gt;
+
+&lt;p&gt;（3） 当在某一个析构函数中会有一些可能（哪怕是一点点可能）发生异常时，那么就必须要把这种可能发生的异常完全封装在析构函数内部，决不能让它抛出函数之外，即在析构函数内部写出完整的throw&amp;hellip;catch()块。&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>栈、堆、内存分布、函数压栈、虚拟内存</title>
+      <link>https://shiweihou.github.io/cplusplus/2017-3-13/</link>
+      <pubDate>Mon, 13 Mar 2017 14:28:15 +0800</pubDate>
+      
+      <guid>https://shiweihou.github.io/cplusplus/2017-3-13/</guid>
+      <description>&lt;p&gt;今天腾讯实习一面，被虐的好惨，问了有关用户程序内存分布问题、函数压栈问题，这些都没来得及复习，所以问了一个不会一个，问了一个不会一个，很尴尬，赶紧找资料总结复习一下。&lt;/p&gt;
+
+&lt;p&gt;首先是&lt;strong&gt;用户程序内存分布&lt;/strong&gt;问题，用户程序内存分布其实就是C++中内存管理问题，只不过一开始问这个问题的时候没有想到，所以GG。一个由C/C++编译的程序内存占有以下几个部分：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;栈区：由编译器自动分布释放，存放函数的参数值、局部变量等&lt;/li&gt;
+&lt;li&gt;堆区：一般由程序员分配释放，如果程序员不释放，程序结束时有可能被操作系统回收，动态分配内存&lt;/li&gt;
+&lt;li&gt;全局区：也被称作静态区，全局变量和静态变量的存储是放在一起的，初始化的全局变量和静态变量在一块区域，未初始化的全局变量和未初始化的静态变量在相邻的另一块区域，程序结束后由系统释放&lt;/li&gt;
+&lt;li&gt;文字常量区：常量字符串就是存放在这里的，程序结束后由系统释放&lt;/li&gt;
+&lt;li&gt;程序代码区：就是存放程序的二进制代码位置&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;讲完内存分布，再着重讲讲&lt;strong&gt;栈和堆的区别&lt;/strong&gt;：&lt;/p&gt;
+
+&lt;p&gt;栈和堆的&lt;strong&gt;生长方向是相反&lt;/strong&gt;的，即栈地址是由高地址向低地址方向生长，而堆则是由低地址向高地址方向生长，它们俩的生长方向是相对的（也是相反，但相反的说法没有相对容易理解）。为什么要这么设计呢，“这个问题与虚拟地址空间的分配规则有关，每一个可执行C程序，从低地址到高地址依次是：text，data，bss，堆，栈，环境参数变量；其中堆和栈之间有很大的地址空间空闲着，在需要分配空间的时候，堆向上涨，栈往下涨。”&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;这样设计可以使得堆和栈能够充分利用空闲的地址空间&lt;/strong&gt;。如果栈向上涨的话，我们就必须得指定栈和堆的一个严格分界线，但这个分界线怎么确定呢？平均分？但是有的程序使用的堆空间比较多，而有的程序使用的栈空间比较多。所以就可能出现这种情况：一个程序因为栈溢出而崩溃的时候，其实它还有大量闲置的堆空间呢，但是我们却无法使用这些闲置的堆空间。所以呢，最好的办法就是让堆和栈一个向上涨，一个向下涨，这样它们就可以最大程度地共用这块剩余的地址空间，达到利用率的最大化！！&lt;/p&gt;
+
+&lt;p&gt;我们在运行程序的时候，或者写代码的时候，会碰到“堆栈溢出”的问题，为什么会发生这种问题呢？这个问题很大程度上发生是由于数组越界，因为我们访问了不存在的或者未经初始化未经分配的内存块，我们会覆盖掉前面已经生成的栈顶的老元素，并把其中的值当作地址执行该地址内的命令，由于该地址可能没有元素或者未初始化或者不能被访问，就会出现错误，这就是堆栈溢出。&lt;/p&gt;
+
+&lt;p&gt;下面是一个例子程序，很清楚介绍了各个内存分布情况：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;int a = 0; //全局初始化区
+
+char *p1; //全局未初始化区
+
+main()
+
+{
+
+int b; //栈
+
+char s[] = &amp;quot;abc&amp;quot;; //栈
+
+char *p2; //栈
+
+char *p3 = &amp;quot;123456&amp;quot;; //123456在常量区，p3在栈上。
+
+static int c =0； //全局（静态）初始化区
+
+p1 = (char *)malloc(10);
+
+p2 = (char *)malloc(20);
+
+//分配得来得10和20字节的区域就在堆区。
+
+strcpy(p1, &amp;quot;123456&amp;quot;); //123456放在常量区，编译器可能会将它与p3所指向的&amp;quot;123456&amp;quot;优化成一个地方。
+
+}
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;strong&gt;函数调用过程中到底是怎么进行压入和传出的&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;首先，我们先了解三个寄存器：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;ESP，栈指针寄存器(extended stack pointer),其内存放着一个指针，该指针永远指向系统栈的最上面一个栈帧的栈顶&lt;/li&gt;
+&lt;li&gt;EBP，基址指针寄存器(extended base pointer),其内存放着一个指针，该指针永远指向系统栈最上面一个栈帧的底部&lt;/li&gt;
+&lt;li&gt;EIP，指令寄存器（extended instruction pointer),其内存放着一个指针，该指针永远指向下一条待执行的指令地址&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;ESP和EBP之间的内存空间称之为当前栈帧，EBP标识了当前栈帧的底部，ESP标识了当前栈帧的顶部（具体图解可以到&lt;a href=&#34;https://www.zhihu.com/question/22444939&#34;&gt;https://www.zhihu.com/question/22444939&lt;/a&gt;上面查看。&lt;/p&gt;
+
+&lt;p&gt;函数调用大概分为以下几个步骤：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;函数参数入栈，按照参数的声明顺序从右往左依次压入系统栈中&lt;/li&gt;
+&lt;li&gt;返回地址入栈，将当前代码区调用指令的下一条指令地址压入栈中，供函数返回时继续执行&lt;/li&gt;
+&lt;li&gt;代码器跳转，处理器从当前代码区跳转到被调用函数的入口处&lt;/li&gt;
+&lt;li&gt;当前栈帧调整，保存当前栈帧的状态值，已备后面恢复该栈时使用，EBP入栈；将当前栈帧切换为新栈帧，ESP值装入EBP中，更新栈帧底部；将EBP减去所需空间的大小，更新ESP，给新栈帧分配空间（因为栈是从高地址往低地址生长的，所以从内存空间上来讲，EBP &amp;gt; ESP)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;函数入栈过程：首先，将调用者函数的EBP入栈，然后将调用者函数的栈顶指针ESP赋值给被调用者函数的EBP作为被调用函数的栈底，然后，被调用者函数的返回地址入栈，函数参数从右往左入栈，根据实际占用的空间，用新的EBP的值减去空间，更新ESP。&lt;/p&gt;
+
+&lt;p&gt;因为每次调用新的函数，旧的函数EBP就会入栈，在栈中访问函数参数，都是通过ebp加上偏移量来访问，因为旧的函数参数肯定位于当前栈帧的上方，即高地址；访问局部变量，通过EBP减去偏移量来访问，因为局部变量都是存在当前栈帧的，也只有当前栈帧的局部变量可以通过EBP直接访问，EBP是栈底，栈从高地址往地址生长，需要减去偏移量。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;虚拟内存：&lt;/strong&gt;
+虚拟内存是计算机系统内存管理的一种技术。它使得应用程序认为它拥有连续的可用的内存（一个连续完整的地址空间），而实际上，它通常是被分隔成多个物理内存碎片，还有部分暂时存储在外部磁盘存储器上，在需要时进行数据交换。与没有使用虚拟内存技术的系统相比，使用这种技术的系统使得大型程序的编写变得更容易，对真正的物理内存（例如RAM）的使用也更有效率。&lt;/p&gt;
+
+&lt;p&gt;注意：虚拟内存不只是“用磁盘空间来扩展物理内存”的意思——这只是扩充内存级别以使其包含硬盘驱动器而已。把内存扩展到磁盘只是使用虚拟内存技术的一个结果，它的作用也可以通&lt;strong&gt;过覆盖或者把处于不活动状态的程序以及它们的数据全部交换到磁盘上&lt;/strong&gt;等方式来实现。对虚拟内存的定义是基于对地址空间的重定义的，即把地址空间定义为“连续的虚拟内存地址”，以借此“欺骗”程序，使它们以为自己正在使用一大块的“连续”地址。&lt;/p&gt;
+
+&lt;p&gt;虚拟内存存在的优点是，需要的时候才真正分配内存。那么程序必须决定何时才提交内存。如果访问没有提交内存的数据结构，系统会产生访问违规的错误。提交的最好方法是，当你程序需要访问虚拟内存的数据结构时，假设它已经是分配内存的，然后异常处理可能出现的错误。对于访问违规的错误，就提交这个地址的内存。&lt;/p&gt;
+
+&lt;p&gt;一般来说，如果所需内存大小大于1M，用虚拟内存比较好&lt;/p&gt;
+
+&lt;p&gt;2的32次方是4GB，表示范围从 0X0000 0000 ~ 0XFFFF FFFF&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;内存寻址&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;计算机管理内存的基本方式有两种：段式管理和页式管理&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;cpu段式管理：段式管理的基本原理是指把一个程序分成若干个段（segment）进行存储，每个段都是一个逻辑实体（logical entity）。一个用户作业或进程所包含的段对应一个二维线形虚拟空间，程序通过分段(segmentation)划分为多个模块，故可以对程序的各个模块分别编写和编译。段式管理程序以段为单位分配内存，然后通过地址影射机构把段式虚拟地址转换为虚拟地址。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;cpu页式管理： 页式管理的基本原理将各进程的虚拟空间划分成若干个长度相等的页(一般为4K)，页式管理把内存空间按页的大小划分成片或者页面（page frame），然后把页式虚拟地址与内存地址建立一一对应页表，并用相应的硬件地址变换机构，来解决离散地址变换问题。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;逻辑地址：包含在机器语言指令中用来指定一个操作数或一条指令的地址，每个逻辑地址都由一个段和偏移量组成，表示为[段标识符：段内偏移量]。例如，在C/C++程序中我们使用指针对变量地址操作，该地址就是逻辑地址（准确的应该说是逻辑地址的段内偏移量）。对应上述段式管理，逻辑地址是段式管理转换前的程序地址。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;线性地址：也称为虚拟地址，它是一个32位无符号整数，故可以用来表达高达4GB的地址。线性地址同逻辑地址一样也是不真实的地址。对应上述页式管理，线性地址是页式管理转换前的地址。&lt;/p&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;p&gt;物理地址：用于内存芯片级内存单元寻址，与处理器和CPU连接的地址总线相对应。一般情况下，我们说的计算机内存条中的内存就是它（虽然不准确）。&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;有了上述的基本概念后，很显然，CPU将一个虚拟内存空间中的地址转换为物理地址，需要进行两步：首先将给定一个逻辑地址，CPU要利用其段式内存管理单元，先将每个逻辑地址转换成一个线程地址，再利用其页式内存管理单元，转换为最终物理地址。这就是我们所知道的段页式管理，这样两次转换的好处可以克服段式管理和页式管理的缺点。&lt;/p&gt;
+
+&lt;p&gt;Windows对于内存的管理，采取的是分页机制，每个进程都占有一定的虚拟地址空间，在这个机制下，这个空间一部分被映射到物理内存，一部分映射到虚拟内存（存在于硬盘上的一个或多个空间），还有一部分则可能什么也没有映射。同时，在CPU中，会设置一个“分页标志位”，如果CPU在运行指令时发现这个分页标志被设置，则会根据页目录和页表中的对应关系，将指令中的虚拟地址转换为实际的物理地址。&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>牛客模拟题1：序列和</title>
+      <link>https://shiweihou.github.io/algorithm/nowcoder1/</link>
+      <pubDate>Wed, 08 Mar 2017 16:41:08 +0800</pubDate>
+      
+      <guid>https://shiweihou.github.io/algorithm/nowcoder1/</guid>
+      <description>&lt;p&gt;/* 题目需要找出一段长度大于等于L的连续非负整数，使得其和等于N。L要尽可能小。
+     * 考虑是连续非负整数，所以其和我们能用中位数来表示，分两种情况：
+     * 情况一，长度为奇数的情况：
+     * 此时中位数一定是整数，N = 中位数 x L 
+     * 情况二，长度为偶数的情况：
+     * 此时中位数肯定是xx.5的形式，N = xx.5 * L 
+     * 所以我们从长度L开始枚举，至100为止，分奇偶讨论。*/
+    #include &lt;iostream&gt;
+    using namespace std;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;int main() {
+    long n, L;
+    cin &amp;gt;&amp;gt; n &amp;gt;&amp;gt; L;
+    long i, begin, end;
+    for ( i = L; i &amp;lt;= 100; ++i) {
+        if (i % 2 == 1 &amp;amp;&amp;amp; n % i == 0) {
+            long mid = n / i;
+            begin = mid - (i - 1) / 2;
+            end = mid + (i - 1) / 2;
+            if (begin &amp;gt;= 0) break;
+        }
+        if (i % 2 == 0 &amp;amp;&amp;amp; (double) n / i - n / i == 0.5f) {
+            long mid = n / i;
+            begin = mid - i / 2 + 1;
+            end = mid + i / 2;
+            if (begin &amp;gt;= 0) break;
+        }
+    }
+    if (i &amp;lt;= 100) {
+        while (begin &amp;lt; end) {cout &amp;lt;&amp;lt; begin &amp;lt;&amp;lt; &amp;quot; &amp;quot; ; ++begin;}
+        cout &amp;lt;&amp;lt; end &amp;lt;&amp;lt; endl;
+    }
+    else cout &amp;lt;&amp;lt; &amp;quot;No&amp;quot; &amp;lt;&amp;lt; endl;
+    return 0;
+}
+&lt;/code&gt;&lt;/pre&gt;
+</description>
+    </item>
     
     <item>
       <title>leetcode-405.Convert a Number to Hexadecimal</title>
@@ -538,115 +1051,6 @@ int main() {
     C = B - b;
     if (A &amp;gt;= 0 &amp;amp;&amp;amp; B &amp;gt;= 0 &amp;amp;&amp;amp; C &amp;gt;=0 &amp;amp;&amp;amp; (A-B) == a &amp;amp;&amp;amp; (B-C) == b &amp;amp;&amp;amp; (A+B) == c &amp;amp;&amp;amp; (B+C) == d) cout &amp;lt;&amp;lt; A &amp;lt;&amp;lt; &amp;quot; &amp;quot; &amp;lt;&amp;lt; B &amp;lt;&amp;lt; &amp;quot; &amp;quot; &amp;lt;&amp;lt; C &amp;lt;&amp;lt; endl;
     else cout &amp;lt;&amp;lt; &amp;quot;No&amp;quot; &amp;lt;&amp;lt; endl;
-    return 0;
-}
-&lt;/code&gt;&lt;/pre&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>网易2017秋招编程题6</title>
-      <link>https://shiweihou.github.io/algorithm/%E7%BD%91%E6%98%932017%E7%A7%8B%E6%8B%9B%E7%BC%96%E7%A8%8B%E9%A2%986/</link>
-      <pubDate>Wed, 15 Feb 2017 11:28:33 +0800</pubDate>
-      
-      <guid>https://shiweihou.github.io/algorithm/%E7%BD%91%E6%98%932017%E7%A7%8B%E6%8B%9B%E7%BC%96%E7%A8%8B%E9%A2%986/</guid>
-      <description>&lt;p&gt;买苹果：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;#include &amp;lt;iostream&amp;gt;
-#include &amp;lt;algorithm&amp;gt;
-using namespace std;
-
-int main() {
-    int n;
-    cin &amp;gt;&amp;gt; n;
-    if (n &amp;lt; 6 || n == 7) cout &amp;lt;&amp;lt; -1 &amp;lt;&amp;lt; endl;
-    else {
-        int n8 = n / 8, n6 ;
-
-        if (n % 8 == 0) n6 = 0;
-        else n6 = 1;
-
-        while ( n8 * 8 + n6 * 6 &amp;gt; n) {
-            --n8;
-            ++n6;
-        }
-
-        if (n8 * 8 + n6 * 6 == n) cout &amp;lt;&amp;lt; n6 + n8 &amp;lt;&amp;lt; endl;
-        else cout &amp;lt;&amp;lt; -1 &amp;lt;&amp;lt; endl;
-    }
-
-    return 0;
-}
-&lt;/code&gt;&lt;/pre&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>网易2017秋招编程题5</title>
-      <link>https://shiweihou.github.io/algorithm/%E7%BD%91%E6%98%932017%E7%A7%8B%E6%8B%9B%E7%BC%96%E7%A8%8B%E9%A2%985/</link>
-      <pubDate>Wed, 15 Feb 2017 11:18:02 +0800</pubDate>
-      
-      <guid>https://shiweihou.github.io/algorithm/%E7%BD%91%E6%98%932017%E7%A7%8B%E6%8B%9B%E7%BC%96%E7%A8%8B%E9%A2%985/</guid>
-      <description>&lt;p&gt;最大奇约数：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;#include &amp;lt;iostream&amp;gt;
-#include &amp;lt;algorithm&amp;gt;
-using namespace std;
-/*思路：
-*如果是奇数，直接加上去就行了，如果是偶数，就需要一直除2把它变成奇数，如果直接一个
-*一个的加，会超时，因此需要用到一些技巧
-*例如，N = 10，那么我们此时一共有 1 2 3 4 5 6 7 8 9 10十个数，里面有10/2=5个奇数 1 3 5 7 9，那么奇数项的和为
-*一个等差数列公式：s = n * a1 + (n * (n-1) / 2) * d,其中a1为第一项，n为个数，其实是N/2，d为2，那么我们套用进去
-*s = N / 2 + (N / 2) * (N / 2 -1) / 2 * 2 = (N / 2) * (N / 2),又因为当N为奇数的时候，N / 2 == （N + 1） / 2
-*所以不管是奇数偶数，都可以用 ((N+1) / 2) * ((N+1) / 2)这个公式求和
-*这样我们每一次都把1~N的奇数项求和，剩下的是偶数项，继续 N= N/2 (因为 1 2 3 4 5 6 7 8 9 10将奇数项去掉后
-*，还剩下 2 4 6 8 10，他们的最大奇约数其实就是 1 2 3 4 5的最大奇约数，所以求N/2的和就行了）求 1~N 的和，直到0
-*/
-int main() {
-    long long N, sum = 0;
-    cin &amp;gt;&amp;gt; N;
-    for (long long i = N; i &amp;gt; 0; i /= 2) {
-        sum += ((i+1) / 2) * ((i+1) / 2);
-    }
-    cout &amp;lt;&amp;lt; sum &amp;lt;&amp;lt; endl;
-    return 0;
-}
-&lt;/code&gt;&lt;/pre&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>网易2017秋招编程题4</title>
-      <link>https://shiweihou.github.io/algorithm/%E7%BD%91%E6%98%932017%E7%A7%8B%E6%8B%9B%E7%BC%96%E7%A8%8B%E9%A2%984/</link>
-      <pubDate>Wed, 15 Feb 2017 11:00:24 +0800</pubDate>
-      
-      <guid>https://shiweihou.github.io/algorithm/%E7%BD%91%E6%98%932017%E7%A7%8B%E6%8B%9B%E7%BC%96%E7%A8%8B%E9%A2%984/</guid>
-      <description>&lt;p&gt;数字翻转：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;#include &amp;lt;iostream&amp;gt;
-#include &amp;lt;algorithm&amp;gt;
-#include &amp;lt;vector&amp;gt;
-using namespace std;
-
-int rev(int num){
-    vector&amp;lt;int&amp;gt; digit; 
-    int t = 0; // 记录位数
-    while (num) {
-        digit.push_back(num % 10);
-        num /= 10;
-        ++t;
-    }
-    num = 0;
-    for (int i = 0; i &amp;lt; t ; ++i) {
-        num = num * 10 + digit[i];
-    }
-    return num;
-}
-
-int main() {
-    int x, y;
-    cin &amp;gt;&amp;gt; x &amp;gt;&amp;gt; y;
-    cout &amp;lt;&amp;lt; rev(rev(x) + rev(y)) &amp;lt;&amp;lt; endl;
     return 0;
 }
 &lt;/code&gt;&lt;/pre&gt;

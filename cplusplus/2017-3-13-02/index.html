@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+  <title>
+    C&#43;&#43;基本知识总结 // Hello world!
+  </title>
+
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+<meta name="description" content="">
+<meta name="keywords" content="">
+<meta name="author" content="">
+<meta name="generator" content="Hugo 0.16" />
+
+  <meta property="og:title" content="C&#43;&#43;基本知识总结" />
+<meta property="og:description" content="" />
+<meta property="og:type" content="website" />
+<meta property="og:locale" content="en_US" />
+<meta property="og:url" content="https://shiweihou.github.io/cplusplus/2017-3-13-02/" />
+
+
+  
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.5.0/base-min.css">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.5.0/pure-min.css">
+  
+  
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.5.0/grids-responsive-min.css">
+  
+  
+
+  <link rel="stylesheet" href="https://shiweihou.github.io//css/redlounge.css">
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet">
+  <link href='//fonts.googleapis.com/css?family=Raleway:400,200,100,700,300,500,600,800' rel='stylesheet' type='text/css'>
+  <link href='//fonts.googleapis.com/css?family=Libre+Baskerville:400,700,400italic' rel='stylesheet' type='text/css'>
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.png">
+
+  
+  <link href="" rel="alternate" type="application/rss+xml" title="Hello world!" />
+
+    
+  
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.7/styles/tomorrow-night-bright.min.css">
+  
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.7/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+
+
+  
+
+  
+
+  
+
+  
+</head>
+
+<body>
+	
+
+	<div id="layout" class="pure-g">
+    <div class="sidebar pure-u-1 pure-u-md-1-4">
+  <div class="header">
+    
+
+	
+	  <img src="/img/1.jpg" class="sidebarphoto">
+	
+
+    <h1 class="brand-title">Matthew</h1>
+    <h2 class="brand-tagline">积跬步，至千里</h2>
+
+    <nav class="nav">
+      <ul class="nav-list">
+        <li class="nav-item"><span class="nav-item-separator">//</span><a href="https://shiweihou.github.io/">Home</a></li>
+        
+          <li class="nav-item"><span class="nav-item-separator">//</span><a href="/cplusplus/">C&#43;&#43;</a></li>
+        
+          <li class="nav-item"><span class="nav-item-separator">//</span><a href="/lintcode/">刷题</a></li>
+        
+          <li class="nav-item"><span class="nav-item-separator">//</span><a href="/machinelearning/">机器学习</a></li>
+        
+          <li class="nav-item"><span class="nav-item-separator">//</span><a href="/pointcloud/">点云</a></li>
+        
+          <li class="nav-item"><span class="nav-item-separator">//</span><a href="/algorithm/">编程</a></li>
+        
+      </ul>
+    </nav>
+
+    
+
+  </div>
+</div>
+
+	
+	
+
+    <div class="content pure-u-1 pure-u-md-3-4">
+		<a name="top"></a>
+		
+
+		
+			
+	    
+  		<section class="post">
+            <h1 class="post-title">
+              <a href="/cplusplus/2017-3-13-02/">C&#43;&#43;基本知识总结</a>
+            </h1>
+            <h3 class="post-subtitle">
+            	
+            </h3>
+            
+            	<span class="post-date">
+                	<span class="post-date-day"><sup>13</sup></span><span class="post-date-separator">/</span><span class="post-date-month">Mar</span> <span class="post-date-year">2017</span>
+            	</span>
+            	
+            
+            	
+            
+
+			
+			
+
+			
+
+			
+
+            <p><strong>什么是C++11</strong>：C++11是11年正式推出的C++的一个新标准，包括了以前C++标准的内容，扩展了C++标准程序库，即STL。</p>
+
+<p><strong>C++11的新特性：</strong></p>
+
+<ul>
+<li><p>初始化列表：一般用作与构造函数，用于初始化结构体或者数组。最常用的就是STL vector利用大括号来进行初始化。</p></li>
+
+<li><p>Auto关键字：主要用于模板编程，用于推导变量或者对象的类型，交给系统实现，而不需要用户显示的定义类型，它将会根据已有的变量或者实例化的对象来进行类型推导。</p></li>
+
+<li><p>Decltype和auto相反，用于获取一个变量或者对象的类型</p></li>
+
+<li><p>基于范围的for循环：for语句将允许简单的范围迭代，如果用来迭代的类型已知，可直接用已知类型，更通常的是和auto关键字一起使用，这样省去了繁琐的语句。</p></li>
+
+<li><p>Lambda表达式：更像是临时函数(谓词函数),例如最经常使用的sort函数第三个参数，就是lambda表达式。</p></li>
+
+<li><p>Nullptr，空指针：解决NULL二义性问题，因为在C中NULL和0可以相互转换，而C++不推荐这样做，所以用nullptr表示空指针，无法和整数相互转换，也无法做比较。但0仍可表示空指针常数。</p></li>
+
+<li><p>多线程编程：C++11标准库提供类别thread进行线程编写</p></li>
+
+<li><p>智能指针：智能指针是类别而非一般的指针，最常用的就是shared_ptr指针，它会计数到底有多少指针指向原本对象，如果计数为0时，就销毁该对象。</p></li>
+</ul>
+
+<p><strong>C++11 模板特化和偏特化</strong>：C++11中的模板特化不同于模板的实例化，模板参数在某种特定类型下的具体实现成为模板的特化。</p>
+
+<p><strong>C++11 的封装 继承 多态 组合：</strong></p>
+
+<ul>
+<li><p>封装(encapsulation)：封装就是将抽象得到的数据和行为（或功能）相结合，形成一个有机的整体，也就是将数据与操作数据的源代码进行有机的结合，形成“类”，其中数据和函数都是类的成员。封装的目的是增强安全性和简化编程，使用者不必了解具体的实现细节，而只是要通过 外部接口，一特定的访问权限来使用类的成员。通过封装使一部分成员充当类与外部的接口，而将其他的成员隐蔽起来，这样就达到了对成员访问权限的合理控制，使不同类之间的相互影响减少到最低限度，进而增强数据的安全性和简化程序的编写工作。</p></li>
+
+<li><p>继承：继承是面向对象软件技术当中的一个概念。如果一个类B继承自另一个类A，就把这个B称为A的子类，而把A称为B的父类。继承可以使得子类具有父类的各种属性和方法，而不需要再次编写相同的代码。在令子类继承父类的同时，可以重新定义某些属性，并重写某些方法，即覆盖父类的原有属性和方法，使其获得与父类不同的功能。</p></li>
+
+<li><p>多态（Polymorphisn）：多态性是允许你将父对象设置成为和一个或更多的他的子对象相等的技术，赋值之后，父对象就可以根据当前赋值给它的子对象的特性以不同的方式运作。简单的说：允许将子类类型的指针赋值给父类类型的指针。多态性在C++中都是通过虚函数（Virtual Function）实现的。虚函数就是允许被其子类重新定义的成员函数。而子类重新定义父类虚函数的做法，称为“覆盖”或者称为“重写”（override）。</p></li>
+
+<li><p>组合：组合是类之间的组合，意思是一个类可以作为另一个类的数据成员，整体类和部分类之间相互不关心对方的具体实现细节，只保留接口功能。</p></li>
+</ul>
+
+<p><strong>重载和重写、重定义：</strong></p>
+
+<p>方法的重写Overriding和重载Overloading是多态性的不同表现。</p>
+
+<p>重写Overriding是<strong>父类与子类之间</strong>多态性的一种表现，重载Overloading是一个<strong>类中多态性</strong>的一种表现。</p>
+
+<ul>
+<li><p>重载（overload）
+指函数名相同，但是它的参数表列个数或顺序，类型不同。但是不能靠返回类型来判断。特点是：<strong>相同的作用域，函数名字相同，参数不同，返回类值不同，可以用const修饰</strong></p></li>
+
+<li><p>重写（也称为覆盖 override）</p></li>
+</ul>
+
+<p>是指派生类重新定义基类的虚函数，特征是：</p>
+
+<p>（1）不在同一个作用域（分别位于派生类与基类</p>
+
+<p>（2）函数名字相同；</p>
+
+<p>（3）参数相同；</p>
+
+<p>（4）基类函数必须有 virtual 关键字，不能有 static</p>
+
+<p>（5）返回值相同（或是协变），否则报错</p>
+
+<p>（6）重写函数的访问修饰符可以不同。尽管 virtual 是 private 的，派生类中重写改写为 public,protected 也是可以的</p>
+
+<ul>
+<li>重定义（也成隐藏）</li>
+</ul>
+
+<p>（1）不在同一个作用域（分别位于派生类与基类）</p>
+
+<p>（2）函数名字相同；</p>
+
+<p>（3）返回值可以不同；</p>
+
+<p>（4）参数不同，此时，不论有无 virtual 关键字，基类的函数将被隐藏（注意别与重载以及覆盖混淆）</p>
+
+<p>（5）参数相同，但是基类函数没有 virtual关键字。此时，基类的函数被隐藏（注意别与覆盖混淆） 。</p>
+
+<p><strong>组合和继承的区别联系：</strong></p>
+
+<ul>
+<li><p>首先它们都是实现系统功能重用，代码复用的最常用的有效的设计技巧，都是在设计模式中的基础结构。相信大家已了解的，类继承允许我们根据自己的实现来覆盖重写父类的实现细节，父类的实现对于子类是可见的，所以我们一般称之为白盒复用。对象持有（其实就是组合）要求建立一个号的接口，但是整体类和部分类之间不会去关心各自的实现细节，即它们之间的实现细节是不可见的，故成为黑盒复用。组合就是可以将一个类作为另外一个类的数据成员。</p></li>
+
+<li><p>继承是在编译时刻静态定义的，即是静态复用，在编译后子类和父类的关系就已经确定了。而组合这是运用于复杂的设计，它们之间的关系是在运行时候才确定的，即在对对象没有创建运行前，整体类是不会知道自己将持有特定接口下的那个实现类。在扩展方面组合比集成更具有广泛性。 继承中父类定义了子类的部分实现，而子类中又会重写这些实现，修改父类的实现，设计模式中认为这是一种破坏了父类的封装性的表现。这个结构导致结果是父类实现的任何变化，必然导致子类的改变。然而组合这不会出现这种现象。</p></li>
+
+<li><p>对象的组合还有一个优点就是有助于保持每个类被封装，并被集中在单个任务上（类设计的单一原则）。这样类的层次结构不会扩大，一般不会出现不可控的庞然大类。而累的继承就可能出来这些问题，所以一般编码规范都要求类的层次结构不要超过3层。组合是大型系统软件实现即插即用时的首选方式。</p></li>
+</ul>
+
+<p><strong>C++虚函数、虚函数表</strong></p>
+
+<p>C++虚函数允许在派生类中重新定义于基类同名的函数，可以通过基类指针或引用来访问基类和派生类中的同名函数，和前面说的动态绑定实现多态一样，即如果有个基类和几个子类，那么调用基类和子类中的某个同名函数，在用基类指针调用的时候，只需要在调用前将基类指针绑定到某个子类对象上就可以调用该子类的函数了。虚函数在执行期间被构造，虚函数不能重载为内联函数</p>
+
+<p><strong>虚函数表</strong>，就是每一个类的虚函数地址表。虚函数按照声明的顺序放在虚函数表内，如果子类有覆盖基类的虚函数，那么子类对象的虚函数表中，相应的子类函数将覆盖基类的虚函数。否则，虚函数表内，<strong>基类虚函数在前，子类虚函数在后</strong>。如果有多重继承时，子类对其每一个基类都建立一个虚函数表。</p>
+
+<p>对C++ 了解的人都应该知道虚函数（Virtual Function）是通过一张<strong>虚函数表</strong>（Virtual Table）来实现的。简称为V-Table。在这个表中，主是要一个类的虚函数的地址表，这张表解决了继承、覆盖的问题，保证其容真实反应实际的函数。这样，在有虚函数的类的<strong>实例</strong>中这个表被分配在了这个实例的内存中，所以，当我们用父类的指针来操作一个子类的时候，这张虚函数表就显得由为重要了，它就像一个地图一样，指明了实际所应该调用的函数。</p>
+
+<p>这里我们着重看一下这张虚函数表。C++的编译器应该是保证虚函数表的指针存在于<strong>对象实例中最前面的位置</strong>（这是为了保证取到虚函数表的有最高的性能——如果有多层继承或是多重继承的情况下）。 这意味着我们通过<strong>对象实例的地址</strong>得到这张虚函数表，然后就可以遍历其中函数指针，并调用相应的函数。如果是多继承的情况下，子类将会对<strong>每一个父类都生成一个虚函数指针，生成一个虚函数表，并且是按照父类的继承声明顺序依次生成虚函数表</strong>，如果子类有重新声明父类的虚函数，将会覆盖父类的虚函数，如果没有，则会放在父类虚函数后面。这样做就是为了解决不同的父类类型的指针指向同一个子类实例，而能够调用到实际的函数。</p>
+
+<p><strong>C++泛型编程：</strong></p>
+
+<p>C++泛型编程是基于模板实现的，而C++模板采用的是<strong>代码膨胀技术</strong>。对于指定的类型，C++编译器会专门生成一个专门用来存放指定类型的列表数据结构，因此无论你要指定什么类型，C++编译器就为你生成相应的列表数据结构，如果程序有大量的数据类型要放进去，代码就会高度膨胀。</p>
+
+<p><strong>为什么用模板类，为什么用泛型</strong></p>
+
+<p>通过泛型可以定义类型安全的数据结构（类型安全），而无须使用实际的数据类型（可扩展）。这能够显著提高性能并得到更高质量的代码（高性能），因为您可以重用数据处理算法，而无须复制类型特定的代码（可重用）。</p>
+
+<p><strong>C++四种类型转换：</strong></p>
+
+<ul>
+<li><p>static_cast: 最常用的类型转换符，在正常情况下的类型转换，例如把int转换为float：int i，float f， f = static_cat<float>(i);</p></li>
+
+<li><p>const_cast:用于去除const属性，将const类型的指针变为非const类型的指针</p></li>
+
+<li><p>dynamic_cast:该操作符用于运行时检查类型转换是否安全，但只在多态类型时合法，即该类至少有一个虚函数。用于父类和子类之间的类型转换检查。</p></li>
+
+<li><p>reinterpret_cast ：重新解释类型，但没有进行二进制的转换。可以用于不同类型之间的转换</p></li>
+</ul>
+
+<p><strong>malloc函数和new的区别：</strong></p>
+
+<ul>
+<li><p>首先，New是一个操作符，可以自动的分配内存大小，可以构建构造函数，delete也是一个操作法符，为即将释放的内存调用一个或多个析构函数</p></li>
+
+<li><p>Malloc是库函数，无法自动创建内存大小，需要人为的去分配，free也是库函数，将释放内存，但不消除建立时所创建的那个指针，即不会删除指针本身。</p></li>
+</ul>
+
+<p><strong>malloc calloc realloc new</strong></p>
+
+<ul>
+<li><p>malloc 函数： <code>void *malloc(unsigned int size)</code>
+在内存的动态分配区域中分配一个长度为size的连续空间，如果分配成功，则返回所分配内存空间的首地址，否则返回NULL，申请的内存不会进行初始化。</p></li>
+
+<li><p>calloc 函数： <code>void *calloc(unsigned int num, unsigned int size)</code>
+按照所给的数据个数和数据类型所占字节数，分配一个 num * size 连续的空间。
+calloc申请内存空间后，会自动初始化内存空间为 0，但是malloc不会进行初始化，其内存空间存储的是一些随机数据。</p></li>
+
+<li><p>realloc 函数： <code>void *realloc(void *ptr, unsigned int size)</code>
+动态分配一个长度为size的内存空间，并把内存空间的首地址赋值给ptr，把ptr内存空间调整为size。
+申请的内存空间不会进行初始化。</p></li>
+
+<li><p>new是动态分配内存的运算符，自动计算需要分配的空间，在分配类类型的内存空间时，同时调用类的构造函数，对内存空间进行初始化，即完成类的初始化工作。动态分配自定义类型是否自动初始化取决于变量定义的位置，类静态成员变量会被自动初始化为0，类内变量随机值。</p></li>
+</ul>
+
+<p><strong>内联函数和宏定义区别联系：</strong></p>
+
+<ul>
+<li><p>内联函数在运行时可调试，而宏定义不可以;</p></li>
+
+<li><p>编译器会对内联函数的参数类型做安全检查或自动类型转换（同普通函数），而宏定义则不会；</p></li>
+
+<li><p>内联函数可以访问类的成员变量，宏定义则不能；</p></li>
+
+<li><p>在类中声明同时定义的成员函数，自动转化为内联函数。</p></li>
+
+<li><p>内联函数是直接将代码拷贝进去，不存在地址这一说法，宏定义则是替换</p></li>
+</ul>
+
+<p><strong>const常量与宏定义常量的区别联系：</strong></p>
+
+<ul>
+<li><p>编译器处理方式不同<br />
+1）define宏是在预处理阶段展开。  2）const常量是编译运行阶段使用。</p></li>
+
+<li><p>类型和安全检查不同
+　　1）define宏没有类型，不做任何类型检查，仅仅是展开。
+　　2）const常量有具体的类型，在编译阶段会执行类型检查。</p></li>
+
+<li><p>存储方式不同
+　　1）define宏仅仅是展开，有多少地方使用，就展开多少次，不会分配内存。（宏定义不分配内存，变量定义分配内存。）
+　　2）const常量会在内存中分配(可以是堆中也可以是栈中)。</p></li>
+
+<li><p>const  可以节省空间，避免不必要的内存分配。 例如：</p>
+
+<pre><code>#define PI 3.14159 //常量宏  
+const doulbe Pi=3.14159; //此时并未将Pi放入ROM中 ......  
+double i=Pi; //此时为Pi分配内存，以后不再分配！  
+double I=PI; //编译期间进行宏替换，分配内存  
+double j=Pi; //没有内存分配  
+double J=PI; //再进行宏替换，又一次分配内存！  
+</code></pre></li>
+
+<li><p>const定义常量从汇编的角度来看，只是给出了对应的内存地址，而不是象#define一样给出的是立即数，所以，const定义的常量在程序运行过程中只有一份拷贝（因为是全局的只读变量，存在静态区），而 #define定义的常量在内存中有若干个拷贝。</p></li>
+
+<li><p>提高了效率。 编译器通常不为普通const常量分配存储空间，而是将它们保存在符号表中，这使得它成为一个编译期间的常量，没有了存储与读内存的操作，使得它的效率也很高。</p></li>
+
+<li><p>宏替换只作替换，不做计算，不做表达式求解; 宏预编译时就替换了，程序运行时，并不分配内存。</p></li>
+</ul>
+
+<p><strong>const的作用</strong></p>
+
+<ul>
+<li><p>定义常量</p></li>
+
+<li><p>可以进行类型检查</p></li>
+
+<li><p>可以用于保护被修饰的对象</p></li>
+
+<li><p>可以进行参数修改</p></li>
+
+<li><p>可以通过声明函数是否为const进行函数重载</p></li>
+
+<li><p>提高效率，节省空间（因为编译器会将const常量保存在符号表内，而不是放在存储空间上，节省了存储与读内存的操作）</p></li>
+</ul>
+
+<p><strong>static关键字作用</strong></p>
+
+<p>在C语言中，关键字static有三个明显的作用：</p>
+
+<ul>
+<li><p>在函数体内，一个被声明为静态的变量在这一函数被调用过程中维持上一次的值不变，即只初始化一次（该变量存放在静态变量区，而不是栈区）。</p></li>
+
+<li><p>在模块内（但在函数体外），一个被声明为静态的变量可以被模块内所用函数访问，但不能被模块外访问。（注：模块可以理解为文件）</p></li>
+
+<li><p>在模块内，一个被声明为静态的函数只可被这一模块内的其它函数调用。那就是，这个函数被限制在声明它的模块的本地范围内使用。</p></li>
+</ul>
+
+<p>【补充】《C和指针》中说static有两层含义：指明存储属性；改变链接属性。</p>
+
+<p>具体解释：（1）全局变量（包括函数）加上static关键字后，链接属性变为internal，也就是将他们限定在了本作用域内；（2）局部变量加上static关键字后，存储属性变为静态存储，不存储在栈区，下一次将保持上一次的尾值。</p>
+
+<p>除此之外，C++中还有新用法：</p>
+
+<ul>
+<li><p>在类中的static成员变量意味着它为该类的所有实例所共享，也就是说当某个类的实例修改了该静态成员变量，其修改值为该类的其它所有实例所见；</p></li>
+
+<li><p>在类中的static成员函数属于整个类所拥有，这个函数不接收this指针，因而只能访问类的static成员变量(当然，可以通过传递一个对象来访问其成员)。</p></li>
+</ul>
+
+<p><strong>volati关键字</strong></p>
+
+<ul>
+<li><p>volatile关键字是一种类型修饰符，用它声明的类型变量表示可以被某些编译器未知的因素更改，比如：操作系统、硬件或者其它线程等。遇到这个关键字声明的变量，编译器对访问该变量的代码就不再进行优化，从而可以提供对特殊地址的稳定访问。</p></li>
+
+<li><p>当要求使用volatile 声明的变量的值的时候，系统总是重新从它所在的内存读取数据，即使它前面的指令刚刚从该处读取过数据。而且读取的数据立刻被保存。</p></li>
+
+<li><p>volatile 指出 i是随时可能发生变化的，每次使用它的时候必须从i的地址中读取，因而编译器生成的汇编代码会重新从i的地址读取数据放在b中。而优化做法是，由于编译器发现两次从i读数据的代码之间的代码没有对i进行过操作，它会自动把上次读的数据放在b中。而不是重新从i里面读。这样一来，如果i是一个寄存器变量或者表示一个端口数据就容易出错，所以说volatile可以保证对特殊地址的稳定访问。</p></li>
+</ul>
+
+<p><strong>全局变量、局部变量、静态全局变量、静态局部变量的区别</strong></p>
+
+<ul>
+<li><strong>从作用域看：</strong></li>
+</ul>
+
+<p>全局变量具有全局作用域。全局变量只需在一个源文件中定义，就可以作用于所有的源文件。当然，其他不包含全局变量定义的源文件需要用extern 关键字再次声明这个全局变量。</p>
+
+<p>静态局部变量具有局部作用域，它只被初始化一次，自从第一次被初始化直到程序运行结束都一直存在，它和全局变量的区别在于全局变量对所有的函数都是可见的，而静态局部变量只对定义自己的函数体始终可见。</p>
+
+<p>局部变量也只有局部作用域，它是自动对象（auto），它在程序运行期间不是一直存在，而是只在函数执行期间存在，函数的一次调用执行结束后，变量被撤销，其所占用的内存也被收回。</p>
+
+<p>静态全局变量也具有全局作用域，它与全局变量的区别在于如果程序包含多个文件的话，它作用于定义它的文件里，不能作用到其它文件里，即被static关键字修饰过的变量具有文件作用域。这样即使两个不同的源文件都定义了相同名字的静态全局变量，它们也是不同的变量。</p>
+
+<ul>
+<li><strong>从分配内存空间看：</strong></li>
+</ul>
+
+<p>全局变量，静态局部变量，静态全局变量都在静态存储区分配空间，而局部变量在栈里分配空间</p>
+
+<p>静态函数 ：在函数的返回类型前加上static关键字,函数即被定义为静态函数。静态函数与普通函数不同，它只能在声明它的文件当中可见，不能被其它文件使用。</p>
+
+<p>如果在一个源文件中定义的函数，只能被本文件中的函数调用，而不能被同一程序其它文件中的函数调用，这种函数也称为内部函数。定义一个内部函数，只需在函数类型前再加一个“static”关键字即可。</p>
+
+<p><strong>类的静态成员、非静态成员、静态成员函数</strong></p>
+
+<ul>
+<li>一、静态成员的特点：</li>
+</ul>
+
+<p>（1）static数据成员在类的内部声明，但只能在类的外部定义，在类的外部不能指定static，在类的定义时候进行初始化;</p>
+
+<p>（2）static数据成员只能在类的外部进行初始化（特例：当整型const static数据成员被常量表达式初始化时，就可以在类的内部进行初始化，但还需要在外部进行定义）。</p>
+
+<p>（3） static数据成员可以是该成员所属的类类型，而非static数据成员只能自身类的引用或者指针。</p>
+
+<p>（4）static数据成员可以用作类成员函数的默认实参。</p>
+
+<p>（5）static数据成员的值可以改变。</p>
+
+<ul>
+<li>二、静态成员和非静态成员的区别：</li>
+</ul>
+
+<p>（1） 静态变量使用 static 修饰符进行声明，在类被实例化时创建，通过类和对象都可以进行访问；</p>
+
+<p>（2）不带有 static 修饰符声明的变量称做非静态变量，在对象被实例化时创建，通过对象访问；</p>
+
+<p>（3） 一个类的所有实例的同一静态变量都是同一个值，同一个类的不同实例的同一非静态变量可以是不同的值。</p>
+
+<p>（4） 静态函数的实现里不能使用非静态成员，如非静态变量、非静态函数等。</p>
+
+<ul>
+<li>三、静态成员函数的特点：</li>
+</ul>
+
+<p>（1） static 成员函数没有 this 形参，它可以访问所属类的 static 成员，但不能访问非 static 成员。</p>
+
+<p>（2）static成员函数既可以在类的内部定义，也可以在类的外部定义，在外部定义时，不能重复指定static保留字。</p>
+
+<p>（3）static成员函数不能声明为虚函数，不能实现动态绑定</p>
+
+<p>（4）static 成员函数不能声明为const，因为const是针对this是不是const而言的</p>
+
+<p>（5）构造函数、析构函数不能为静态函数。</p>
+
+<p><strong>C++类、struct字节对齐</strong></p>
+
+<ul>
+<li><p>在类中，如果什么都没有，则类占用1个字节，因为编译器需要给类一个实际空间用来存储类，一旦类中有其它成员，则这1个字节就不在计算之内。<strong>先找有没有虚函数</strong>，有的话就需要建立虚函数表，<strong>一个指针占四个字节</strong>；static成员变量属于类域，不算入计算中；成员函数不占内存；然后接着就是内存对齐了</p></li>
+
+<li><p>普通类成员函数内存对齐：字节对齐便于cpu的快速访问，以结构体内最宽的那个数据成员为整数倍。在系统默认的对齐方式下：<strong>每个成员相对于这个结构体变量地址的偏移量正好是<code>该成员类型所占字节的整数倍</code>，也就是说该变量的起始地址必须为它所占字节的整数倍开始，且整个结构体最终占用字节数为成员类型中最大占用字节数的整数倍。</strong></p></li>
+</ul>
+
+<p><strong>引用和指针的区别：</strong></p>
+
+<ul>
+<li>相同点：</li>
+</ul>
+
+<p>都是地址的概念；</p>
+
+<p>指针指向一块内存，它的内容是所指内存的地址；而引用则是某块内存的别名。</p>
+
+<ul>
+<li>不同点：</li>
+</ul>
+
+<p>指针是一个实体，而引用仅是个别名；</p>
+
+<p>引用只能在定义时被初始化一次而且必须被初始化，之后不可变；指针可变；引用“从一而终”，指针可以“见异思迁”；</p>
+
+<p>引用不能为空，指针可以为空；</p>
+
+<p>“sizeof 引用”得到的是所指向的变量(对象)的大小，而“sizeof 指针”得到的是指针本身的大小；</p>
+
+<p>指针和引用的自增(++)运算意义不一样；</p>
+
+<p>引用是类型安全的，而指针不是 (引用比指针多了类型检查）</p>
+
+<p><strong>析构函数中抛出异常时概括性总结</strong></p>
+
+<p>（1） C++中析构函数的执行不应该抛出异常；</p>
+
+<p>（2） 假如析构函数中抛出了异常，那么系统将变得非常危险，也许很长时间什么错误也不会发生；但也许系统有时就会莫名奇妙地崩溃而退出了，而且什么迹象也没有；</p>
+
+<p>（3） 当在某一个析构函数中会有一些可能（哪怕是一点点可能）发生异常时，那么就必须要把这种可能发生的异常完全封装在析构函数内部，决不能让它抛出函数之外，即在析构函数内部写出完整的throw&hellip;catch()块。</p>
+
+	
+			
+
+			
+
+			
+				<div class="paging">
+					<span class="paging-label">More Reading</span>
+					
+
+					
+					<div class="paging-older">
+						<span class="dark-red">Older</span><span class="decorative-marker">//</span>
+			            <a class="paging-link" href="/cplusplus/2017-3-13/">栈、堆、内存分布、函数压栈、虚拟内存</a>
+		            </div>
+		            
+	            </div>
+            
+          </section>
+          
+          	
+          
+        
+      <div class="footer">
+	<hr class="thin" />
+	<div class="pure-menu pure-menu-horizontal pure-menu-open">
+		<ul class="footer-menu">
+		
+		</ul>
+	</div>
+
+	<p>&copy; 2017. Matthew Hou All rights reserved.</p>
+</div>
+    </div>
+  </div>
+	
+
+	
+
+  
+</body>
+</html>
