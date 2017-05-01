@@ -14,7 +14,27 @@
       <pubDate>Mon, 13 Mar 2017 16:43:45 +0800</pubDate>
       
       <guid>https://shiweihou.github.io/cplusplus/2017-3-13-02/</guid>
-      <description>&lt;p&gt;&lt;strong&gt;什么是C++11&lt;/strong&gt;：C++11是11年正式推出的C++的一个新标准，包括了以前C++标准的内容，扩展了C++标准程序库，即STL。&lt;/p&gt;
+      <description>&lt;p&gt;&lt;strong&gt;C和C++有什么区别，能用C实现C++所有功能吗?C能实现多态吗?&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;对于第1个问题，可以从历史发展的角度看。&lt;/p&gt;
+
+&lt;p&gt;原本的作业是批处理，也就是过程编程。缺点是不利于代码修改和重用。为了解决这个问题，出现了C语言的函数，实现结构化编程。
+随着项目愈发的庞大，函数与函数间的逻辑关系愈发复杂，不利修改。另外，算法中逻辑步骤是一样的，但针对不同的数据类型，需要重写一遍。为了解决这个问题，出现了C++语言的class，实现面向对象编程。以及C++语言的模板，实现范式编程。
+所以C实现结构化编程，C++实现结构化编程、面向对象编程和范式编程。&lt;/p&gt;
+
+&lt;p&gt;对于第2个问题，C++实现面向对象编程和范式编程，背后需要编译器提供相应的机制支持。这个机制支持本质是逻辑的，理论上，C语言能够模拟这套机制，也就是说理论上用C实现C++所有功能。但工作量会特别大，即实用角度看，用C不能实现C++所有功能。&lt;/p&gt;
+
+&lt;p&gt;对于第3个问题，C能实现多态。C++实现多态，是建一个表格，存储多态相关的函数指针，运行时根据调用对象的类型选择相应的函数。C语言可以模拟这个原理实现多态。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;C++有哪些数据类型？为什么long和int都是4个字节？&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;C++的数据类型有字符型（char）、布尔型（bool）、短整型（short）、整型（int）、长整型（long）、浮点型（float）、双精度型（double）等类型&lt;/p&gt;
+
+&lt;p&gt;首先并不是所有的long和int都是4字节的，在C++中规定int的长度是大于等于short的长度，小于等于long的长度，并且要大于2字节，在16位CPU以及单片机中，int是2字节的，而在32位CPU及以上的CPU中int是4字节的；&lt;/p&gt;
+
+&lt;p&gt;在C++中long的长度应该是大于等于int的长度，且最小为4字节，在32位CPU中long为4字节，在64位机上long为8字节长度&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;什么是C++11&lt;/strong&gt;：C++11是11年正式推出的C++的一个新标准，包括了以前C++标准的内容，扩展了C++标准程序库，即STL。&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;C++11的新特性：&lt;/strong&gt;&lt;/p&gt;
 

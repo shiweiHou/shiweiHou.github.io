@@ -5,8 +5,30 @@
     <link>https://shiweiHou.github.io/</link>
     <description>Recent content on Hello world!</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Mon, 13 Mar 2017 16:43:45 +0800</lastBuildDate>
+    <lastBuildDate>Mon, 01 May 2017 14:53:32 +0800</lastBuildDate>
     <atom:link href="https://shiweiHou.github.io/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>summary</title>
+      <link>https://shiweihou.github.io/pointcloud/summary/</link>
+      <pubDate>Mon, 01 May 2017 14:53:32 +0800</pubDate>
+      
+      <guid>https://shiweihou.github.io/pointcloud/summary/</guid>
+      <description>&lt;p&gt;可以说，不定时的更新一个博客，并且想要有一些高质量的博客，是一个挺困难的事情。最近因为找实习、做项目、跑实验，忙的晕头转向。实力找了两个月，还是没结果，对自己很沮丧，科研项目好歹有个结果，聊以安慰下。&lt;/p&gt;
+
+&lt;p&gt;总结一下这两个月以来的事情吧，一直都没有机会闲下来仔仔细细的写写博客，也没有时间记录自己学到的知识，获得的收获。趁五一小长假的最后一天，好好写一写。&lt;/p&gt;
+
+&lt;p&gt;先说说实习吧，话说这是我最惨的事情。从寒假开学2月底到现在一直在找，投的简历、做的笔式、面过的公司，林林总总有十几家了吧。我就按面试时间顺序说下吧，有网易游戏、腾讯内推、百度内推、阿里内推、网易、京东、蘑菇街、上海远景能源、完美世界、招银信用卡中心、地平线、商汤科技、海康威视、通甲优博（五一前刚刚面试）、招银网络科技（5.8号笔式）、微众银行、美团、美图、360、今日头条、滴滴，大概就这么多了吧，其中有的确实是自己菜，能力不够，但有的公司给我面试通知然后过两天又给我说笔式筛选没通过（对，说的就是你，京东和网易）。还有的是自己因为一些原因没有办法现场面试，比如腾讯、完美世界、招银信用卡，其它的，就是自己太菜了。阿里二面挂，我投的C++岗，然后面我的是阿里菜鸟部门的，一群做java的，我感觉自己答得还可以，然后就被拒了。网易游戏是最早面试的，刚开学就面了，那时候完全没准备，理所当然的挂掉。地平线、商汤、海康威视都是报的SLAM岗，但其实自己就做过一点点，其它大部分时间都是在做数据处理，同挂；蘑菇街、美团、美图简历投上去后就没然后了；头条最可惜，面到了最后一面，然后面试官上来给扔过来4道算法题，卒；滴滴二面也是，上来一个智力题和算法题，卒。&lt;/p&gt;
+
+&lt;p&gt;面了这么多家，自己也知道了自己的缺点，那就是C++语言基础不错，但更深的就不行了，像并发、网络编程这块，就不行。但在实验室这快2年的时间里，做了3、4个项目，真的一直没有用到过，实验室也没人用过。我们实验室做的方向比较偏门，是做三维点云这块，数据获取都是存储在本地，对数据操作也不需要多线程、网络这块来弄，所以每当面试官问起来这方面的问题，我也很无奈。现在就三个机会了，通甲优博不知道怎么样，招银还没笔式，还拜托了个同学投了4399也不知道怎么样。如果都不行的话，也就只能自己看书了。&lt;/p&gt;
+
+&lt;p&gt;项目方面，磕磕绊绊的算是做出来了，虽然效果不是很好，但总归有了个结果。老师一直催，一直赶，因为准备面试看相关方面的书还被老师发现批评教育了一下，囧。不说了，突然发现自己也没啥好抱怨的，实力不强，能力不够，全归己因。&lt;/p&gt;
+
+&lt;p&gt;套用LOL德莱文的一句话：好好看，好好学！&lt;/p&gt;
+
+&lt;p&gt;我再补充一句：好好练！&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>C&#43;&#43;基本知识总结</title>
@@ -14,7 +36,27 @@
       <pubDate>Mon, 13 Mar 2017 16:43:45 +0800</pubDate>
       
       <guid>https://shiweihou.github.io/cplusplus/2017-3-13-02/</guid>
-      <description>&lt;p&gt;&lt;strong&gt;什么是C++11&lt;/strong&gt;：C++11是11年正式推出的C++的一个新标准，包括了以前C++标准的内容，扩展了C++标准程序库，即STL。&lt;/p&gt;
+      <description>&lt;p&gt;&lt;strong&gt;C和C++有什么区别，能用C实现C++所有功能吗?C能实现多态吗?&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;对于第1个问题，可以从历史发展的角度看。&lt;/p&gt;
+
+&lt;p&gt;原本的作业是批处理，也就是过程编程。缺点是不利于代码修改和重用。为了解决这个问题，出现了C语言的函数，实现结构化编程。
+随着项目愈发的庞大，函数与函数间的逻辑关系愈发复杂，不利修改。另外，算法中逻辑步骤是一样的，但针对不同的数据类型，需要重写一遍。为了解决这个问题，出现了C++语言的class，实现面向对象编程。以及C++语言的模板，实现范式编程。
+所以C实现结构化编程，C++实现结构化编程、面向对象编程和范式编程。&lt;/p&gt;
+
+&lt;p&gt;对于第2个问题，C++实现面向对象编程和范式编程，背后需要编译器提供相应的机制支持。这个机制支持本质是逻辑的，理论上，C语言能够模拟这套机制，也就是说理论上用C实现C++所有功能。但工作量会特别大，即实用角度看，用C不能实现C++所有功能。&lt;/p&gt;
+
+&lt;p&gt;对于第3个问题，C能实现多态。C++实现多态，是建一个表格，存储多态相关的函数指针，运行时根据调用对象的类型选择相应的函数。C语言可以模拟这个原理实现多态。&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;C++有哪些数据类型？为什么long和int都是4个字节？&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;C++的数据类型有字符型（char）、布尔型（bool）、短整型（short）、整型（int）、长整型（long）、浮点型（float）、双精度型（double）等类型&lt;/p&gt;
+
+&lt;p&gt;首先并不是所有的long和int都是4字节的，在C++中规定int的长度是大于等于short的长度，小于等于long的长度，并且要大于2字节，在16位CPU以及单片机中，int是2字节的，而在32位CPU及以上的CPU中int是4字节的；&lt;/p&gt;
+
+&lt;p&gt;在C++中long的长度应该是大于等于int的长度，且最小为4字节，在32位CPU中long为4字节，在64位机上long为8字节长度&lt;/p&gt;
+
+&lt;p&gt;&lt;strong&gt;什么是C++11&lt;/strong&gt;：C++11是11年正式推出的C++的一个新标准，包括了以前C++标准的内容，扩展了C++标准程序库，即STL。&lt;/p&gt;
 
 &lt;p&gt;&lt;strong&gt;C++11的新特性：&lt;/strong&gt;&lt;/p&gt;
 
@@ -1027,32 +1069,6 @@ public:
         return count;
     }
 };
-&lt;/code&gt;&lt;/pre&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>网易2017秋招编程题7</title>
-      <link>https://shiweihou.github.io/algorithm/%E7%BD%91%E6%98%932017%E7%A7%8B%E6%8B%9B%E7%BC%96%E7%A8%8B%E9%A2%987/</link>
-      <pubDate>Wed, 15 Feb 2017 11:29:12 +0800</pubDate>
-      
-      <guid>https://shiweihou.github.io/algorithm/%E7%BD%91%E6%98%932017%E7%A7%8B%E6%8B%9B%E7%BC%96%E7%A8%8B%E9%A2%987/</guid>
-      <description>&lt;p&gt;计算糖果：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;#include &amp;lt;iostream&amp;gt;
-using namespace std;
-
-int main() {
-    int a, b, c, d;
-    int A, B, C;
-    cin &amp;gt;&amp;gt; a &amp;gt;&amp;gt; b &amp;gt;&amp;gt; c &amp;gt;&amp;gt; d;
-    A = (a + c) / 2;
-    B = A - a;
-    C = B - b;
-    if (A &amp;gt;= 0 &amp;amp;&amp;amp; B &amp;gt;= 0 &amp;amp;&amp;amp; C &amp;gt;=0 &amp;amp;&amp;amp; (A-B) == a &amp;amp;&amp;amp; (B-C) == b &amp;amp;&amp;amp; (A+B) == c &amp;amp;&amp;amp; (B+C) == d) cout &amp;lt;&amp;lt; A &amp;lt;&amp;lt; &amp;quot; &amp;quot; &amp;lt;&amp;lt; B &amp;lt;&amp;lt; &amp;quot; &amp;quot; &amp;lt;&amp;lt; C &amp;lt;&amp;lt; endl;
-    else cout &amp;lt;&amp;lt; &amp;quot;No&amp;quot; &amp;lt;&amp;lt; endl;
-    return 0;
-}
 &lt;/code&gt;&lt;/pre&gt;
 </description>
     </item>
