@@ -5,8 +5,44 @@
     <link>https://shiweiHou.github.io/</link>
     <description>Recent content on Hello world!</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Mon, 01 May 2017 14:53:32 +0800</lastBuildDate>
+    <lastBuildDate>Tue, 23 May 2017 20:40:26 +0800</lastBuildDate>
     <atom:link href="https://shiweiHou.github.io/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Redis-SDS字符串</title>
+      <link>https://shiweihou.github.io/redis/redis-1/</link>
+      <pubDate>Tue, 23 May 2017 20:40:26 +0800</pubDate>
+      
+      <guid>https://shiweihou.github.io/redis/redis-1/</guid>
+      <description>&lt;p&gt;redis源码-简单动态字符串(simple dynamic string =&amp;gt; SDS):&lt;/p&gt;
+
+&lt;p&gt;redis里没有直接采用C语言传统的字符串来表示，即字符串最后已&amp;rsquo;\0&amp;rsquo;方式结尾的字符串，而是自己构建了一个字符串类型，称之为SDS（simple dynamic string），redis里只要需要字符串的地方就会用SDS实现。&lt;/p&gt;
+
+&lt;p&gt;首先看看SDS的定义，在redis源码src里，有个sds.h头文件，里面定义了&lt;code&gt;sdshdr&lt;/code&gt;结构，用来表示一个SDS：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;struct sdshdr {
+    int len; // 用来表示字符数组buf的实际长度，不包括最后的&#39;\0&#39;
+    int free; // 用来表示字符数组除了长度len之外，可用的空白空间长度
+    char buf[]; // 传统的C语言风格的字符数组，其实际长度为 len + free + 1,最后多1位用来存储&#39;\0&#39;
+};
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;从&lt;code&gt;sdshdr&lt;/code&gt;中可以看出，其实相对于传统的C语言字符串风格来讲，SDS采用空间换时间的方法来提高字符串操作的运行效率。例如，在C语言中，原本我们需要求一个字符串的长度，我们需要对它进行遍历每一个字符求得，直到找到结尾字符&amp;rsquo;\0&amp;rsquo;,而SDS中，直接调用其成员变量&lt;code&gt;len&lt;/code&gt;就可以知道字符数组&lt;code&gt;buf&lt;/code&gt;的长度。而且因为引入了&lt;code&gt;free&lt;/code&gt;成员变量，那么在需要对&lt;code&gt;buf&lt;/code&gt;数组进行修改的时候，无论是增添还是减小，都可以依据&lt;code&gt;free&lt;/code&gt;成员变量来判断是否可以直接在&lt;code&gt;buf&lt;/code&gt;上进行修改，如果不可以，那么就需要重新进行内存分配。&lt;/p&gt;
+
+&lt;p&gt;SDS的内存分配很有意思，类似于 C++ vector的内存分配策略。当原有的SDS中&lt;code&gt;buf&lt;/code&gt;数组不足以存入需要加入的元素个数，即&lt;code&gt;free&lt;/code&gt;小于需要加入的元素个数时，此时需要对SDS进行重新内存分配，按照黄建宏老师的说法，内存分配遵循以下两个原则：&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;如果修改后的SDS成员变量&lt;code&gt;len&lt;/code&gt;小于1MB时，那么将会给SDS分配和&lt;code&gt;len&lt;/code&gt;同样大小的&lt;code&gt;free&lt;/code&gt;空间。即分配后的&lt;code&gt;buf&lt;/code&gt;总容量为 len + free + 1个字节，多余的1个字节我们有说过，用来保存&amp;rsquo;\0&amp;rsquo;&lt;/li&gt;
+&lt;li&gt;如果修改后的SDS成员变量&lt;code&gt;len&lt;/code&gt;大于等于1MB，那么将会给SDS分配1MB的&lt;code&gt;free&lt;/code&gt;空间。即分配后的&lt;code&gt;buf&lt;/code&gt;总容量为 len + 1MB + 1byte&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;这样，通过以上的内存分配策略，redis可以减少连续执行字符串增长操作所需的内存重分配次数。因为每次重分配时，都尽量多分配一倍的空闲空间给它，这样可以降低redis进行内存重分配的次数，将执行次数从平均N次降低为至多N次。&lt;/p&gt;
+
+&lt;p&gt;另外，除了在对&lt;code&gt;buf&lt;/code&gt;数组进行增长的时候需要内存重分配外，在缩短操作的时候，SDS会执行“惰性空间释放”原则，意思是当&lt;code&gt;buf&lt;/code&gt;数组长度需要从10变成3时，它不是直接释放掉那些空间，而是在保留总空间容量的基础上，通过修改&lt;code&gt;len&lt;/code&gt;和&lt;code&gt;free&lt;/code&gt;的值让我们误以为我们已经正确缩短了&lt;code&gt;buf&lt;/code&gt;数组的长度（确实是，因为&lt;code&gt;buf&lt;/code&gt;数组len个长度后放的是字符&lt;code&gt;&#39;\0&#39;&lt;/code&gt;).&lt;/p&gt;
+
+&lt;p&gt;总之呢，Redis内字符结构SDS和C语言中的字符数组有很大的相似性（SDS的&lt;code&gt;buf&lt;/code&gt;数组就是C形式），但SDS牺牲了空间效率来提高时间效率，典型的“以空间换时间”的做法，也确实提高了很高的运行效率（因为Redis经常用于数据库存储，而数据库存储最麻烦的就是数据的增删操作）。SDS里有很多函数，绝大部分都是在功能相同的C语言字符数组函数基础上改变来的，具体有哪些函数，可以自行查阅&lt;code&gt;sds.h&lt;/code&gt;头文件。&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>summary</title>
@@ -1033,40 +1069,6 @@ public:
         }
 
         return sum;
-    }
-};
-&lt;/code&gt;&lt;/pre&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>leetcode 461.Hamming Distance</title>
-      <link>https://shiweihou.github.io/lintcode/leetcode-461/</link>
-      <pubDate>Fri, 24 Feb 2017 21:04:46 +0800</pubDate>
-      
-      <guid>https://shiweihou.github.io/lintcode/leetcode-461/</guid>
-      <description>&lt;p&gt;题目要求求出两个非负数之间二进制对应位不同值是多少，例如1对应二进制为 0 0 0 1（后四位），4对应二进制为 0 1 0 0，那么不同值就是2，从右往前看是第1位与第三位不同。&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;class Solution {
-public:
-    int hammingDistance(int x, int y) {
-        int count = 0;
-        // 最朴素的一种做法，就是每次求得两个数的最后一个比特位，然后比较，然后两个数右移
-        while (x || y) { // 当x和y全部为0时才退出循环
-            int a = x &amp;amp; 1; // 找到x和y二进制最后一位的数到底时0还是1
-            int b = y &amp;amp; 1;
-            if (a != b) ++count;
-            x = x &amp;gt;&amp;gt; 1; // x右移一位
-            y = y &amp;gt;&amp;gt; 1; // y右移一位
-        }
-        // 还有一种更简单的做法，就是将x^y的值求出来，求结果中有多少个1，那么就是答案
-        // count = 0;
-        // int n = x ^ y;
-        // while (n) {
-        //    ++count;
-        //    n &amp;amp;= n - 1;
-        // }
-        return count;
     }
 };
 &lt;/code&gt;&lt;/pre&gt;

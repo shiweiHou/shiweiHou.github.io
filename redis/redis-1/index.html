@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+  <title>
+    Redis-SDS字符串 // Hello world!
+  </title>
+
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+<meta name="description" content="">
+<meta name="keywords" content="">
+<meta name="author" content="">
+<meta name="generator" content="Hugo 0.16" />
+
+  <meta property="og:title" content="Redis-SDS字符串" />
+<meta property="og:description" content="" />
+<meta property="og:type" content="website" />
+<meta property="og:locale" content="en_US" />
+<meta property="og:url" content="https://shiweihou.github.io/redis/redis-1/" />
+
+
+  
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.5.0/base-min.css">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.5.0/pure-min.css">
+  
+  
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.5.0/grids-responsive-min.css">
+  
+  
+
+  <link rel="stylesheet" href="https://shiweihou.github.io//css/redlounge.css">
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet">
+  <link href='//fonts.googleapis.com/css?family=Raleway:400,200,100,700,300,500,600,800' rel='stylesheet' type='text/css'>
+  <link href='//fonts.googleapis.com/css?family=Libre+Baskerville:400,700,400italic' rel='stylesheet' type='text/css'>
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.png">
+
+  
+  <link href="" rel="alternate" type="application/rss+xml" title="Hello world!" />
+
+    
+  
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.7/styles/tomorrow-night-bright.min.css">
+  
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.7/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+
+
+  
+
+  
+
+  
+
+  
+</head>
+
+<body>
+	
+
+	<div id="layout" class="pure-g">
+    <div class="sidebar pure-u-1 pure-u-md-1-4">
+  <div class="header">
+    
+
+	
+	  <img src="/img/1.jpg" class="sidebarphoto">
+	
+
+    <h1 class="brand-title">Matthew</h1>
+    <h2 class="brand-tagline">积跬步，至千里</h2>
+
+    <nav class="nav">
+      <ul class="nav-list">
+        <li class="nav-item"><span class="nav-item-separator">//</span><a href="https://shiweihou.github.io/">Home</a></li>
+        
+          <li class="nav-item"><span class="nav-item-separator">//</span><a href="/cplusplus/">C&#43;&#43;</a></li>
+        
+          <li class="nav-item"><span class="nav-item-separator">//</span><a href="/redis/">Redis</a></li>
+        
+          <li class="nav-item"><span class="nav-item-separator">//</span><a href="/lintcode/">刷题</a></li>
+        
+          <li class="nav-item"><span class="nav-item-separator">//</span><a href="/machinelearning/">机器学习</a></li>
+        
+          <li class="nav-item"><span class="nav-item-separator">//</span><a href="/pointcloud/">点云</a></li>
+        
+          <li class="nav-item"><span class="nav-item-separator">//</span><a href="/algorithm/">编程</a></li>
+        
+      </ul>
+    </nav>
+
+    
+
+  </div>
+</div>
+
+	
+	
+
+    <div class="content pure-u-1 pure-u-md-3-4">
+		<a name="top"></a>
+		
+
+		
+			
+	    
+  		<section class="post">
+            <h1 class="post-title">
+              <a href="/redis/redis-1/">Redis-SDS字符串</a>
+            </h1>
+            <h3 class="post-subtitle">
+            	
+            </h3>
+            
+            	<span class="post-date">
+                	<span class="post-date-day"><sup>23</sup></span><span class="post-date-separator">/</span><span class="post-date-month">May</span> <span class="post-date-year">2017</span>
+            	</span>
+            	
+            
+            	
+            
+
+			
+			
+
+			
+
+			
+
+            <p>redis源码-简单动态字符串(simple dynamic string =&gt; SDS):</p>
+
+<p>redis里没有直接采用C语言传统的字符串来表示，即字符串最后已&rsquo;\0&rsquo;方式结尾的字符串，而是自己构建了一个字符串类型，称之为SDS（simple dynamic string），redis里只要需要字符串的地方就会用SDS实现。</p>
+
+<p>首先看看SDS的定义，在redis源码src里，有个sds.h头文件，里面定义了<code>sdshdr</code>结构，用来表示一个SDS：</p>
+
+<pre><code>struct sdshdr {
+    int len; // 用来表示字符数组buf的实际长度，不包括最后的'\0'
+    int free; // 用来表示字符数组除了长度len之外，可用的空白空间长度
+    char buf[]; // 传统的C语言风格的字符数组，其实际长度为 len + free + 1,最后多1位用来存储'\0'
+};
+</code></pre>
+
+<p>从<code>sdshdr</code>中可以看出，其实相对于传统的C语言字符串风格来讲，SDS采用空间换时间的方法来提高字符串操作的运行效率。例如，在C语言中，原本我们需要求一个字符串的长度，我们需要对它进行遍历每一个字符求得，直到找到结尾字符&rsquo;\0&rsquo;,而SDS中，直接调用其成员变量<code>len</code>就可以知道字符数组<code>buf</code>的长度。而且因为引入了<code>free</code>成员变量，那么在需要对<code>buf</code>数组进行修改的时候，无论是增添还是减小，都可以依据<code>free</code>成员变量来判断是否可以直接在<code>buf</code>上进行修改，如果不可以，那么就需要重新进行内存分配。</p>
+
+<p>SDS的内存分配很有意思，类似于 C++ vector的内存分配策略。当原有的SDS中<code>buf</code>数组不足以存入需要加入的元素个数，即<code>free</code>小于需要加入的元素个数时，此时需要对SDS进行重新内存分配，按照黄建宏老师的说法，内存分配遵循以下两个原则：</p>
+
+<ul>
+<li>如果修改后的SDS成员变量<code>len</code>小于1MB时，那么将会给SDS分配和<code>len</code>同样大小的<code>free</code>空间。即分配后的<code>buf</code>总容量为 len + free + 1个字节，多余的1个字节我们有说过，用来保存&rsquo;\0&rsquo;</li>
+<li>如果修改后的SDS成员变量<code>len</code>大于等于1MB，那么将会给SDS分配1MB的<code>free</code>空间。即分配后的<code>buf</code>总容量为 len + 1MB + 1byte</li>
+</ul>
+
+<p>这样，通过以上的内存分配策略，redis可以减少连续执行字符串增长操作所需的内存重分配次数。因为每次重分配时，都尽量多分配一倍的空闲空间给它，这样可以降低redis进行内存重分配的次数，将执行次数从平均N次降低为至多N次。</p>
+
+<p>另外，除了在对<code>buf</code>数组进行增长的时候需要内存重分配外，在缩短操作的时候，SDS会执行“惰性空间释放”原则，意思是当<code>buf</code>数组长度需要从10变成3时，它不是直接释放掉那些空间，而是在保留总空间容量的基础上，通过修改<code>len</code>和<code>free</code>的值让我们误以为我们已经正确缩短了<code>buf</code>数组的长度（确实是，因为<code>buf</code>数组len个长度后放的是字符<code>'\0'</code>).</p>
+
+<p>总之呢，Redis内字符结构SDS和C语言中的字符数组有很大的相似性（SDS的<code>buf</code>数组就是C形式），但SDS牺牲了空间效率来提高时间效率，典型的“以空间换时间”的做法，也确实提高了很高的运行效率（因为Redis经常用于数据库存储，而数据库存储最麻烦的就是数据的增删操作）。SDS里有很多函数，绝大部分都是在功能相同的C语言字符数组函数基础上改变来的，具体有哪些函数，可以自行查阅<code>sds.h</code>头文件。</p>
+
+	
+			
+
+			
+
+			
+				<div class="paging">
+					<span class="paging-label">More Reading</span>
+					
+
+					
+					<div class="paging-older">
+						<span class="dark-red">Older</span><span class="decorative-marker">//</span>
+			            <a class="paging-link" href="/summary/">summary</a>
+		            </div>
+		            
+	            </div>
+            
+          </section>
+          
+          	
+          
+        
+      <div class="footer">
+	<hr class="thin" />
+	<div class="pure-menu pure-menu-horizontal pure-menu-open">
+		<ul class="footer-menu">
+		
+		</ul>
+	</div>
+
+	<p>&copy; 2017. Matthew Hou All rights reserved.</p>
+</div>
+    </div>
+  </div>
+	
+
+	
+
+  
+</body>
+</html>

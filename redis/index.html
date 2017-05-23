@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
 <head>
   <title>
-    leetcode70. Climbing Stars // Hello world!
+    Redis // Hello world!
   </title>
 
   <link href="http://gmpg.org/xfn/11" rel="profile">
@@ -16,11 +16,11 @@
 <meta name="author" content="">
 <meta name="generator" content="Hugo 0.16" />
 
-  <meta property="og:title" content="leetcode70. Climbing Stars" />
+  <meta property="og:title" content="Redis" />
 <meta property="og:description" content="" />
 <meta property="og:type" content="website" />
 <meta property="og:locale" content="en_US" />
-<meta property="og:url" content="https://shiweihou.github.io/lintcode/leetcode70/" />
+<meta property="og:url" content="https://shiweiHou.github.io/redis/" />
 
 
   
@@ -42,7 +42,7 @@
   <link rel="shortcut icon" href="/favicon.png">
 
   
-  <link href="" rel="alternate" type="application/rss+xml" title="Hello world!" />
+  <link href="https://shiweiHou.github.io/redis/index.xml" rel="alternate" type="application/rss+xml" title="Hello world!" />
 
     
   
@@ -62,8 +62,6 @@
 </head>
 
 <body>
-	
-
 	<div id="layout" class="pure-g">
     <div class="sidebar pure-u-1 pure-u-md-1-4">
   <div class="header">
@@ -100,89 +98,41 @@
   </div>
 </div>
 
-	
-	
 
     <div class="content pure-u-1 pure-u-md-3-4">
-		<a name="top"></a>
-		
+      <a name="top"></a>
+      
 
-		
-			
-	    
-  		<section class="post">
-            <h1 class="post-title">
-              <a href="/lintcode/leetcode70/">leetcode70. Climbing Stars</a>
-            </h1>
-            <h3 class="post-subtitle">
-            	
-            </h3>
-            
-            	<span class="post-date">
-                	<span class="post-date-day"><sup>3</sup></span><span class="post-date-separator">/</span><span class="post-date-month">Mar</span> <span class="post-date-year">2017</span>
-            	</span>
-            	
-            
-            	
-            
-
-			
-			
-
-			
-
-			
-
-            <p>class Solution {
-    public:
-        int climbStairs(int n) {
-            if (n &lt;= 2) return n;
-            // one 表示还有最后一步要走， two表示还有最后两步要走，我们从第3个台阶开始算，那么走到第三个台阶
-            // 如果是从第二个台阶也就是还有最后一步要走的时候，我们一共有两种办法：1 1 1 和 2 1
-            // 如果是从第一个台阶也就是还有最后二步要走的时候，我们一共只有一种办法: 1 2,所以初始化为 2 1
-            int one_last = 2;
-            int two_last = 1;
-            int all = 0;
-            for (int i = 3; i &lt;= n; ++i) {
-                // 当我们走到第i个台阶的时候，从前面得到的结果，也就是第i-1 和 i-2 个台阶上走，一共有 one_last + two_last 种方法
-                // 当我们走过第i个台阶要准备走第i+1个台阶的时候，那么走到第i个台阶的方法就是前面得到all，这时候只需走一步就可以走到
-                // 第i+1个台阶，走到第i+1-2个台阶的方法，就是前面的one_last数值，所以要更新 two_last  和 one_last
-                all = one_last + two_last;
-                two_last = one_last;
-                one_last = all;
-            }
-            return all;
-        }
-    };</p>
-
-	
-			
-
-			
-
-			
-				<div class="paging">
-					<span class="paging-label">More Reading</span>
-					
-					<div class="paging-newer">
-						<span class="dark-red">Newer</span><span class="decorative-marker">//</span>
-						<a class="paging-link" href="/lintcode/leetcode405/">leetcode-405.Convert a Number to Hexadecimal</a>
-		            </div>
-		            
-
-					
-					<div class="paging-older">
-						<span class="dark-red">Older</span><span class="decorative-marker">//</span>
-			            <a class="paging-link" href="/lintcode/leetcode-467/">leetcode 467.Unique Substrings in Wraparound String</a>
-		            </div>
-		            
-	            </div>
-            
-          </section>
-          
-          	
-          
+      <div class="posts">
         
+          <section  class="post">
+            <header class="post-header">
+            
+            <h1 class="post-title">
+              <a href="/redis/redis-1/">Redis-SDS字符串</a>
+            </h1>
+            </header>
+            <p class="post-meta">
+            	
+		          <span class="post-date">
+		            <span class="post-date-day"><sup>23</sup></span><span class="post-date-separator">/</span><span class="post-date-month">May</span> <span class="post-date-year">2017</span>
+		          </span>
+      				
+      				
+      					
+      				
+              
+                <span class="post-reading-time"><i class="fa fa-clock-o"></i> <em>1 min. read</em></span>
+              
+      				
+            </p>
+			<div class="read-more-link">
+				<a href="/redis/redis-1/"><span class="read-more-slashes">//</span>Read More...</a>
+			</div>
+          </section>
+        
+      </div>
+
       <div class="footer">
 	<hr class="thin" />
 	<div class="pure-menu pure-menu-horizontal pure-menu-open">
@@ -195,10 +145,6 @@
 </div>
     </div>
   </div>
-	
-
-	
-
   
 </body>
 </html>
