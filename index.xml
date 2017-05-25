@@ -5,8 +5,47 @@
     <link>https://shiweiHou.github.io/</link>
     <description>Recent content on Hello world!</description>
     <generator>Hugo -- gohugo.io</generator>
-    <lastBuildDate>Tue, 23 May 2017 20:40:26 +0800</lastBuildDate>
+    <lastBuildDate>Thu, 25 May 2017 21:42:44 +0800</lastBuildDate>
     <atom:link href="https://shiweiHou.github.io/index.xml" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Redis 链表</title>
+      <link>https://shiweihou.github.io/redis/redis-2/</link>
+      <pubDate>Thu, 25 May 2017 21:42:44 +0800</pubDate>
+      
+      <guid>https://shiweihou.github.io/redis/redis-2/</guid>
+      <description>&lt;p&gt;Redis源码-链表:&lt;/p&gt;
+
+&lt;p&gt;Redis很多特性都是基于C语言的，或者换句话说，它是用C语言实现的。链表是我们常用的数据结构中一个比较方便的数据存储方式，灵活高效，已顺序性的节点访问方式，可以通过增删节点调整链表的长度。因为C语言内并没有内置链表这种数据结构，所以Redis自己构建的链表实现。&lt;/p&gt;
+
+&lt;p&gt;首先在 src/adlist.h 内定义了链表节点结构：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;typedef struct listNode {
+    strcut listNode *prev; // 指向链表的前置节点
+    struct listNode *next; // 指向链表的后驱节点
+    void *value;           // 存储节点的值
+}listNode;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;listNode 结构实现方式非常简单，和我们通常所见到的单向链表不同，Redis 实现链表将其变成了一个双向链表，每个链表节点都有三个属性：指向前置节点的指针、指向后置节点的指针以及当前节点保存的值。其中节点值并不是我们常用的基本类型，而是一个 void * 指针，这样链表节点就可以保存任意我们需要保存的数据类型。&lt;/p&gt;
+
+&lt;p&gt;除了定义链表节点外，Redis还定义了一个数据结构 list 用于保存当前链表的各种信息：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;typedef struct list {
+    listNode *head;                    // 指向链表的头节点
+    listNode *tail;                    // 指向链表的尾节点
+    unsigned long len;                 // 链表包含的节点数量
+    void *(*dup)(void *ptr);           // 节点值复制函数
+    void (*free)(void *ptr);           // 节点值释放函数  
+    int (*math)(void *ptr, void *key); // 节点值比较函数
+}list;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;list 也挺简单，其内的成员变量意义和作用一看即知。我比较感兴趣的是复制函数&lt;code&gt;dup&lt;/code&gt;和比较函数&lt;code&gt;math&lt;/code&gt;，然而 adlist.c 里没有对应的实现代码，按照函数&lt;code&gt;list *listDup(list *orig)&lt;/code&gt;的实现来看，dup函数时用户自定义的一个复制函数，在执行 list *listDup(list *orig) 函数时候，会根据链表里的复制函数dup对链表节点进行复制操作；如果没有定义dup函数，那么新节点和旧节点将共用一个复制函数指针。 &lt;code&gt;math&lt;/code&gt;函数则是一个比较函数，是对节点值进行比较，函数也是要用户自己定义的。&lt;/p&gt;
+
+&lt;p&gt;Redis里的链表实现比较简单，只要能理解C语言里的指针知识，链表的实现过程就很容易理解。&lt;/p&gt;
+</description>
+    </item>
     
     <item>
       <title>Redis-SDS字符串</title>
@@ -1014,61 +1053,6 @@ strcpy(p1, &amp;quot;123456&amp;quot;); //123456放在常量区，编译器可�
             ++i;
         }
         return count;
-    }
-};
-&lt;/code&gt;&lt;/pre&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>leetcode 12 &amp; 13 </title>
-      <link>https://shiweihou.github.io/lintcode/leetcode-12/</link>
-      <pubDate>Fri, 24 Feb 2017 21:16:03 +0800</pubDate>
-      
-      <guid>https://shiweihou.github.io/lintcode/leetcode-12/</guid>
-      <description>&lt;p&gt;数字转换为罗马数字：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;class Solution {
-public:
-    string intToRoman(int num) {
-        string M[] = {&amp;quot;&amp;quot;, &amp;quot;M&amp;quot;, &amp;quot;MM&amp;quot;, &amp;quot;MMM&amp;quot;};//0 1000 2000 3000
-        string C[] = {&amp;quot;&amp;quot;, &amp;quot;C&amp;quot;, &amp;quot;CC&amp;quot;, &amp;quot;CCC&amp;quot;, &amp;quot;CD&amp;quot;, &amp;quot;D&amp;quot;, &amp;quot;DC&amp;quot;, &amp;quot;DCC&amp;quot;, &amp;quot;DCCC&amp;quot;, &amp;quot;CM&amp;quot;};// 0 100 200 300 400 500 600 700 800 900
-        string X[] = {&amp;quot;&amp;quot;, &amp;quot;X&amp;quot;, &amp;quot;XX&amp;quot;, &amp;quot;XXX&amp;quot;, &amp;quot;XL&amp;quot;, &amp;quot;L&amp;quot;, &amp;quot;LX&amp;quot;, &amp;quot;LXX&amp;quot;, &amp;quot;LXXX&amp;quot;, &amp;quot;XC&amp;quot;};// 0 10 20 30 40 50 60 70 80 90
-        string I[] = {&amp;quot;&amp;quot;, &amp;quot;I&amp;quot;, &amp;quot;II&amp;quot;, &amp;quot;III&amp;quot;, &amp;quot;IV&amp;quot;, &amp;quot;V&amp;quot;, &amp;quot;VI&amp;quot;, &amp;quot;VII&amp;quot;, &amp;quot;VIII&amp;quot;, &amp;quot;IX&amp;quot;};// 0 1 2 3 4 5 6 7 8 9
-
-        return M[num / 1000] + C[num % 1000 / 100] + X[num % 100 / 10] + I[num % 10];
-    }
-};
-&lt;/code&gt;&lt;/pre&gt;
-
-&lt;p&gt;罗马数字转换为数字：&lt;/p&gt;
-
-&lt;pre&gt;&lt;code&gt;class Solution {
-public:
-    int romanToInt(string s) {
-        unordered_map&amp;lt;char, int&amp;gt; T = { { &#39;I&#39; , 1 },
-                                    { &#39;V&#39; , 5 },
-                                   { &#39;X&#39; , 10 },
-                                   { &#39;L&#39; , 50 },
-                                   { &#39;C&#39; , 100 },
-                                   { &#39;D&#39; , 500 },
-                                   { &#39;M&#39; , 1000 } };
-
-        int sum = T[s.back()];
-        for (int i = s.length() - 2; i &amp;gt;= 0; --i) 
-        {
-            // 根据罗马数字左减右加原则
-            if (T[s[i]] &amp;lt; T[s[i + 1]])
-            {
-                sum -= T[s[i]];
-            }
-            else
-            {
-                sum += T[s[i]];
-            }
-        }
-
-        return sum;
     }
 };
 &lt;/code&gt;&lt;/pre&gt;
