@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-us">
+<head>
+  <title>
+    C&#43;&#43;知识点 1 // Hello world!
+  </title>
+
+  <link href="http://gmpg.org/xfn/11" rel="profile">
+<meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+<meta name="description" content="">
+<meta name="keywords" content="">
+<meta name="author" content="">
+<meta name="generator" content="Hugo 0.16" />
+
+  <meta property="og:title" content="C&#43;&#43;知识点 1" />
+<meta property="og:description" content="" />
+<meta property="og:type" content="website" />
+<meta property="og:locale" content="en_US" />
+<meta property="og:url" content="https://shiweihou.github.io/cplusplus/C&#43;&#43;%E7%9F%A5%E8%AF%86%E7%82%B9-1/" />
+
+
+  
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.5.0/base-min.css">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.5.0/pure-min.css">
+  
+  
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/pure/0.5.0/grids-responsive-min.css">
+  
+  
+
+  <link rel="stylesheet" href="https://shiweihou.github.io//css/redlounge.css">
+  <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css" rel="stylesheet">
+  <link href='//fonts.googleapis.com/css?family=Raleway:400,200,100,700,300,500,600,800' rel='stylesheet' type='text/css'>
+  <link href='//fonts.googleapis.com/css?family=Libre+Baskerville:400,700,400italic' rel='stylesheet' type='text/css'>
+
+  
+  <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/touch-icon-144-precomposed.png">
+  <link rel="shortcut icon" href="/favicon.png">
+
+  
+  <link href="" rel="alternate" type="application/rss+xml" title="Hello world!" />
+
+    
+  
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.7/styles/tomorrow-night-bright.min.css">
+  
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/8.7/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+
+
+  
+
+  
+
+  
+
+  
+</head>
+
+<body>
+	
+
+	<div id="layout" class="pure-g">
+    <div class="sidebar pure-u-1 pure-u-md-1-4">
+  <div class="header">
+    
+
+	
+	  <img src="/img/1.jpg" class="sidebarphoto">
+	
+
+    <h1 class="brand-title">Matthew</h1>
+    <h2 class="brand-tagline">积跬步，至千里</h2>
+
+    <nav class="nav">
+      <ul class="nav-list">
+        <li class="nav-item"><span class="nav-item-separator">//</span><a href="https://shiweihou.github.io/">Home</a></li>
+        
+          <li class="nav-item"><span class="nav-item-separator">//</span><a href="/cplusplus/">C&#43;&#43;</a></li>
+        
+          <li class="nav-item"><span class="nav-item-separator">//</span><a href="/lintcode/">刷题</a></li>
+        
+          <li class="nav-item"><span class="nav-item-separator">//</span><a href="/machinelearning/">机器学习</a></li>
+        
+          <li class="nav-item"><span class="nav-item-separator">//</span><a href="/pointcloud/">点云</a></li>
+        
+          <li class="nav-item"><span class="nav-item-separator">//</span><a href="/algorithm/">编程</a></li>
+        
+      </ul>
+    </nav>
+
+    
+
+  </div>
+</div>
+
+	
+	
+
+    <div class="content pure-u-1 pure-u-md-3-4">
+		<a name="top"></a>
+		
+
+		
+			
+	    
+  		<section class="post">
+            <h1 class="post-title">
+              <a href="/cplusplus/C&#43;&#43;%E7%9F%A5%E8%AF%86%E7%82%B9-1/">C&#43;&#43;知识点 1</a>
+            </h1>
+            <h3 class="post-subtitle">
+            	
+            </h3>
+            
+            	<span class="post-date">
+                	<span class="post-date-day"><sup>12</sup></span><span class="post-date-separator">/</span><span class="post-date-month">Jun</span> <span class="post-date-year">2017</span>
+            	</span>
+            	
+            
+            	
+            
+
+			
+			
+
+			
+
+			
+
+            <p><strong>函数对象</strong>：</p>
+
+<ul>
+<li>在C++中，函数对象是定义了函数调用运算符的类对象，重定义了operator(),STL中主要利用函数对象作为标准库容器和算法的排序条件，亦叫做谓词，其中sort函数接受的是二元谓词。函数对象经常用作另外一个函数的形参，当函数名作为另一个函数的形参的时候，函数参数会自动的转换成函数指针。</li>
+<li>相对于直接的函数调用，函数对象有两个优势：一是函数对象可以包含状态，二是函数对象是一个类型，因此可以作为模板参数使用</li>
+</ul>
+
+<p><strong>union和enum的区别：</strong></p>
+
+<ul>
+<li>union内部可以定义多种数据类型，但是所有的数据类型都共享一个内存，union的大小等于其内部最长的变量的长度</li>
+<li>enum是枚举类型，里面的数据元素类型默认为整型，枚举变量后面的值以前面的值为止，为前面值的大小+1，枚举类型值默认从0开始计数，枚举是常量而不是变量，不能在枚举类型外再给枚举变量赋值</li>
+</ul>
+
+<p><strong>初始化的一些问题</strong></p>
+
+<ul>
+<li><p>指针数组，类似于<code>char *str[]</code>初始化只可以由字符串常量完成，不可以由非字符串的类型进行初始化，例如</p>
+
+<p>char *str[] = {&ldquo;123&rdquo;, &ldquo;456&rdquo;, &ldquo;789&rdquo;} 是对的</p>
+
+<p>char *str[] = {{&lsquo;1&rsquo;,&lsquo;2&rsquo;,&lsquo;3&rsquo;}, {&lsquo;4&rsquo;,&lsquo;5&rsquo;,&lsquo;6&rsquo;}, {&lsquo;7&rsquo;,&lsquo;8&rsquo;,&lsquo;9&rsquo;}}是错误的</p>
+
+<p>char str[][3] = {{&lsquo;1&rsquo;,&lsquo;2&rsquo;,&lsquo;3&rsquo;}, {&lsquo;4&rsquo;,&lsquo;5&rsquo;,&lsquo;6&rsquo;}, {&lsquo;7&rsquo;,&lsquo;8&rsquo;,&lsquo;9&rsquo;}}是正确的</p></li>
+
+<li><p>所有的多维数组中，最左边的参数大小可以省略，但只有这一个可以，编译器会自动推断其后的维数有多少个</p></li>
+</ul>
+
+<p><strong>使用nullptr而不是null</strong></p>
+
+<p>C++11中引入了新的空指针类型：<code>nullptr</code>，它是一个类，无法和整数0进行相互转换，而<code>null</code>不同，编译器将其认为是0，因此如果有两个函数，一个接受指针参数，一个接受整型参数，当传入数字为0时，编译器无法判断究竟是调用整型参数的函数还是指针类型的参数。<code>nullptr</code>就不会，完美的解决了0的二义性问题，C++11中要么用<code>nullptr</code>，要么用0，不推荐用<code>null</code>。</p>
+
+<p><strong>关联容器map和set中，通过关联容器迭代器可以改变map的mapped_type,即map的关键字对应的值，但不能改变map和set的关键字的值，map和set中关键字都是只读的</strong></p>
+
+<p>无序容器例如unordered_map，使用哈希函数和关键字类型的==运算符组织元素，无序容器在存储上组织为一组桶，每个桶保存零个或多个元素，容器首先经过哈希函数将元素映射到桶，将具有特定哈希值的所有元素都保存在相同的桶中。因此无序容器的性能依赖于哈希函数的质量和桶的数量和大小。</p>
+
+<p>C++中推荐尽量将函数参数设置为常量引用，在保证不会修改函数参数形参的前提下，声明变量为常量引用，一是可以传递常量用作实参（例如假如一个函数的参数类型为 const string &amp;str, 那么我们除了可以传入正常的常量形式和非常亮形式的string类型外，还可以传入 &ldquo;somestring&rdquo; 这种字面值常量）； 二是可以传递非常量作为实参；三是可以阻止函数体内部对其进行更改。</p>
+
+<p>将函数参数设置为 initializer_list<type> 类型，则可以使函数接收可变长度的实参作为函数参数</p>
+
+<p>标准库提供了begin()和end() 函数，用来返回有迭代器的数组的首尾指针，例如可以返回一个vector的首尾指针（尾指针照旧指向数组最后一个元素的之后的位置）</p>
+
+<p>关于类的默认构造函数：</p>
+
+<ul>
+<li>一个类中如果没有任何形式的构造函数，则编译器会在<strong>类需要的时候</strong>才会自动生成默认构造函数</li>
+<li>类中如果有除默认构造函数之外类型的构造函数，则类不会生成默认构造函数</li>
+<li>如果类的默认构造函数之后添加=default语句，则表明显示的告诉编译器为我们合成一个默认构造函数</li>
+<li>类的拷贝构造函数自己的参数类型必须为<strong>引用类型</strong></li>
+</ul>
+
+<p>类的拷贝初始化：</p>
+
+<ul>
+<li>定义变量时使用=定义变量时发生</li>
+<li>将一个对象作为实参传递给一个非引用类型的形参</li>
+<li>从一个返回类型为非引用类型的函数返回一个对象时发生</li>
+<li>用花括号列表初始化一个数组中的元素或者一个聚合类中的成员时发生</li>
+</ul>
+
+<p>C++中对指针进行delete的时候，虽然可以释放掉指针所指向的那块内存（告诉操作系统这块内存我已经没用了），但指针本身所在的内存存放的仍是那块内存的地址编号，delete并不释放指针本身，需要人为的将指针设置成 nullptr</p>
+
+<p>重载赋值运算符时要能保证：</p>
+
+<ul>
+<li>如果一个对象赋予它自身，赋值运算符必须能正确工作</li>
+<li>大多说赋值运算符组合了析构函数和拷贝构造函数的工作</li>
+<li>当编写一个赋值运算符时，一个好的模式是先将右侧运算符对象拷贝到一个局部临时对象中，当拷贝完成时，再执行销毁左侧运算对象的现有成员，保证赋值的安全性</li>
+</ul>
+
+	
+			
+
+			
+
+			
+				<div class="paging">
+					<span class="paging-label">More Reading</span>
+					
+
+					
+					<div class="paging-older">
+						<span class="dark-red">Older</span><span class="decorative-marker">//</span>
+			            <a class="paging-link" href="/summary/">summary</a>
+		            </div>
+		            
+	            </div>
+            
+          </section>
+          
+          	
+          
+        
+      <div class="footer">
+	<hr class="thin" />
+	<div class="pure-menu pure-menu-horizontal pure-menu-open">
+		<ul class="footer-menu">
+		
+		</ul>
+	</div>
+
+	<p>&copy; 2017. Matthew Hou All rights reserved.</p>
+</div>
+    </div>
+  </div>
+	
+
+	
+
+  
+</body>
+</html>
